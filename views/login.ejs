@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="media/logo.png">
+  <link rel="stylesheet" href="css/login.css">
+  <link rel="stylesheet" href="css/error.css">
+  <link rel="stylesheet" href="css/otherBackground.css">
+  <link rel="stylesheet" href="css/rippleBtn.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=MuseoModerno:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <title>Login · Cardel</title>
+
+  <script src="js/login.js" defer></script>
+</head>
+
+<body>
+
+    <div class="hero-bg">
+        <div class="background">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+        </div>
+    </div>
+
+    <div class="parallax-layer" data-depth="0.04">
+
+        <div class="login-card">
+            <!-- Brand with logo -->
+            <div class="brand">
+                <img src="media/logo.png" alt="Cardel logo" class="brand-icon">
+                <span class="cardelHeading">CARDEL</span>
+            </div>
+
+            <div class="subtitle">Sign in to your account</div>
+
+            <form id="loginForm">
+                <div>
+                    <label>Email</label>
+                    <input type="email" name="email" placeholder="support@cardel.app" required />
+                </div>
+
+                <div>
+                    <label>Password</label>
+                    <input type="password" name="password" placeholder="••••••••" required />
+                </div>
+
+                <div class="row">
+                    <span></span>
+                    <a href="#">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="myBtn btn-secondary ripple-btn"><span>Log in</span></button>
+            </form>
+
+            <div class="footer-text">
+                Don't have an account?
+                <a href="signup">Create one</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

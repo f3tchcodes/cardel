@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onboarding | Cardel</title>
+    <link rel="icon" type="image/png" href="media/logo.png">
+    <link rel="stylesheet" href="css/onboarding.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=MuseoModerno:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="area">
+        <ul class="circles">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
+
+    <header class="onboarding-header">
+        <div class="logo-container">
+            <img src="media/logo.png" alt="Cardel Logo" class="logo">
+            <span class="cardelHeading">CARDEL</span>
+        </div>
+        <a href="/dashboard" class="skip-btn">Skip Onboarding</a>
+    </header>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <main class="onboarding-viewframe">
+        <form id="onboardingForm" action="/api/onboarding/complete" method="POST" style="display: none;">
+            <input type="hidden" name="h_subUse" id="hidden_subUse">
+            <input type="hidden" name="h_subManage" id="hidden_subManage">
+            <input type="hidden" name="h_hearAbout" id="hidden_hearAbout">
+            <input type="hidden" name="h_notifyDays" id="hidden_notifyDays">
+            <input type="hidden" name="h_subNumber" id="hidden_subNumber">
+            <input type="hidden" name="h_subMonthlySpend" id="hidden_subMonthlySpend">
+        </form>
+
+        <div class="step-wrapper">
+            <section class="step active" id="step1">
+                <h1 class="welcome-text">Welcome, <span class="highlight"><%= username %></span>!</h1>
+                <p class="subtext">We are proud to have you at Cardel. <br>Let's get your dashboard ready.</p>
+            </section>
+
+            <section class="step" id="step2">
+                <h2>Understanding Your Needs</h2>
+
+                <!-- MULTI SELECT -->
+                <div class="input-group">
+                    <label>What subscriptions do you currently use? 
+                        <br>
+                        <small>(if not mentioned, you can add custom subscriptions later)</small></label>
+
+                    <div class="dropdown multi-select">
+                        <div class="dropdown-input">
+                            <div class="tags"></div>
+                            <input type="text" id="subUse" placeholder="Search (eg. Netflix, Spotify)">
+                        </div>
+
+                        <div class="dropdown-menu">
+                            <% subUse.forEach(item => { %>
+                                <div class="dropdown-item"
+                                    data-name="<%= item[0] %>"
+                                    data-img="<%= item[1] %>">
+                                    <img src="<%= item[1] %>" alt="<%= item[0] %>">
+                                    <span><%= item[0] %></span>
+                                </div>
+                            <% }) %>
+                        </div>
+                    </div>
+                </div>
+
+                <br>
+
+                <!-- SINGLE SELECT -->
+                <div class="input-group">
+                    <label>What do you currently use for managing subscriptions?</label>
+
+                    <div class="dropdown single-select">
+                        <div class="dropdown-input">
+                            <input type="text" id="subManage" placeholder="Manual tracking..." readonly>
+                        </div>
+
+                        <div class="dropdown-menu">
+                            <% subManage.forEach(item => { %>
+                                <div class="dropdown-item"><%= item %></div>
+                            <% }) %>
+                        </div>
+                    </div>
+                </div>
+
+                <br>
+
+                <!-- SINGLE SELECT -->
+                <div class="input-group">
+                    <label>Where did you hear about Cardel?</label>
+
+                    <div class="dropdown single-select">
+                        <div class="dropdown-input">
+                            <input type="text" id="hearAbout" placeholder="Social media..." readonly>
+                        </div>
+
+                        <div class="dropdown-menu">
+                            <% hearAbout.forEach(item => { %>
+                                <div class="dropdown-item"><%= item %></div>
+                            <% }) %>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="step" id="step3">
+                <h2>Notifications & Automation</h2>
+
+                <!-- CONTACT METHODS -->
+                <div class="input-group">
+                    <label>How would you like to get alerted for renewals?</label>
+
+                    <div class="contact-methods">
+                        <!-- EMAIL (FREE) -->
+                        <label class="contact-card contact-card--active">
+                            <input type="checkbox" checked disabled>
+                            <div class="contact-card-content">
+                                <div class="checkmark"></div>
+                                <div class="contact-text">
+                                    <span class="contact-title">Email</span>
+                                </div>
+                            </div>
+                        </label>
+
+                        <!-- WHATSAPP (PRO) -->
+                        <label class="contact-card contact-card--pro" data-redirect>
+                            <input type="checkbox">
+                            <div class="contact-card-content">
+                                <div class="checkmark"></div>
+                                <div class="contact-text">
+                                    <span class="contact-title">WhatsApp</span>
+                                </div>
+                                <div class="pro-badge">PRO</div>
+                            </div>
+                        </label>
+
+                        <!-- SMS (PRO) -->
+                        <label class="contact-card contact-card--pro" data-redirect>
+                            <input type="checkbox">
+                            <div class="contact-card-content">
+                                <div class="checkmark"></div>
+                                <div class="contact-text">
+                                    <span class="contact-title">SMS</span>
+                                </div>
+                                <div class="pro-badge">PRO</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <br>
+
+                <!-- DO NOT TOUCH THIS (as requested 😌) -->
+                <div class="input-group">
+                    <label>Remind me how many days before renewal?</label>
+
+                    <div class="dropdown single-select">
+                        <div class="dropdown-input">
+                            <input type="text" id="notifyDays" placeholder="3" readonly>
+                        </div>
+
+                        <div class="dropdown-menu">
+                            <% notifyDays.forEach(item => { %>
+                                <div class="dropdown-item"><%= item %></div>
+                            <% }) %>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="step" id="step4">
+                <h2>Profile & Value Level</h2>
+                <div class="input-group">
+                    <label>How many subscriptions do you have? <small>(an estimate is fine)</small></label>
+
+                    <div class="dropdown single-select">
+                        <div class="dropdown-input">
+                            <input type="text" id="subNumber" placeholder="5" readonly>
+                        </div>
+
+                        <div class="dropdown-menu">
+                            <% subNumber.forEach(item => { %>
+                                <div class="dropdown-item"><%= item %></div>
+                            <% }) %>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="input-group">
+                    <label>What is your monthly spend? 
+                    <br>
+                    <small>(an estimate is fine)</small></label>
+
+                    <div class="dropdown single-select">
+                        <div class="dropdown-input">
+                            <input type="text" id="subMonthlySpend" placeholder="$100-$150" readonly>
+                        </div>
+
+                        <div class="dropdown-menu">
+                            <% subMonthlySpend.forEach(item => { %>
+                                <div class="dropdown-item"><%= item %></div>
+                            <% }) %>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="step" id="step5">
+                <h1 class="welcome-text">You're all set, <span class="highlight"><%= username %></span>!</h1>
+                <p class="subtext">Privacy-first. No bank connections. You stay in control of what you add.</p>
+            </section>
+        </div>
+
+        <div class="nav-controls">
+            <button type="button" id="backBtn" class="back-arrow">← Back</button>
+            <button type="button" id="nextBtn" class="btn-secondary ripple-btn circle-nav">
+                <img src="media/right_arrow.svg" alt="Next" class="circle-nav-img" id="btnIcon">
+                <span id="btnText" class="square-btn" style="display: none;">Complete Onboarding</span>
+            </button>
+        </div>
+    </main>
+
+    <script src="js/onboarding.js"></script>
+</body>
+</html>

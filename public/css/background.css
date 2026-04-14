@@ -1,0 +1,624 @@
+@charset "UTF-8";
+.background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+/* Theme matched glow */
+.background span {
+  width: 18vmin;
+  height: 18vmin;
+  border-radius: 40%;
+  position: absolute;
+  animation: float linear infinite;
+  backface-visibility: hidden;
+}
+.background span:nth-child(1) {
+  color: rgb(91, 140, 255);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 68vh;
+  left: 18%;
+  animation-duration: 22s;
+  animation-delay: -11s;
+  transform-origin: 25vw 12vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(2) {
+  color: rgba(91, 140, 255, 0.8);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 153vh;
+  left: 61%;
+  animation-duration: 24s;
+  animation-delay: -10s;
+  transform-origin: 18vw 14vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(3) {
+  color: rgba(91, 140, 255, 0.6);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 237vh;
+  left: 34%;
+  animation-duration: 37s;
+  animation-delay: -4s;
+  transform-origin: 27vw 21vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(4) {
+  color: rgb(91, 140, 255);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 48vh;
+  left: 64%;
+  animation-duration: 40s;
+  animation-delay: -10s;
+  transform-origin: 14vw -21vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(5) {
+  color: rgba(91, 140, 255, 0.6);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 60vh;
+  left: 80%;
+  animation-duration: 39s;
+  animation-delay: -14s;
+  transform-origin: 6vw 15vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(6) {
+  color: rgb(91, 140, 255);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 85vh;
+  left: 52%;
+  animation-duration: 36s;
+  animation-delay: -19s;
+  transform-origin: -25vw 27vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(7) {
+  color: rgba(91, 140, 255, 0.8);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 134vh;
+  left: 21%;
+  animation-duration: 38s;
+  animation-delay: -6s;
+  transform-origin: 18vw 16vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(8) {
+  color: rgba(91, 140, 255, 0.8);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 131vh;
+  left: 20%;
+  animation-duration: 40s;
+  animation-delay: -14s;
+  transform-origin: -25vw 28vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(9) {
+  color: rgba(91, 140, 255, 0.6);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 206vh;
+  left: 97%;
+  animation-duration: 28s;
+  animation-delay: -7s;
+  transform-origin: -23vw -6vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(10) {
+  color: rgba(91, 140, 255, 0.8);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 180vh;
+  left: 2%;
+  animation-duration: 21s;
+  animation-delay: -1s;
+  transform-origin: -16vw -14vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(11) {
+  color: rgba(91, 140, 255, 0.6);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 188vh;
+  left: 14%;
+  animation-duration: 27s;
+  animation-delay: -15s;
+  transform-origin: -28vw 30vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(12) {
+  color: rgba(91, 140, 255, 0.8);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 157vh;
+  left: 3%;
+  animation-duration: 36s;
+  animation-delay: -9s;
+  transform-origin: 17vw -28vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(13) {
+  color: rgba(91, 140, 255, 0.8);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 198vh;
+  left: 57%;
+  animation-duration: 24s;
+  animation-delay: -2s;
+  transform-origin: -1vw -8vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(14) {
+  color: rgb(91, 140, 255);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 3vh;
+  left: 4%;
+  animation-duration: 30s;
+  animation-delay: -9s;
+  transform-origin: -14vw -9vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(15) {
+  color: rgb(91, 140, 255);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 66vh;
+  left: 41%;
+  animation-duration: 24s;
+  animation-delay: -12s;
+  transform-origin: -13vw 7vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(16) {
+  color: rgba(91, 140, 255, 0.8);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 212vh;
+  left: 27%;
+  animation-duration: 26s;
+  animation-delay: -6s;
+  transform-origin: 1vw -20vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(17) {
+  color: rgba(91, 140, 255, 0.6);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 190vh;
+  left: 99%;
+  animation-duration: 25s;
+  animation-delay: -8s;
+  transform-origin: -16vw -1vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(18) {
+  color: rgba(91, 140, 255, 0.8);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 173vh;
+  left: 56%;
+  animation-duration: 39s;
+  animation-delay: -15s;
+  transform-origin: -11vw 8vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(19) {
+  color: rgba(91, 140, 255, 0.8);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 133vh;
+  left: 63%;
+  animation-duration: 30s;
+  animation-delay: -6s;
+  transform-origin: -16vw 28vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(20) {
+  color: rgba(91, 140, 255, 0.8);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 24vh;
+  left: 91%;
+  animation-duration: 25s;
+  animation-delay: -15s;
+  transform-origin: 13vw -7vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(21) {
+  color: rgba(91, 140, 255, 0.6);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 215vh;
+  left: 15%;
+  animation-duration: 28s;
+  animation-delay: -13s;
+  transform-origin: 16vw -6vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(22) {
+  color: rgba(91, 140, 255, 0.8);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 75vh;
+  left: 85%;
+  animation-duration: 28s;
+  animation-delay: -8s;
+  transform-origin: 22vw 12vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(23) {
+  color: rgba(91, 140, 255, 0.8);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 150vh;
+  left: 40%;
+  animation-duration: 38s;
+  animation-delay: -5s;
+  transform-origin: 25vw 9vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(24) {
+  color: rgba(91, 140, 255, 0.6);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 183vh;
+  left: 89%;
+  animation-duration: 28s;
+  animation-delay: -2s;
+  transform-origin: 9vw 14vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(25) {
+  color: rgb(91, 140, 255);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 29vh;
+  left: 67%;
+  animation-duration: 35s;
+  animation-delay: -16s;
+  transform-origin: 8vw -25vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(26) {
+  color: rgba(91, 140, 255, 0.8);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 178vh;
+  left: 10%;
+  animation-duration: 30s;
+  animation-delay: -19s;
+  transform-origin: -22vw -26vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(27) {
+  color: rgba(91, 140, 255, 0.6);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 103vh;
+  left: 17%;
+  animation-duration: 30s;
+  animation-delay: -15s;
+  transform-origin: -1vw 22vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(28) {
+  color: rgba(91, 140, 255, 0.8);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 50vh;
+  left: 53%;
+  animation-duration: 35s;
+  animation-delay: -13s;
+  transform-origin: -16vw -24vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(29) {
+  color: rgba(91, 140, 255, 0.6);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 178vh;
+  left: 79%;
+  animation-duration: 24s;
+  animation-delay: -2s;
+  transform-origin: -5vw 29vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(30) {
+  color: rgba(91, 140, 255, 0.6);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 9vh;
+  left: 41%;
+  animation-duration: 24s;
+  animation-delay: -11s;
+  transform-origin: 27vw -8vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(31) {
+  color: rgba(91, 140, 255, 0.6);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 70vh;
+  left: 8%;
+  animation-duration: 37s;
+  animation-delay: -8s;
+  transform-origin: 8vw 7vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(32) {
+  color: rgb(91, 140, 255);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 234vh;
+  left: 37%;
+  animation-duration: 25s;
+  animation-delay: -11s;
+  transform-origin: -16vw 24vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(33) {
+  color: rgb(91, 140, 255);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 150vh;
+  left: 86%;
+  animation-duration: 28s;
+  animation-delay: -3s;
+  transform-origin: 15vw -10vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(34) {
+  color: rgba(91, 140, 255, 0.6);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 12vh;
+  left: 26%;
+  animation-duration: 29s;
+  animation-delay: -6s;
+  transform-origin: -14vw 13vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(35) {
+  color: rgba(91, 140, 255, 0.6);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 217vh;
+  left: 17%;
+  animation-duration: 26s;
+  animation-delay: -3s;
+  transform-origin: 17vw -23vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(36) {
+  color: rgba(91, 140, 255, 0.8);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 97vh;
+  left: 4%;
+  animation-duration: 21s;
+  animation-delay: -18s;
+  transform-origin: 27vw -4vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(37) {
+  color: rgba(91, 140, 255, 0.8);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 151vh;
+  left: 25%;
+  animation-duration: 40s;
+  animation-delay: -18s;
+  transform-origin: -5vw 9vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(38) {
+  color: rgba(91, 140, 255, 0.8);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 111vh;
+  left: 57%;
+  animation-duration: 38s;
+  animation-delay: -2s;
+  transform-origin: -18vw -9vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(39) {
+  color: rgba(91, 140, 255, 0.8);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 49vh;
+  left: 50%;
+  animation-duration: 39s;
+  animation-delay: -6s;
+  transform-origin: 19vw 8vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(40) {
+  color: rgba(91, 140, 255, 0.6);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 94vh;
+  left: 34%;
+  animation-duration: 21s;
+  animation-delay: -17s;
+  transform-origin: 24vw 7vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(41) {
+  color: rgb(91, 140, 255);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 203vh;
+  left: 68%;
+  animation-duration: 30s;
+  animation-delay: -16s;
+  transform-origin: -5vw -8vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(42) {
+  color: rgba(91, 140, 255, 0.6);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 135vh;
+  left: 53%;
+  animation-duration: 31s;
+  animation-delay: -18s;
+  transform-origin: -3vw -4vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(43) {
+  color: rgba(91, 140, 255, 0.8);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 126vh;
+  left: 31%;
+  animation-duration: 28s;
+  animation-delay: -18s;
+  transform-origin: -17vw 13vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(44) {
+  color: rgba(91, 140, 255, 0.8);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 164vh;
+  left: 32%;
+  animation-duration: 21s;
+  animation-delay: -20s;
+  transform-origin: 2vw 20vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(45) {
+  color: rgba(91, 140, 255, 0.8);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 204vh;
+  left: 9%;
+  animation-duration: 33s;
+  animation-delay: -12s;
+  transform-origin: 12vw -2vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(46) {
+  color: rgba(91, 140, 255, 0.8);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 159vh;
+  left: 42%;
+  animation-duration: 23s;
+  animation-delay: -12s;
+  transform-origin: 7vw 26vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(47) {
+  color: rgba(91, 140, 255, 0.6);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 13vh;
+  left: 31%;
+  animation-duration: 27s;
+  animation-delay: -1s;
+  transform-origin: 2vw 28vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(48) {
+  color: rgb(91, 140, 255);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 30vh;
+  left: 66%;
+  animation-duration: 29s;
+  animation-delay: -10s;
+  transform-origin: -27vw 8vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(49) {
+  color: rgb(91, 140, 255);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 203vh;
+  left: 68%;
+  animation-duration: 35s;
+  animation-delay: -6s;
+  transform-origin: 12vw 2vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(50) {
+  color: rgb(91, 140, 255);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 133vh;
+  left: 24%;
+  animation-duration: 32s;
+  animation-delay: -19s;
+  transform-origin: 19vw -18vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(51) {
+  color: rgb(91, 140, 255);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 104vh;
+  left: 72%;
+  animation-duration: 40s;
+  animation-delay: -2s;
+  transform-origin: 10vw 19vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(52) {
+  color: rgba(91, 140, 255, 0.6);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 172vh;
+  left: 3%;
+  animation-duration: 32s;
+  animation-delay: -19s;
+  transform-origin: -29vw -7vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(53) {
+  color: rgb(91, 140, 255);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 191vh;
+  left: 53%;
+  animation-duration: 34s;
+  animation-delay: -20s;
+  transform-origin: -21vw -9vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(54) {
+  color: rgba(91, 140, 255, 0.6);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 23vh;
+  left: 1%;
+  animation-duration: 38s;
+  animation-delay: -8s;
+  transform-origin: 6vw 12vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(55) {
+  color: rgba(91, 140, 255, 0.8);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 246vh;
+  left: 3%;
+  animation-duration: 30s;
+  animation-delay: -15s;
+  transform-origin: -18vw 3vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(56) {
+  color: rgba(91, 140, 255, 0.6);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 95vh;
+  left: 81%;
+  animation-duration: 38s;
+  animation-delay: -7s;
+  transform-origin: -9vw -3vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(57) {
+  color: rgba(91, 140, 255, 0.8);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 224vh;
+  left: 32%;
+  animation-duration: 32s;
+  animation-delay: -8s;
+  transform-origin: 2vw -17vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(58) {
+  color: rgba(91, 140, 255, 0.6);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 66vh;
+  left: 55%;
+  animation-duration: 27s;
+  animation-delay: -13s;
+  transform-origin: -21vw -26vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(59) {
+  color: rgb(91, 140, 255);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 207vh;
+  left: 16%;
+  animation-duration: 23s;
+  animation-delay: -8s;
+  transform-origin: -17vw -6vh;
+  box-shadow: 28.8vmin 0 10.8vmin currentColor;
+}
+.background span:nth-child(60) {
+  color: rgba(91, 140, 255, 0.6);
+  /* IMPORTANT — spread vertically across entire document */
+  top: 208vh;
+  left: 27%;
+  animation-duration: 37s;
+  animation-delay: -19s;
+  transform-origin: 3vw -9vh;
+  box-shadow: -28.8vmin 0 10.8vmin currentColor;
+}
+
+@keyframes float {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/*# sourceMappingURL=background.css.map */

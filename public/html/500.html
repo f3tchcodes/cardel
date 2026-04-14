@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="../media/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=MuseoModerno:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <title>Cardel 500 · Server error</title>
+
+  <!-- Optional: favicon auto-loads if /favicon.ico exists -->
+
+  <style>
+    :root {
+      --bg: #0b0d12;
+      --card: #131722;
+      --text: #e6e8eb;
+      --muted: #9aa3b2;
+      --accent: #5b8cff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(1200px 600px at top, #11162a, var(--bg));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+    }
+
+    .card {
+      max-width: 420px;
+      width: 100%;
+      padding: 40px;
+      background: linear-gradient(180deg, var(--card), #0f1320);
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,0.05);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.55);
+      text-align: center;
+      animation: fadeUp 0.6s ease forwards;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .brand img {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+    }
+
+    .brand span {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    a.button {
+      display: inline-block;
+      padding: 14px 26px;
+      border-radius: 14px;
+      background: var(--accent);
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    a.button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 35px rgba(91,140,255,0.35);
+    }
+    
+    .cardelHeading{
+        font-family: "MuseoModerno", sans-serif;
+        font-optical-sizing: auto;
+        font-style: normal;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <div class="brand">
+      <img src="/media/logo.png" alt="Cardel logo">
+      <span class="cardelHeading">CARDEL</span>
+    </div>
+
+    <h1>500</h1>
+    <p>
+      Server error<br>
+      Our mistake, we'll be back as soon as possible!
+    </p>
+
+    <a href="/" class="button">Go home</a>
+  </div>
+</body>
+</html>

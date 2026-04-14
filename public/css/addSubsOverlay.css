@@ -1,0 +1,146 @@
+/* --- OVERLAY & MODAL ANIMATION --- */
+.cdl-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 8, 18, 0.8);
+    backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10000;
+}
+.cdl-overlay.cdl-open { opacity: 1; visibility: visible; }
+
+.cdl-modal {
+    width: 100%;
+    max-width: 500px;
+    background: linear-gradient(145deg, #141821, #0f121a);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    transform: scale(0.9) translateY(30px);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.cdl-open .cdl-modal { transform: scale(1) translateY(0); }
+
+.cdl-modal-content { padding: 35px; }
+.cdl-title { font-size: 1.6rem; font-weight: 700; margin-bottom: 20px; color: #fff; text-align: center; }
+
+/* --- INPUT ROWS & GROUPS --- */
+.cdl-input-row { display: flex; gap: 15px; width: 100%; }
+.cdl-group { margin-bottom: 20px; width: 100%; }
+.cdl-label { display: block; font-size: 0.85rem; color: #9aa3b2; margin-bottom: 8px; font-weight: 500; }
+
+.cdl-input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 12px 15px;
+    border-radius: 10px;
+    color: #e6e8eb;
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.25s ease;
+}
+.cdl-input:hover:not(:disabled) {
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(91, 140, 255, 0.1);
+}
+.cdl-input:focus { border-color: #5b8cff; background: rgba(255,255,255,0.06); }
+
+/* --- ICON UPLOAD --- */
+.cdl-icon-section { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; }
+.cdl-icon-preview-wrapper {
+    width: 55px; height: 55px;
+    border-radius: 12px;
+    background: #131722;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+.cdl-icon-preview-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+
+/* --- RIPPLE BUTTONS --- */
+.ripple-btn {
+    position: relative; overflow: hidden;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; border: none; z-index: 1; transition: color 0.4s ease;
+}
+.ripple-btn span { position: relative; z-index: 2; pointer-events: none; }
+.ripple-btn::after {
+    content: ''; position: absolute; top: 50%; left: 50%;
+    width: 300%; padding-bottom: 300%;
+    background: var(--ripple-color, #fff);
+    border-radius: 50%; transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
+}
+.ripple-btn:hover::after { transform: translate(-50%, -50%) scale(1); }
+
+.btn-upload {
+    padding: 8px 16px; border-radius: 8px; font-size: 0.8rem;
+    background: rgba(255,255,255,0.05) !important;
+    border: 1px solid rgba(255,255,255,0.1); color: #fff;
+    --ripple-color: #5b8cff;
+}
+.btn-upload:hover { color: #fff; border-color: #5b8cff; }
+
+.btn-submit {
+    width: 100%; padding: 15px; border-radius: 12px;
+    font-weight: 700; font-size: 1rem; margin-top: 10px;
+    background: #5b8cff !important; color: white;
+    --ripple-color: #ffffff;
+}
+.btn-submit:hover { color: #000000; }
+
+/* --- CUSTOM DROPDOWNS --- */
+.cdl-billing-row { display: flex; gap: 12px; }
+.dropdown { position: relative; flex: 1; }
+.dropdown-input {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 15px; background: rgba(255, 255, 255, 0.04);
+    border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1); cursor: pointer;
+    transition: all 0.25s ease;
+}
+.dropdown-input:hover { border-color: rgba(255,255,255,0.25); transform: translateY(-2px); }
+.dropdown-chevron { width: 12px; opacity: 0.5; transition: 0.3s; }
+.dropdown.open .dropdown-chevron { transform: rotate(180deg); }
+
+.dropdown-menu {
+    position: absolute; width: 100%; top: calc(100% + 8px);
+    background: #0f1420; border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1); max-height: 0;
+    overflow: hidden; opacity: 0; transition: all 0.3s ease; z-index: 100;
+}
+.dropdown.open .dropdown-menu { max-height: 200px; opacity: 1; overflow-y: auto; }
+.dropdown-item { padding: 10px 15px; cursor: pointer; color: #e6e8eb; font-size: 0.9rem; }
+.dropdown-item:hover { background: rgba(91, 140, 255, 0.15); color: #5b8cff; }
+
+/* --- ADVANCED --- */
+.cdl-adv-trigger {
+    display: flex; align-items: center; gap: 8px; background: none; border: none;
+    color: #9aa3b2; cursor: pointer; padding: 10px 0; font-size: 0.9rem;
+}
+.cdl-adv-arrow { width: 12px; transition: 0.3s ease; }
+.cdl-adv-arrow.rotated { transform: rotate(90deg); }
+.cdl-adv-content { max-height: 0; overflow: hidden; opacity: 0; transition: all 0.4s ease; }
+.cdl-adv-content.open { max-height: 100px; opacity: 1; padding-top: 10px; }
+
+/* --- TOOLTIP & RESTRICTIONS --- */
+.cdl-input.free { cursor: not-allowed; opacity: 0.5; }
+#cdl-custom-tooltip {
+    position: fixed; background: #5b8cff; color: white;
+    padding: 6px 14px; border-radius: 8px; font-size: 12px;
+    font-weight: 600; pointer-events: none; z-index: 11000;
+    display: none; transform: translate(-50%, -130%);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+}
+.cdl-modal-close {
+    position: absolute; top: 15px; right: 20px;
+    background: none; border: none; color: #9aa3b2;
+    font-size: 28px; cursor: pointer; transition: 0.3s;
+}
+.cdl-modal-close:hover { color: #fff; transform: scale(1.1); }

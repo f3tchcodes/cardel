@@ -1,0 +1,178 @@
+:root {
+    --bg: #0b0d12;
+    --card: #131722;
+    --text: #e6e8eb;
+    --muted: #9aa3b2;
+    --accent: #5b8cff;
+    --accent-soft: rgba(91, 140, 255, 0.15);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: radial-gradient(1200px 600px at top, #11162a, var(--bg));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text);
+}
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    background: linear-gradient(180deg, var(--card), #0f1320);
+    border-radius: 20px;
+    padding: 36px;
+    border: 1px solid rgba(255,255,255,0.05);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    animation: fadeUp 0.6s ease forwards;
+}
+
+.subtitle {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-bottom: 32px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+label {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 6px;
+}
+
+input {
+    width: 100%;
+    padding: 14px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: #0b0f1d;
+    color: var(--text);
+    font-size: 0.95rem;
+    outline: none;
+    transition: border 0.2s ease, box-shadow 0.2s ease;
+    transition:
+        border-color 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+input:hover {
+    border-color: rgba(255,255,255,0.25);
+    box-shadow: 0 8px 20px rgba(124,124,255,0.15);
+}
+
+input:focus {
+    border-color: rgba(255,255,255,0.25);
+    box-shadow: 0 8px 20px rgba(124,124,255,0.15);
+}
+
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+}
+
+.row a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.row a:hover {
+    text-decoration: underline;
+}
+
+.myBtn {
+    margin-top: 10px;
+    padding: 14px;
+    border-radius: 14px;
+    border: none;
+    background: var(--accent);
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: box-shadow 0.5s ease;
+}
+
+.footer-text {
+    margin-top: 28px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
+.footer-text a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* F3TCH */
+.brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+
+    /* Optional background behind brand */
+    position: relative;           
+    padding: 12px 20px;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.brand::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.05;       /* adjust transparency */
+    z-index: 0;          
+}
+
+.brand img,
+.brand span {
+    position: relative;
+    z-index: 1;           /* ensures text and logo appear above background */
+}
+
+.brand img {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+.cardelHeading{
+    font-family: "MuseoModerno", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
