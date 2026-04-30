@@ -75,12 +75,16 @@ const corsConf = cors({
 
 
 // USE MIDDLEWARES
+app.use(helmetConf);
+app.use(corsConf);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(sessionConf);
-app.use(helmetConf);
 app.use(cookieParser());
-app.use(corsConf);
+
+app.use(invalidJSONFormat);
+
+app.use(express.static("public"));
 
 
 
@@ -92,9 +96,11 @@ app.set("views", path.resolve("./views"));
 
 // USE ROUTES
 // use render view routes
-app.use(express.static("public"));
 app.use("/", indexRVRoutes);
-app.use("/", jwtAuth, authenticatedIndexRVRoutes);
+app.use("/dashboard", jwtAuth);
+app.use("/onboarding", jwtAuth);
+
+app.use("/", authenticatedIndexRVRoutes);
 
 // use api routes
 app.use("/api/auth/", apiLimiter, authAPIRoutes);
@@ -103,12 +109,9 @@ app.use("/api/onboarding/", apiLimiter, jwtAuth, onboardingAPIRoutes);
 app.use("/api/user/subscriptions/", apiLimiter, jwtAuth, subscriptionsAPIRoutes);
 
 
-
-// USE CUSTOM MIDDLEWARES
-app.use(invalidJSONFormat);
+// error handlers
 app.use(multerErrorHandler);
 app.use(errorCodes);
-
 
 
 // RUNNING THE SERVER
