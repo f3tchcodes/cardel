@@ -97,7 +97,7 @@ app.use("/", indexRVRoutes);
 app.use("/", jwtAuth, authenticatedIndexRVRoutes);
 
 // use api routes
-app.use("/api/auth/", apiLimiter, jwtAuth, authAPIRoutes);
+app.use("/api/auth/", apiLimiter, authAPIRoutes);
 app.use("/api/", apiLimiter, jwtAuth, userAPIRoutes);
 app.use("/api/onboarding/", apiLimiter, jwtAuth, onboardingAPIRoutes);
 app.use("/api/user/subscriptions/", apiLimiter, jwtAuth, subscriptionsAPIRoutes);

@@ -1,7 +1,6 @@
 <<<<<<< HEAD
 node_modules
 .env
-package-lock.json
 public/media/userSubIcons/*
 public/media/pfp/*
 =======
