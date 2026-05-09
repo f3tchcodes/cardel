@@ -1,8 +1,8 @@
 /*
-ROUTE: /api/onboarding/
+    ROUTE: /api/onboarding/
 
-ENDPOINTS: 
-POST -- /complete -- (h_subUse, h_subManage, h_hearAbout, h_notifyDays, h_subNumber, h_subMonthlySpend)
+    ENDPOINTS: 
+    POST -- /complete -- (h_subUse, h_subManage, h_hearAbout, h_notifyDays, h_subNumber, h_subMonthlySpend)
 */
 
 // importing libraries

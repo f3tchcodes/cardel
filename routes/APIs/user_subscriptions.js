@@ -1,10 +1,10 @@
 /*
-ROUTE: /api/user/subscriptions/
+    ROUTE: /api/user/subscriptions/
 
-ENDPOINTS: 
-GET  -- /list
-POST -- /toggle  -- (sub_id, enabled)
-POST -- /add     -- (sub_name, sub_start, sub_rate, sub_billing)
+    ENDPOINTS: 
+    GET  -- /list
+    POST -- /toggle  -- (sub_id, enabled)
+    POST -- /add     -- (sub_name, sub_start, sub_rate, sub_billing)
 */
 
 // importing libraries

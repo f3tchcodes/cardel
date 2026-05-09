@@ -1,8 +1,8 @@
 /*
-ROUTE: /api/
+    ROUTE: /api/
 
-ENDPOINTS: 
-GET -- /user
+    ENDPOINTS: 
+    GET -- /user
 */
 
 // importing libraries

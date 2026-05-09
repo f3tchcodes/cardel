@@ -1,10 +1,10 @@
 /*
-ROUTE: /api/auth/
+    ROUTE: /api/auth/
 
-ENDPOINTS:
-POST -- /signup -- (username, email, password, confirm_password)
-GET  -- /verify -- (token)
-POST -- /login  -- (email, password)
+    ENDPOINTS:
+    POST -- /signup -- (username, email, password, confirm_password)
+    GET  -- /verify -- (token)
+    POST -- /login  -- (email, password)
 */
 
 // importing libraries
