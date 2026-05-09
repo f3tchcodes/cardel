@@ -73,7 +73,7 @@
 
     <img src="/media/logo.png" class="logo" alt="Cardel Logo">
 
-    <% if (status === "verified") { %>
+    <% if (status === 200) { %>
 
         <h1 class="success">Congratulations <%= name %> 🎉</h1>
         <p>Your account has been successfully verified. You can now login and start using Cardel.</p>
@@ -83,7 +83,7 @@
     <% } %>
 
 
-    <% if (status === "invalidToken") { %>
+    <% if (status === 400) { %>
 
         <h1 class="error">Invalid Verification Token</h1>
         <p>
@@ -96,7 +96,7 @@
     <% } %>
 
 
-    <% if (status === "tokenExpired") { %>
+    <% if (status === 404) { %>
 
         <h1 class="error">Verification Link Expired</h1>
         <p>

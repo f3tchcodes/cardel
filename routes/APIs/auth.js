@@ -145,7 +145,7 @@ router.get("/verify", async (req, res) => {
 
         // check if token is present
         if (!token) {
-            return res.render("verify", { success: "invalidToken" });
+            return res.render("verify", { status: 400 });
         }
 
         // check if token is expired
@@ -158,7 +158,7 @@ router.get("/verify", async (req, res) => {
         );
 
         if (rows.length === 0) {
-            return res.render("verify", { success: "tokenExpired" });
+            return res.render("verify", { status: 404 });
         }
 
         // update isVerified after verifying
@@ -175,7 +175,7 @@ router.get("/verify", async (req, res) => {
         username = rows[0].username;
 
         res.render("verify", {
-            success: "verified",
+            status: 200,
             name: username
         });
     } catch (err){
