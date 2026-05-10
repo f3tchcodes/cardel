@@ -215,31 +215,32 @@
                   </div>
 
                   <div class="cdl-group">
-                      <label class="cdl-label">Billing Cycle</label>
-                      <div class="cdl-billing-row">
-                          <div class="dropdown" id="cdl-drop-val">
-                              <div class="dropdown-input">
-                                  <span class="selected">1</span>
-                              </div>
-                              <div class="dropdown-menu" id="cdl-val-menu">
-                                  </div>
-                          </div>
+                    <label class="cdl-label">Billing Cycle</label>
+                    <div class="cdl-billing-row">
+                        <div class="dropdown" id="cdl-drop-val">
+                            <div class="dropdown-input">
+                                <span class="selected">1</span>
+                            </div>
+                            <div class="dropdown-menu" id="cdl-val-menu">
+                                </div>
+                        </div>
 
-                          <div class="dropdown" id="cdl-drop-unit">
-                              <div class="dropdown-input">
-                                  <span class="selected">Month(s)</span>
-                              </div>
-                              <div class="dropdown-menu">
-                                  <div class="dropdown-item" data-value="day">Day(s)</div>
-                                  <div class="dropdown-item" data-value="week">Week(s)</div>
-                                  <div class="dropdown-item" data-value="month">Month(s)</div>
-                                  <div class="dropdown-item" data-value="year">Year(s)</div>
-                              </div>
-                          </div>
-                      </div>
+                        <div class="dropdown" id="cdl-drop-unit">
+                            <div class="dropdown-input">
+                                <span class="selected">Month(s)</span>
+                            </div>
+                            <div class="dropdown-menu">
+                                <div class="dropdown-item" data-value="day">Day(s)</div>
+                                <div class="dropdown-item" data-value="week">Week(s)</div>
+                                <div class="dropdown-item" data-value="month">Month(s)</div>
+                                <div class="dropdown-item" data-value="year">Year(s)</div>
+                            </div>
+                        </div>
+                    </div>
                   </div>
-
-                  <input type="hidden" name="sub_billing" id="cdl-billingSeconds" value="2592000">
+                    
+                  <input type="hidden" name="sub_billing_type" id="subBillingType">
+                  <input type="hidden" name="sub_billing_interval" id="subBillingInterval">
 
                   <div class="cdl-advanced">
                       <button type="button" class="cdl-adv-trigger" id="cdl-advToggle">

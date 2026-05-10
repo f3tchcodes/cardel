@@ -47,6 +47,69 @@ const userSubIconsUpload = multer({
     }
 });
 
+// calculating add subscriptions data
+function calculateNextBillingDate(startDate, type, interval = 1) {
+    const date = new Date(startDate);
+
+    switch (type) {
+        case "day":
+            date.setDate(date.getDate() + interval);
+            break;
+
+        case "week":
+            date.setDate(date.getDate() + (7 * interval));
+            break;
+
+        case "month": {
+            const originalDay = date.getDate();
+
+            date.setMonth(date.getMonth() + interval);
+
+            if (date.getDate() !== originalDay) {
+                date.setDate(0);
+            }
+
+            break;
+        }
+
+        case "year": {
+            const originalMonth = date.getMonth();
+            const originalDay = date.getDate();
+
+            date.setFullYear(date.getFullYear() + interval);
+
+            if (
+                date.getMonth() !== originalMonth ||
+                date.getDate() !== originalDay
+            ) {
+                date.setDate(0);
+            }
+
+            break;
+        }
+
+        default:
+            throw new Error("Invalid billing type");
+    }
+
+    return date;
+}
+
+function advanceUntilFuture(subNext, type, interval = 1) {
+    let next = new Date(subNext);
+    const now = new Date();
+
+    while (next <= now) {
+        next = calculateNextBillingDate(
+            next,
+            type,
+            interval
+        );
+    }
+
+    return next;
+}
+
 // getting subscriptions list to put in dashboard
 router.get("/list", async (req, res) => {
     try{
@@ -83,6 +146,26 @@ router.get("/list", async (req, res) => {
             FROM users_subscriptions 
             WHERE user_id = ?;
             `, jwt_data.user_id);
+
+        for (const sub of rowsSubList) {
+            const currentNext = new Date(sub.sub_next);
+
+            if (currentNext <= new Date()) {
+                const updatedNext = advanceUntilFuture(
+                    sub.sub_next,
+                    sub.sub_billing_type,
+                    sub.sub_billing_interval
+                );
+
+                sub.sub_next = updatedNext;
+
+                await con.query(`
+                    UPDATE users_subscriptions
+                    SET sub_next = ?
+                    WHERE sub_id = ?
+                `, [updatedNext, sub.sub_id]);
+            }
+        }
 
         res.json(rowsSubList);
     } catch (err) {
@@ -159,7 +242,6 @@ router.post("/toggle", async (req, res) => {
 });
 
 router.post("/add", userSubIconsUpload.single('sub_icon'), async (req, res) => {
-
     try{
         jwt_data = jwt.verify(req.cookies.token, process.env.JWT_SECRET);
     } catch(err){
@@ -168,8 +250,36 @@ router.post("/add", userSubIconsUpload.single('sub_icon'), async (req, res) => {
     }
 
     try {
-        const { sub_name, sub_start, sub_rate, sub_billing } = req.body;
+        const {
+            sub_name,
+            sub_start,
+            sub_rate,
+            sub_billing_type,
+            sub_billing_interval
+        } = req.body;
         console.log(sub_start)
+
+        const validTypes = ['day', 'week', 'month', 'year'];
+
+        if (!validTypes.includes(sub_billing_type)) {
+            return res.status(400).json({
+                error: true,
+                message: 'Invalid billing type.'
+            });
+        }
+
+        const billingInterval = parseInt(sub_billing_interval);
+
+        if (
+            isNaN(billingInterval) ||
+            billingInterval < 1 ||
+            billingInterval > 100
+        ) {
+            return res.status(400).json({
+                error: true,
+                message: 'Invalid billing interval.'
+            });
+        }
 
         // check if all fields exist
         if (!sub_name || !sub_start || !sub_rate) {
@@ -198,6 +308,12 @@ router.post("/add", userSubIconsUpload.single('sub_icon'), async (req, res) => {
             return res.status(400).json({ error: true, message:  'Subscription start date cannot be in the future.' });
         }
 
+        const nextBillingDate = calculateNextBillingDate(
+            sub_start,
+            sub_billing_type,
+            billingInterval
+        );
+
         let secureFilename = "default.png";
 
         if (req.file) {
@@ -215,9 +331,28 @@ router.post("/add", userSubIconsUpload.single('sub_icon'), async (req, res) => {
 
         try {
             await con.query(`
-                INSERT INTO users_subscriptions (user_id, sub_icon, sub_name, sub_rate, subbed_at, sub_billing) VALUES
-                (?, ?, ?, ?, ?, ?);`,
-                [jwt_data.user_id, secureFilenameComplete, trimmedName, rateNumber, sub_start, sub_billing]);
+                INSERT INTO users_subscriptions
+                (
+                    user_id,
+                    sub_icon,
+                    sub_name,
+                    sub_rate,
+                    subbed_at,
+                    sub_billing_type,
+                    sub_billing_interval,
+                    sub_next
+                ) VALUES
+                (?, ?, ?, ?, ?, ?, ?, ?);`,
+                [
+                jwt_data.user_id,
+                secureFilenameComplete,
+                trimmedName,
+                rateNumber,
+                sub_start,
+                sub_billing_type,
+                billingInterval,
+                nextBillingDate
+                ]);
         } catch (err) {
             res.status(500).json({status: 500, error: true, message: "Unknown error occured while running database query."})
             return console.log(err);
@@ -231,7 +366,9 @@ router.post("/add", userSubIconsUpload.single('sub_icon'), async (req, res) => {
                 name: trimmedName,
                 date: parsedDate,
                 rate: rateNumber,
-                sub_billing: sub_billing,
+                sub_billing_type,
+                sub_billing_interval: billingInterval,
+                next_billing: nextBillingDate,
                 iconPath: secureFilenameComplete
             }
         });

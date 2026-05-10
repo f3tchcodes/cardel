@@ -42,64 +42,10 @@ async function getSubList(){
 
 const rawData = await getSubList();
 
-// Define standard timeframes in seconds
-const SECONDS = {
-  DAY: 86400,
-  WEEK: 604800,        // 7 days
-  MONTH: 2592000,      // 30 days
-  YEAR: 31536000       // 365 days
-};
-
-function formatBillingText(seconds) {
-  if (!seconds || seconds <= 0) return "UNDEFINED"; // Fallback just in case
-
-  // Check Years first (Largest to smallest)
-  if (seconds % SECONDS.YEAR === 0) {
-    const value = seconds / SECONDS.YEAR;
-    return `${value} year${value > 1 ? 's' : ''}`;
-  }
-  
-  // Check Months
-  if (seconds % SECONDS.MONTH === 0) {
-    const value = seconds / SECONDS.MONTH;
-    return `${value} month${value > 1 ? 's' : ''}`;
-  }
-  
-  // Check Weeks
-  if (seconds % SECONDS.WEEK === 0) {
-    const value = seconds / SECONDS.WEEK;
-    return `${value} week${value > 1 ? 's' : ''}`;
-  }
-  
-  // Check Days
-  if (seconds % SECONDS.DAY === 0) {
-    const value = seconds / SECONDS.DAY;
-    return `${value} day${value > 1 ? 's' : ''}`;
-  }
-
-  // Fallback if it doesn't match clean intervals
-  return `UNDEFINED`; 
-}
-
 function sortSubscriptionsList(rawData) {
   subscriptions = rawData.map(item => {
-    const now = Date.now() / 1000; // Current time in milliseconds
-    const subbedAt = new Date(item.subbed_at).getTime() / 1000; // Convert DB date to milliseconds
-    const billingMs = item.sub_billing; // Convert your 172800 seconds to milliseconds
-
-    let nextBillingTime;
-
-    // Edge Case: If the subscription hasn't even started yet (future date)
-    if (now < subbedAt) {
-      nextBillingTime = NaN;
-    } else {
-      // The Core Math
-      const elapsed = now - subbedAt;
-      const remainder = elapsed % billingMs; // How far into the current cycle we are
-      const timeLeft = billingMs - remainder; // Time until the next charge
-      
-      nextBillingTime = timeLeft; 
-    }
+    const nextBillingTime =
+    (new Date(item.sub_next).getTime() - Date.now()) / 1000;
 
     return {
       id: item.sub_id,
@@ -110,8 +56,13 @@ function sortSubscriptionsList(rawData) {
       // Here is your perfectly calculated next billing timestamp!
       next: nextBillingTime, 
       
-      billing_number: item.sub_billing,
-      billing: formatBillingText(item.sub_billing),
+      billing_type: item.sub_billing_type,
+      billing_interval: item.sub_billing_interval,
+
+      billing:
+          `${item.sub_billing_interval} ${item.sub_billing_type}${
+              item.sub_billing_interval > 1 ? 's' : ''
+          }`,
       enabled: item.enabled === 1,
       category: (item.sub_category || "Others").toLowerCase(),
       created: item.created_at ? new Date(item.created_at).getTime() : Date.now()
@@ -126,6 +77,7 @@ sortSubscriptionsList(rawData)
 -------------------------- */
 
 function formatNext(seconds) {
+  if (seconds <= 0) return "Due now";
   if (seconds <= 60) return `${Math.floor(seconds)} second${seconds > 1 ? 's' : ''}`;
   if (seconds <= 3600) return `${Math.floor(seconds / 60)} minute${seconds > 60*2 ? 's' : ''}`;
   if (seconds <= 86400) return `${Math.floor(seconds / 3600)} hour${seconds > 3600*2 ? 's' : ''}`;

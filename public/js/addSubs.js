@@ -22,6 +22,15 @@ const tooltip = document.getElementById('cdl-custom-tooltip');
 let currentUnit = 'month';
 const ranges = { day: 7, week: 4, month: 12, year: 10 };
 
+function updateBillingFields() {
+    const interval = parseInt(
+        document.querySelector('#cdl-drop-val .selected').textContent
+    );
+
+    document.getElementById('subBillingType').value = currentUnit;
+    document.getElementById('subBillingInterval').value = interval;
+}
+
 function populateValues(unit) {
     const valMenu = document.getElementById('cdl-val-menu');
     const max = ranges[unit] || 12;
@@ -34,7 +43,7 @@ function populateValues(unit) {
         item.onclick = () => {
             document.querySelector('#cdl-drop-val .selected').textContent = i;
             document.getElementById('cdl-drop-val').classList.remove('open');
-            updateSeconds();
+            updateBillingFields()
         };
         valMenu.appendChild(item);
     }
@@ -58,15 +67,9 @@ document.querySelectorAll('#cdl-drop-unit .dropdown-item').forEach(item => {
         document.querySelector('#cdl-drop-val .selected').textContent = '1';
         populateValues(currentUnit);
         document.getElementById('cdl-drop-unit').classList.remove('open');
-        updateSeconds();
+        updateBillingFields()
     });
 });
-
-function updateSeconds() {
-    const v = parseInt(document.querySelector('#cdl-drop-val .selected').textContent);
-    const multis = { day: 86400, week: 604800, month: 2592000, year: 31536000 };
-    document.getElementById('cdl-billingSeconds').value = v * multis[currentUnit];
-}
 
 // --- TOOLTIP (FOLLOW MOUSE) ---
 cancelInput.parentElement.addEventListener('mousemove', (e) => {
@@ -106,6 +109,7 @@ window.addEventListener('click', () => document.querySelectorAll('.dropdown').fo
 
 // Initialize
 populateValues('month');
+updateBillingFields();
 
 const form = document.getElementById("cdl-addSubForm");
 
