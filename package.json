@@ -28,11 +28,20 @@
     "express-session": "^1.19.0",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
+    "module-alias": "^2.3.4",
     "multer": "^2.1.1",
     "mysql": "^2.18.1",
     "mysql2": "^3.16.2",
     "node-cron": "^4.2.1",
     "resend": "^6.9.1",
     "sharp": "^0.34.5"
+  },
+  "_moduleAliases": {
+    "@middlewares": "middlewares",
+    "@public": "public",
+    "@routes": "routes",
+    "@utils": "utils",
+    "@config": "config",
+    "@views": "views"
   }
 }

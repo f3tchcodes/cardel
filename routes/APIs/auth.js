@@ -22,7 +22,7 @@ const {Resend} = require("resend"); // for sending email verification
 const resend = new Resend(process.env.RESEND_API_KEY); 
 
 // db connection
-const con = require("../../database");
+const con = require("@config/database");
 
 const emailTemplate = path.resolve(__dirname, '../../views/verifyEmail.ejs');
 

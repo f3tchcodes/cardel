@@ -21,8 +21,8 @@ const path = require('path');
 const fs = require('fs');
 
 // variables
-const jwtAuth = require("../../middlewares/jwtAuth");
-const con = require("../../database");
+const jwtAuth = require("@middlewares/jwtAuth");
+const con = require("@config/database");
 
 // multer configuration
 const iconUploadDir = path.join(__dirname, '../../public/media/userSubIcons/');

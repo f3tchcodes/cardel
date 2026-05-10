@@ -6,6 +6,7 @@ DEVELOPER: f3tch
 */
 
 // importing libraries
+require('module-alias/register');
 require("dotenv").config();
 const helmet = require('helmet');
 const rateLimit = require("express-rate-limit");

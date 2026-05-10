@@ -1,11 +1,11 @@
 const path = require("path");
 const express = require("express");
 const router = express.Router();
-const htmlPath = "../public/html/";
+const htmlPath = "@public/html/";
 const jwt = require("jsonwebtoken");
 
 // extras
-const jwtAuth = require("../middlewares/jwtAuth");
+const jwtAuth = require("@middlewares/jwtAuth");
 
 // ROUTER /
 router.get("/", (req, res) => {
