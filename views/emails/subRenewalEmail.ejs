@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>Cardel Renewal Confirmation</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=MuseoModerno:wght@600;700&display=swap" rel="stylesheet">
+</head>
+
+<body style="
+  margin:0;
+  padding:40px 20px;
+  background:#0b0d12;
+  background-image:radial-gradient(1200px 600px at top, #11162a, #0b0d12);
+  color:#e6e8eb;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+">
+
+  <div style="
+    width:100%;
+    max-width:620px;
+    margin:0 auto;
+  ">
+
+    <!-- BRAND -->
+    <div style="
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      margin-bottom:28px;
+    ">
+
+      <img
+        src="https://<%= hostname %>/media/logo.png"
+        alt="Cardel Logo"
+        style="
+          width:42px;
+          height:42px;
+          object-fit:contain;
+        "
+      >
+
+      <div style="
+        font-family:'MuseoModerno',sans-serif;
+        font-size:1.8rem;
+        font-weight:700;
+        letter-spacing:1px;
+        color:#ffffff;
+      ">
+        CARDEL
+      </div>
+
+    </div>
+
+    <!-- CARD -->
+    <div style="
+      background:linear-gradient(
+        180deg,
+        rgba(19,23,34,0.98),
+        rgba(12,15,22,0.98)
+      );
+
+      border:1px solid rgba(255,255,255,0.08);
+
+      border-radius:22px;
+
+      padding:42px 34px;
+
+      box-shadow:0 10px 40px rgba(0,0,0,0.45);
+    ">
+
+      <!-- TOP BADGE -->
+      <div style="
+        width:70px;
+        height:70px;
+
+        border-radius:20px;
+
+        margin:0 auto 24px auto;
+
+        display:flex;
+        align-items:center;
+        justify-content:center;
+
+        background:linear-gradient(
+          145deg,
+          rgba(91,140,255,0.25),
+          rgba(91,140,255,0.08)
+        );
+
+        border:1px solid rgba(91,140,255,0.25);
+      ">
+
+        <img
+          src="<%= `https://${hostname}/${sub_icon}` %>"
+          alt="Subscription Icon"
+          style="
+            width:38px;
+            height:38px;
+            object-fit:contain;
+          "
+        >
+
+      </div>
+
+      <!-- TITLE -->
+      <h1 style="
+        text-align:center;
+        font-size:2rem;
+        margin:0 0 14px 0;
+        line-height:1.2;
+        color:#ffffff;
+      ">
+        Subscription Renewed,
+        <span style="color:#5b8cff;">
+          <%= username %>
+        </span>
+      </h1>
+
+      <!-- SUBTITLE -->
+      <div style="
+        text-align:center;
+        color:#9aa3b2;
+        line-height:1.7;
+        font-size:1rem;
+        margin-bottom:34px;
+      ">
+        Your subscription has successfully renewed.
+        Here are the latest billing details for your subscription.
+      </div>
+
+      <!-- SUB BOX -->
+      <div style="
+        display:flex;
+        align-items:center;
+        gap:18px;
+
+        background:rgba(255,255,255,0.03);
+
+        border:1px solid rgba(255,255,255,0.08);
+
+        padding:18px;
+        border-radius:18px;
+
+        margin-bottom:26px;
+      ">
+
+        <img
+          src="<%= `https://${hostname}/${sub_icon}` %>"
+          alt="<%= sub_name %>"
+          style="
+            width:58px;
+            height:58px;
+            border-radius:14px;
+            object-fit:cover;
+            background:#0f1117;
+            flex-shrink:0;
+          "
+        >
+
+        <div style="flex:1;">
+
+          <div style="
+            font-size:1.1rem;
+            font-weight:700;
+            margin-bottom:4px;
+            color:#ffffff;
+          ">
+            <%= sub_name %>
+          </div>
+
+          <div style="
+            color:#9aa3b2;
+            font-size:0.95rem;
+          ">
+            $<%= sub_rate %> renewal charge processed
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- SUCCESS BOX -->
+      <div style="
+        margin-top:18px;
+
+        padding:18px 20px;
+
+        border-radius:16px;
+
+        font-weight:700;
+        text-align:center;
+        font-size:1rem;
+
+        background:linear-gradient(
+          90deg,
+          #7df4a7,
+          #38d67a
+        );
+
+        color:#111111;
+      ">
+        Your <%= sub_name %> subscription has been renewed successfully.
+      </div>
+
+      <!-- FOOTER -->
+      <div style="
+        margin-top:34px;
+        padding-top:24px;
+        border-top:1px solid rgba(255,255,255,0.06);
+
+        text-align:center;
+        color:#9aa3b2;
+        font-size:0.9rem;
+        line-height:1.7;
+      ">
+
+        You are receiving this email because renewal notifications
+        are enabled on your
+        <strong style="color:#ffffff;font-weight:600;">
+          Cardel
+        </strong>
+        account.
+
+        <br><br>
+
+        © 2026 Cardel · Built for clarity, simplicity, and control.
+
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>

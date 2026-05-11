@@ -1,7 +1,7 @@
 const path = require("path");
 const express = require("express");
 const router = express.Router();
-const htmlPath = "@public/html/";
+const htmlPath = "../public/html/";
 const jwt = require("jsonwebtoken");
 
 // extras

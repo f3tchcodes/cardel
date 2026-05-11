@@ -13,7 +13,7 @@ const jwt = require("jsonwebtoken");
 
 // variables
 const jwtAuth = require("@middlewares/jwtAuth");
-const con = require("@config/database");
+const con = require("@utils/database");
 
 // complete onboarding
 router.post("/complete", async (req, res) => {

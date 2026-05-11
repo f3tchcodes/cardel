@@ -5,9 +5,11 @@ RELEASE: BETA
 DEVELOPER: f3tch
 */
 
-// importing libraries
 require('module-alias/register');
 require("dotenv").config();
+require("@workers/subscriptions.js")
+
+// importing libraries
 const helmet = require('helmet');
 const rateLimit = require("express-rate-limit");
 const session = require("express-session");
@@ -20,27 +22,27 @@ const path = require("path");
 // variables
 const express = require("express");
 const app = express();
-const jwtAuth = require("./middlewares/jwtAuth");
+const jwtAuth = require("@middlewares/jwtAuth");
 
 
 
 // ROUTES
 // render view routes
-const indexRVRoutes = require("./routes/indexRV");
-const authenticatedIndexRVRoutes = require("./routes/authenticatedIndexRV")
+const indexRVRoutes = require("@routes/indexRV");
+const authenticatedIndexRVRoutes = require("@routes/authenticatedIndexRV")
 
 // api routes
-const authAPIRoutes = require("./routes/APIs/auth");
-const userAPIRoutes = require("./routes/APIs/user");
-const onboardingAPIRoutes = require("./routes/APIs/onboarding");
-const subscriptionsAPIRoutes = require("./routes/APIs/user_subscriptions");
+const authAPIRoutes = require("@routes/APIs/auth");
+const userAPIRoutes = require("@routes/APIs/user");
+const onboardingAPIRoutes = require("@routes/APIs/onboarding");
+const subscriptionsAPIRoutes = require("@routes/APIs/user_subscriptions");
 
 
 
 // custom middlewares
-const multerErrorHandler = require("./middlewares/multerErrorHandler");
-const invalidJSONFormat = require("./middlewares/invalidJSONFormat");
-const errorCodes = require("./middlewares/errorCodes");
+const multerErrorHandler = require("@middlewares/multerErrorHandler");
+const invalidJSONFormat = require("@middlewares/invalidJSONFormat");
+const errorCodes = require("@middlewares/errorCodes");
 
 
 
@@ -91,7 +93,7 @@ app.use(express.static("public"));
 
 // VIEW ENGINES
 app.set("view engine", "ejs");
-app.set("views", path.resolve("./views"));
+app.set("views", path.resolve("views"));
 
 
 

@@ -22,9 +22,9 @@ const {Resend} = require("resend"); // for sending email verification
 const resend = new Resend(process.env.RESEND_API_KEY); 
 
 // db connection
-const con = require("@config/database");
+const con = require("@utils/database");
 
-const emailTemplate = path.resolve(__dirname, '../../views/verifyEmail.ejs');
+const emailTemplate = path.resolve(__dirname, '../../views/emails/verifyEmail.ejs');
 
 // ROUTER /auth
 router.post("/signup", async (req, res) => {
@@ -101,13 +101,12 @@ router.post("/signup", async (req, res) => {
 
             const emailData = {
                 username: username,
-                verifyUrl: verifyUrl
+                verifyUrl: verifyUrl,
+                hostname: process.env.HOST
             }
 
             await ejs.renderFile(emailTemplate, emailData, async (err, html) => {
-                if (err) {
-                    return console.error('Error rendering email template:', err);
-                }
+                if (err) return console.error('Error rendering email template:', err);
                 await resend.emails.send({
                     from: 'Cardel <support@cardel.app>',
                     to: normalizedEmail,
@@ -299,7 +298,8 @@ router.post("/login", async (req, res) => {
 
                     const emailData = {
                         username: rows[0].username,
-                        verifyUrl: verifyUrl
+                        verifyUrl: verifyUrl,
+                        hostname: process.env.HOST
                     }
 
                     await ejs.renderFile(emailTemplate, emailData, async (err, html) => {

@@ -20,9 +20,10 @@ const crypto = require('crypto');
 const path = require('path');
 const fs = require('fs');
 
-// variables
+// utils and middlewares
 const jwtAuth = require("@middlewares/jwtAuth");
-const con = require("@config/database");
+const con = require("@utils/database");
+const { emailQueue } = require('@utils/queue');
 
 // multer configuration
 const iconUploadDir = path.join(__dirname, '../../public/media/userSubIcons/');
@@ -353,6 +354,71 @@ router.post("/add", userSubIconsUpload.single('sub_icon'), async (req, res) => {
                 billingInterval,
                 nextBillingDate
                 ]);
+
+            [[subData]] = await con.query(`
+                SELECT sub_id, sub_next
+                FROM users_subscriptions 
+                WHERE user_id = ?
+                ORDER BY sub_id DESC 
+                LIMIT 1`, 
+                [jwt_data.user_id]);
+
+            // scheduling emails
+            const date = new Date(subData.sub_next);
+            const targetTimeMs = date.getTime();
+            const nowMs = Date.now();
+            const delayMs = Number(targetTimeMs) - Number(nowMs);
+
+            const oneDayMs = 86400000
+            const delayMs1D = delayMs - oneDayMs;
+            const delayMs3D = delayMs - 3*oneDayMs;
+
+            if (delayMs < 0) return res.status(500).json({status: 500, error: true, message: "Wait a few minutes and try again!"});
+
+            // scheduling final renewal email
+            await emailQueue.add(
+                'send-sub-renewal-email', 
+                { subscriptionId: subData.sub_id }, 
+                { 
+                    delay: delayMs,
+                    jobId: `sub_${subData.sub_id}`
+                }
+            );
+            
+            // scheduling email 1 day before renewal
+            if (delayMs1D > 0) {
+                await emailQueue.add(
+                    'send-sub-update-email', 
+                    { subscriptionId: subData.sub_id }, 
+                    { 
+                        delay: delayMs1D,
+                        jobId: `sub_${subData.sub_id}_1`
+                    }
+                );
+                console.log(`delayMs: ${delayMs}`)
+                console.log(`delayMs1D: ${delayMs1D}`)
+                console.log(`delayMs+oneDayMs: ${delayMs+oneDayMs}`)
+                console.log(`sub_${subData.sub_id}_1 added`)
+                console.log("-------------")
+            }
+            
+            // scheduling email 3 days before renewal
+            if (delayMs3D > 0 ) {
+                await emailQueue.add(
+                    'send-sub-update-email', 
+                    { subscriptionId: subData.sub_id }, 
+                    { 
+                        delay: delayMs3D,
+                        jobId: `sub_${subData.sub_id}_3`
+                    }
+                );
+                console.log(`delayMs: ${delayMs}`)
+                console.log(`delayMs3D: ${delayMs3D}`)
+                console.log(`delayMs+3*oneDayMs: ${delayMs+3*oneDayMs}`)
+                console.log(`sub_${subData.sub_id}_3 added`)
+                console.log("-------------")
+            }
+
         } catch (err) {
             res.status(500).json({status: 500, error: true, message: "Unknown error occured while running database query."})
             return console.log(err);
