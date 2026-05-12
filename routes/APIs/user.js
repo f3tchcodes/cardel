@@ -13,14 +13,18 @@ const jwt = require("jsonwebtoken");
 
 // fetching user information
 router.get("/user", (req, res) => {
-    try{
+    try {
         jwt_data = jwt.verify(req.cookies.token, process.env.JWT_SECRET);
-    } catch(err){
+    } catch (err) {
         console.log(err);
-        return res.json({error: true, message: true, message: "JWT can't be verified, login again or contact us to fix."});
+        return res.json({
+            error: true,
+            message: true,
+            message: "JWT can't be verified, login again or contact us to fix.",
+        });
     }
-    
-    return res.json(user)
+
+    return res.json(user);
 });
 
 module.exports = router;

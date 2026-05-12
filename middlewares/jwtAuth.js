@@ -13,7 +13,7 @@ const jwtAuth = (req, res, next) => {
         req.user = user;
         next();
     } catch (err) {
-        console.log(err)
+        console.log(err);
         res.clearCookie("token");
         return res.redirect("/login");
     }

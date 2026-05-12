@@ -14,19 +14,19 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 
 const multer = require("multer");
-const sharp = require('sharp');
+const sharp = require("sharp");
 
-const crypto = require('crypto');
-const path = require('path');
-const fs = require('fs');
+const crypto = require("crypto");
+const path = require("path");
+const fs = require("fs");
 
 // utils and middlewares
 const jwtAuth = require("@middlewares/jwtAuth");
 const con = require("@utils/database");
-const { emailQueue } = require('@utils/queue');
+const { emailQueue } = require("@utils/queue");
 
 // multer configuration
-const iconUploadDir = path.join(__dirname, '../../public/media/userSubIcons/');
+const iconUploadDir = path.join(__dirname, "../../public/media/userSubIcons/");
 
 if (!fs.existsSync(iconUploadDir)) {
     fs.mkdirSync(iconUploadDir);
@@ -36,16 +36,21 @@ const userSubIconsUpload = multer({
     storage: multer.memoryStorage(),
     limits: {
         fileSize: 5 * 1024 * 1024,
-        files: 1
+        files: 1,
     },
     fileFilter: (req, file, cb) => {
-        const allowedMimes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+        const allowedMimes = [
+            "image/jpeg",
+            "image/jpg",
+            "image/png",
+            "image/webp",
+        ];
         if (allowedMimes.includes(file.mimetype)) {
             cb(null, true);
         } else {
-            cb(new Error('INVALID_FILE_TYPE'));
+            cb(new Error("INVALID_FILE_TYPE"));
         }
-    }
+    },
 });
 
 // calculating add subscriptions data
@@ -58,7 +63,7 @@ function calculateNextBillingDate(startDate, type, interval = 1) {
             break;
 
         case "week":
-            date.setDate(date.getDate() + (7 * interval));
+            date.setDate(date.getDate() + 7 * interval);
             break;
 
         case "month": {
@@ -101,11 +106,7 @@ function advanceUntilFuture(subNext, type, interval = 1) {
     const now = new Date();
 
     while (next <= now) {
-        next = calculateNextBillingDate(
-            next,
-            type,
-            interval
-        );
+        next = calculateNextBillingDate(next, type, interval);
     }
 
     return next;
@@ -113,40 +114,56 @@ function advanceUntilFuture(subNext, type, interval = 1) {
 
 // getting subscriptions list to put in dashboard
 router.get("/list", async (req, res) => {
-    try{
+    try {
         jwt_data = jwt.verify(req.cookies.token, process.env.JWT_SECRET);
-    } catch(err){
+    } catch (err) {
         console.log(err);
-        return res.json({error: true, message: "JWT can't be verified, login again or contact us to fix."});
+        return res.json({
+            error: true,
+            message: "JWT can't be verified, login again or contact us to fix.",
+        });
     }
 
     try {
-        [rows1] = await con.query(`
+        [rows1] = await con.query(
+            `
             SELECT * 
             FROM users
             WHERE email = ?;`,
-            [jwt_data.email]);
+            [jwt_data.email],
+        );
 
-        if (rows1.length === 1){
-            if (rows1[0].first_time_login === 1){
+        if (rows1.length === 1) {
+            if (rows1[0].first_time_login === 1) {
                 return res.redirect("/onboarding");
             }
         } else {
             res.clearCookie("token");
             console.log(err);
-            return res.json({error: true, message: "Either user does not exist or there are multiple users with this email, clear cookies and login again. If it does not work, contact us at our support email."});
+            return res.json({
+                error: true,
+                message:
+                    "Either user does not exist or there are multiple users with this email, clear cookies and login again. If it does not work, contact us at our support email.",
+            });
         }
     } catch (err) {
         console.log(err);
-        return res.json({error: true, message: "Error occured, request did not go through. Contact support to get help."});
+        return res.json({
+            error: true,
+            message:
+                "Error occured, request did not go through. Contact support to get help.",
+        });
     }
 
     try {
-        [rowsSubList] = await con.query(`
+        [rowsSubList] = await con.query(
+            `
             SELECT * 
             FROM users_subscriptions 
             WHERE user_id = ?;
-            `, jwt_data.user_id);
+            `,
+            jwt_data.user_id,
+        );
 
         for (const sub of rowsSubList) {
             const currentNext = new Date(sub.sub_next);
@@ -155,78 +172,104 @@ router.get("/list", async (req, res) => {
                 const updatedNext = advanceUntilFuture(
                     sub.sub_next,
                     sub.sub_billing_type,
-                    sub.sub_billing_interval
+                    sub.sub_billing_interval,
                 );
 
                 sub.sub_next = updatedNext;
 
-                await con.query(`
+                await con.query(
+                    `
                     UPDATE users_subscriptions
                     SET sub_next = ?
                     WHERE sub_id = ?
-                `, [updatedNext, sub.sub_id]);
+                `,
+                    [updatedNext, sub.sub_id],
+                );
             }
         }
 
         res.json(rowsSubList);
     } catch (err) {
         console.log(err);
-        return res.json({error: true, message: "Error occured, request did not go through. Contact support to get help."});
+        return res.json({
+            error: true,
+            message:
+                "Error occured, request did not go through. Contact support to get help.",
+        });
     }
 });
 
 // disabling and enabling subscriptions
 router.post("/toggle", async (req, res) => {
-    try{
+    try {
         jwt_data = jwt.verify(req.cookies.token, process.env.JWT_SECRET);
-    } catch(err){
+    } catch (err) {
         console.log(err);
-        return res.json({error: true, message: "JWT can't be verified, login again or contact us to fix."});
+        return res.json({
+            error: true,
+            message: "JWT can't be verified, login again or contact us to fix.",
+        });
     }
 
     try {
-        [rows1] = await con.query(`
+        [rows1] = await con.query(
+            `
             SELECT * 
             FROM users
             WHERE email = ?;`,
-            [jwt_data.email]);
+            [jwt_data.email],
+        );
 
-        if (rows1.length === 1){
-            if (rows1[0].first_time_login === 1){
+        if (rows1.length === 1) {
+            if (rows1[0].first_time_login === 1) {
                 return res.redirect("/onboarding");
             }
         } else {
             res.clearCookie("token");
-            return res.json({error: true, message: "Either user does not exist or there are multiple users with this email, clear cookies and login again. If it does not work, contact us at our support email."});
+            return res.json({
+                error: true,
+                message:
+                    "Either user does not exist or there are multiple users with this email, clear cookies and login again. If it does not work, contact us at our support email.",
+            });
         }
     } catch (err) {
         console.log(err);
-        return res.json({error: true, message: "Error occured, request did not go through. Contact support to get help."});
+        return res.json({
+            error: true,
+            message:
+                "Error occured, request did not go through. Contact support to get help.",
+        });
     }
 
     const { sub_id, enabled } = req.body || {};
 
     if (sub_id === undefined || enabled === undefined) {
-        return res.json({error: true, message: "sub_id or enabled not provided"});
+        return res.json({
+            error: true,
+            message: "sub_id or enabled not provided",
+        });
     } else if (sub_id > 99999999999 || enabled >= 2 || enabled < 0) {
-        return res.json({error: true, message: "Input data is false"});
+        return res.json({ error: true, message: "Input data is false" });
     } else if (!Number.isInteger(sub_id) || !Number.isInteger(enabled)) {
-        return res.json({error: true, message: "Input data is not integer"})
+        return res.json({ error: true, message: "Input data is not integer" });
     }
 
     try {
-        result = await con.query(`
+        result = await con.query(
+            `
             UPDATE users_subscriptions 
             SET enabled = ? 
             WHERE user_id = ? AND sub_id = ?;
-            `, [enabled, jwt_data.user_id, sub_id]);
+            `,
+            [enabled, jwt_data.user_id, sub_id],
+        );
 
-        console.log(result)
+        console.log(result);
 
         if (result[0].affectedRows === 0) {
             return res.status(404).json({
                 error: true,
-                message: "Subscription not found"
+                message: "Subscription not found",
             });
         }
 
@@ -234,20 +277,25 @@ router.post("/toggle", async (req, res) => {
             success: "true",
             user_id: jwt_data.user_id,
             sub_id: sub_id,
-            enabled: enabled
+            enabled: enabled,
         });
     } catch (err) {
         console.log(err);
-        return res.status(401).json({error: true, message: "Unidentified error occured"});
+        return res
+            .status(401)
+            .json({ error: true, message: "Unidentified error occured" });
     }
 });
 
-router.post("/add", userSubIconsUpload.single('sub_icon'), async (req, res) => {
-    try{
+router.post("/add", userSubIconsUpload.single("sub_icon"), async (req, res) => {
+    try {
         jwt_data = jwt.verify(req.cookies.token, process.env.JWT_SECRET);
-    } catch(err){
+    } catch (err) {
         console.log(err);
-        return res.json({error: true, message: "JWT can't be verified, login again or contact us to fix."});
+        return res.json({
+            error: true,
+            message: "JWT can't be verified, login again or contact us to fix.",
+        });
     }
 
     try {
@@ -256,16 +304,16 @@ router.post("/add", userSubIconsUpload.single('sub_icon'), async (req, res) => {
             sub_start,
             sub_rate,
             sub_billing_type,
-            sub_billing_interval
+            sub_billing_interval,
         } = req.body;
-        console.log(sub_start)
+        console.log(sub_start);
 
-        const validTypes = ['day', 'week', 'month', 'year'];
+        const validTypes = ["day", "week", "month", "year"];
 
         if (!validTypes.includes(sub_billing_type)) {
             return res.status(400).json({
                 error: true,
-                message: 'Invalid billing type.'
+                message: "Invalid billing type.",
             });
         }
 
@@ -278,60 +326,80 @@ router.post("/add", userSubIconsUpload.single('sub_icon'), async (req, res) => {
         ) {
             return res.status(400).json({
                 error: true,
-                message: 'Invalid billing interval.'
+                message: "Invalid billing interval.",
             });
         }
 
         // check if all fields exist
         if (!sub_name || !sub_start || !sub_rate) {
-            return res.status(400).json({ error: true, message:  'All fields (name, date, rate) are required.' });
+            return res.status(400).json({
+                error: true,
+                message: "All fields (name, date, rate) are required.",
+            });
         }
 
         // validate subscription name (prevent massive strings)
         const trimmedName = sub_name.trim();
         if (trimmedName.length === 0 || trimmedName.length > 50) {
-            return res.status(400).json({ error: true, message:  'Subscription name must be between 1 and 50 characters.' });
+            return res.status(400).json({
+                error: true,
+                message:
+                    "Subscription name must be between 1 and 50 characters.",
+            });
         }
 
         // validate date
         const parsedDate = Date.parse(sub_start);
         if (isNaN(parsedDate)) {
-            return res.status(400).json({ error: true, message:  'Invalid date format provided.' });
+            return res
+                .status(400)
+                .json({
+                    error: true,
+                    message: "Invalid date format provided.",
+                });
         }
 
         // validate rate (ensure it's a valid positive number)
         const rateNumber = parseFloat(sub_rate);
         if (isNaN(rateNumber) || rateNumber < 0 || rateNumber > 1000000) {
-            return res.status(400).json({ error: true, message:  'Invalid subscription amount. Must be a positive number.' });
+            return res.status(400).json({
+                error: true,
+                message:
+                    "Invalid subscription amount. Must be a positive number.",
+            });
         }
 
         if (parsedDate > Date.now()) {
-            return res.status(400).json({ error: true, message:  'Subscription start date cannot be in the future.' });
+            return res.status(400).json({
+                error: true,
+                message: "Subscription start date cannot be in the future.",
+            });
         }
 
         const nextBillingDate = calculateNextBillingDate(
             sub_start,
             sub_billing_type,
-            billingInterval
+            billingInterval,
         );
 
         let secureFilename = "default.png";
 
         if (req.file) {
-            secureFilename = `${crypto.randomBytes(16).toString('hex')}.webp`;
+            secureFilename = `${crypto.randomBytes(16).toString("hex")}.webp`;
             const outputPath = path.join(iconUploadDir, secureFilename);
 
             await sharp(req.file.buffer)
-                .resize({ width: 256, height: 256, fit: 'cover' })
-                .toFormat('webp', { quality: 80 })
+                .resize({ width: 256, height: 256, fit: "cover" })
+                .toFormat("webp", { quality: 80 })
                 .toFile(outputPath);
         }
 
         const secureFilenameComplete = `/media/userSubIcons/${secureFilename}`;
-        console.log(secureFilename)
+        console.log(secureFilename);
 
         try {
-            await con.query(`
+            await con.query(
+                `
                 INSERT INTO users_subscriptions
                 (
                     user_id,
@@ -345,23 +413,26 @@ router.post("/add", userSubIconsUpload.single('sub_icon'), async (req, res) => {
                 ) VALUES
                 (?, ?, ?, ?, ?, ?, ?, ?);`,
                 [
-                jwt_data.user_id,
-                secureFilenameComplete,
-                trimmedName,
-                rateNumber,
-                sub_start,
-                sub_billing_type,
-                billingInterval,
-                nextBillingDate
-                ]);
+                    jwt_data.user_id,
+                    secureFilenameComplete,
+                    trimmedName,
+                    rateNumber,
+                    sub_start,
+                    sub_billing_type,
+                    billingInterval,
+                    nextBillingDate,
+                ],
+            );
 
-            [[subData]] = await con.query(`
+            [[subData]] = await con.query(
+                `
                 SELECT sub_id, sub_next
                 FROM users_subscriptions 
                 WHERE user_id = ?
                 ORDER BY sub_id DESC 
-                LIMIT 1`, 
-                [jwt_data.user_id]);
+                LIMIT 1`,
+                [jwt_data.user_id],
+            );
 
             // scheduling emails
             const date = new Date(subData.sub_next);
@@ -369,65 +440,72 @@ router.post("/add", userSubIconsUpload.single('sub_icon'), async (req, res) => {
             const nowMs = Date.now();
             const delayMs = Number(targetTimeMs) - Number(nowMs);
 
-            const oneDayMs = 86400000
+            const oneDayMs = 86400000;
             const delayMs1D = delayMs - oneDayMs;
-            const delayMs3D = delayMs - 3*oneDayMs;
+            const delayMs3D = delayMs - 3 * oneDayMs;
 
-            if (delayMs < 0) return res.status(500).json({status: 500, error: true, message: "Wait a few minutes and try again!"});
+            if (delayMs < 0)
+                return res.status(500).json({
+                    status: 500,
+                    error: true,
+                    message: "Wait a few minutes and try again!",
+                });
 
             // scheduling final renewal email
             await emailQueue.add(
-                'send-sub-renewal-email', 
-                { subscriptionId: subData.sub_id }, 
-                { 
+                "send-sub-renewal-email",
+                { subscriptionId: subData.sub_id },
+                {
                     delay: delayMs,
-                    jobId: `sub_${subData.sub_id}`
-                }
+                    jobId: `sub_${subData.sub_id}`,
+                },
             );
-            
+
             // scheduling email 1 day before renewal
             if (delayMs1D > 0) {
                 await emailQueue.add(
-                    'send-sub-update-email', 
-                    { subscriptionId: subData.sub_id }, 
-                    { 
+                    "send-sub-update-email",
+                    { subscriptionId: subData.sub_id },
+                    {
                         delay: delayMs1D,
-                        jobId: `sub_${subData.sub_id}_1`
-                    }
+                        jobId: `sub_${subData.sub_id}_1`,
+                    },
                 );
-                console.log(`delayMs: ${delayMs}`)
-                console.log(`delayMs1D: ${delayMs1D}`)
-                console.log(`delayMs+oneDayMs: ${delayMs+oneDayMs}`)
-                console.log(`sub_${subData.sub_id}_1 added`)
-                console.log("-------------")
-            }
-            
-            // scheduling email 3 days before renewal
-            if (delayMs3D > 0 ) {
-                await emailQueue.add(
-                    'send-sub-update-email', 
-                    { subscriptionId: subData.sub_id }, 
-                    { 
-                        delay: delayMs3D,
-                        jobId: `sub_${subData.sub_id}_3`
-                    }
-                );
-                console.log(`delayMs: ${delayMs}`)
-                console.log(`delayMs3D: ${delayMs3D}`)
-                console.log(`delayMs+3*oneDayMs: ${delayMs+3*oneDayMs}`)
-                console.log(`sub_${subData.sub_id}_3 added`)
-                console.log("-------------")
+                console.log(`delayMs: ${delayMs}`);
+                console.log(`delayMs1D: ${delayMs1D}`);
+                console.log(`delayMs+oneDayMs: ${delayMs + oneDayMs}`);
+                console.log(`sub_${subData.sub_id}_1 added`);
+                console.log("-------------");
             }
 
+            // scheduling email 3 days before renewal
+            if (delayMs3D > 0) {
+                await emailQueue.add(
+                    "send-sub-update-email",
+                    { subscriptionId: subData.sub_id },
+                    {
+                        delay: delayMs3D,
+                        jobId: `sub_${subData.sub_id}_3`,
+                    },
+                );
+                console.log(`delayMs: ${delayMs}`);
+                console.log(`delayMs3D: ${delayMs3D}`);
+                console.log(`delayMs+3*oneDayMs: ${delayMs + 3 * oneDayMs}`);
+                console.log(`sub_${subData.sub_id}_3 added`);
+                console.log("-------------");
+            }
         } catch (err) {
-            res.status(500).json({status: 500, error: true, message: "Unknown error occured while running database query."})
+            res.status(500).json({
+                status: 500,
+                error: true,
+                message: "Unknown error occured while running database query.",
+            });
             return console.log(err);
         }
-        
 
         return res.status(200).json({
             status: true,
-            message: 'Subscription added successfully!',
+            message: "Subscription added successfully!",
             data: {
                 name: trimmedName,
                 date: parsedDate,
@@ -435,22 +513,37 @@ router.post("/add", userSubIconsUpload.single('sub_icon'), async (req, res) => {
                 sub_billing_type,
                 sub_billing_interval: billingInterval,
                 next_billing: nextBillingDate,
-                iconPath: secureFilenameComplete
-            }
+                iconPath: secureFilenameComplete,
+            },
         });
-
     } catch (error) {
-        console.error('Subscription add error: ', error);
+        console.error("Subscription add error: ", error);
 
-        if (error.message === 'INVALID_FILE_TYPE') {
-            return res.status(400).json({ error: true, message:  'Only JPG, PNG, and WebP images are allowed.' });
+        if (error.message === "INVALID_FILE_TYPE") {
+            return res.status(400).json({
+                error: true,
+                message: "Only JPG, PNG, and WebP images are allowed.",
+            });
         }
 
-        if (error.message.includes('Input buffer contains unsupported image format')) {
-            return res.status(400).json({ error: true, message:  'Corrupted image or invalid image file signature detected.' });
+        if (
+            error.message.includes(
+                "Input buffer contains unsupported image format",
+            )
+        ) {
+            return res.status(400).json({
+                error: true,
+                message:
+                    "Corrupted image or invalid image file signature detected.",
+            });
         }
 
-        return res.status(500).json({ status: 500, error: true, message: 'An internal server error occurred while processing the request.' });
+        return res.status(500).json({
+            status: 500,
+            error: true,
+            message:
+                "An internal server error occurred while processing the request.",
+        });
     }
 });
 

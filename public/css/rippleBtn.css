@@ -7,7 +7,9 @@
     align-items: center;
     justify-content: center;
     z-index: 1;
-    transition: color 0.4s ease, border-color 0.4s ease;
+    transition:
+        color 0.4s ease,
+        border-color 0.4s ease;
 }
 
 /* The text span needs to stay above the ripple */
@@ -19,7 +21,7 @@
 
 /* The Liquid Ripple Effect */
 .ripple-btn::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;
@@ -39,27 +41,31 @@
 /* --- SPECIFIC BUTTON LOGIC --- */
 
 /* 1. Primary Buttons (Blue -> White/Transparent effect) */
-.btn-primary, .cta {
+.btn-primary,
+.cta {
     background: var(--accent) !important;
     border: 1px solid var(--accent);
     color: white;
     --ripple-color: #ffffff; /* The "liquid" that fills the button */
 }
 
-.btn-primary:hover, .cta:hover {
+.btn-primary:hover,
+.cta:hover {
     color: black; /* Text turns blue when white fills the bg */
     border-color: #fff;
 }
 
 /* 2. Secondary Buttons (Transparent -> Blue effect) */
-.btn-secondary, .btn-login {
+.btn-secondary,
+.btn-login {
     background: transparent !important;
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: var(--text);
     --ripple-color: var(--accent); /* Blue liquid */
 }
 
-.btn-secondary:hover, .btn-login:hover {
+.btn-secondary:hover,
+.btn-login:hover {
     color: white; /* Text turns white when blue fills the bg */
     border-color: var(--accent);
 }

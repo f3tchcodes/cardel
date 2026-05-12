@@ -17,15 +17,15 @@ router.get("/privacy", (req, res) => {
 });
 
 router.get("/login", (req, res) => {
-    if (req.cookies.token){
+    if (req.cookies.token) {
         try {
             jwt_data = jwt.verify(req.cookies.token, process.env.JWT_SECRET);
         } catch (err) {
-            if (err.name === "TokenExpiredError"){
+            if (err.name === "TokenExpiredError") {
                 res.clearCookie("token");
                 return res.redirect("/login");
             }
-        }   
+        }
         return jwt_data && res.redirect("/dashboard");
     }
 
@@ -33,30 +33,28 @@ router.get("/login", (req, res) => {
 });
 
 router.get("/signup", (req, res) => {
-    if (req.cookies.token){
+    if (req.cookies.token) {
         try {
             jwt_data = jwt.verify(req.cookies.token, process.env.JWT_SECRET);
         } catch (err) {
-            if (err.name === "TokenExpiredError"){
+            if (err.name === "TokenExpiredError") {
                 res.clearCookie("token");
                 return res.redirect("/login");
             }
-        }   
+        }
         return jwt_data && res.redirect("/dashboard");
     }
 
     res.render("signup");
 });
 
-
 router.get("/pricing", (req, res) => {
-    try{
+    try {
         res.render("pricing");
     } catch (err) {
-        res.json({status: 400, message: "Error loading pricing page."});
-        console.log(err)
+        res.json({ status: 400, message: "Error loading pricing page." });
+        console.log(err);
     }
 });
-
 
 module.exports = router;

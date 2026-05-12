@@ -1,163 +1,164 @@
 const proCard = document.getElementById("pro-card");
 
 proCard.addEventListener("click", () => {
-  window.open("/pricing", "_blank");
+    window.open("/pricing", "_blank");
 });
 
 // code function for sending post request
 async function postData(url, data) {
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    });
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const responseData = await response.json(); // Parse the response body as JSON
+        console.log("Success:", responseData);
+        return responseData;
+    } catch (error) {
+        console.error("Error:", error);
     }
-
-    const responseData = await response.json(); // Parse the response body as JSON
-    console.log('Success:', responseData);
-    return responseData;
-
-  } catch (error) {
-    console.error('Error:', error);
-  }
 }
 
-let subscriptions = []; 
+let subscriptions = [];
 
-let activeSubTab = "Upcoming"; 
+let activeSubTab = "Upcoming";
 
-async function getSubList(){
-  const res = await fetch('/api/user/subscriptions/list');
-  if (!res.ok) throw new Error(`Status: ${res.status}`);
-  
-  const json = await res.json();
-  return Array.isArray(json) ? json : [json];
+async function getSubList() {
+    const res = await fetch("/api/user/subscriptions/list");
+    if (!res.ok) throw new Error(`Status: ${res.status}`);
+
+    const json = await res.json();
+    return Array.isArray(json) ? json : [json];
 }
 
 const rawData = await getSubList();
 
 function sortSubscriptionsList(rawData) {
-  subscriptions = rawData.map(item => {
-    const nextBillingTime =
-    (new Date(item.sub_next).getTime() - Date.now()) / 1000;
+    subscriptions = rawData.map((item) => {
+        const nextBillingTime =
+            (new Date(item.sub_next).getTime() - Date.now()) / 1000;
 
-    return {
-      id: item.sub_id,
-      name: item.sub_name,
-      icon: item.sub_icon,
-      rate: parseFloat(item.sub_rate),
-      
-      // Here is your perfectly calculated next billing timestamp!
-      next: nextBillingTime, 
-      
-      billing_type: item.sub_billing_type,
-      billing_interval: item.sub_billing_interval,
+        return {
+            id: item.sub_id,
+            name: item.sub_name,
+            icon: item.sub_icon,
+            rate: parseFloat(item.sub_rate),
 
-      billing:
-          `${item.sub_billing_interval} ${item.sub_billing_type}${
-              item.sub_billing_interval > 1 ? 's' : ''
-          }`,
-      enabled: item.enabled === 1,
-      category: (item.sub_category || "Others").toLowerCase(),
-      created: item.created_at ? new Date(item.created_at).getTime() : Date.now()
-    };
-  });
+            // Here is your perfectly calculated next billing timestamp!
+            next: nextBillingTime,
+
+            billing_type: item.sub_billing_type,
+            billing_interval: item.sub_billing_interval,
+
+            billing: `${item.sub_billing_interval} ${item.sub_billing_type}${
+                item.sub_billing_interval > 1 ? "s" : ""
+            }`,
+            enabled: item.enabled === 1,
+            category: (item.sub_category || "Others").toLowerCase(),
+            created: item.created_at
+                ? new Date(item.created_at).getTime()
+                : Date.now(),
+        };
+    });
 }
 
-sortSubscriptionsList(rawData)
+sortSubscriptionsList(rawData);
 
 /* -------------------------
    Helpers
 -------------------------- */
 
 function formatNext(seconds) {
-  if (seconds <= 0) return "Due now";
-  if (seconds <= 60) return `${Math.floor(seconds)} second${seconds > 1 ? 's' : ''}`;
-  if (seconds <= 3600) return `${Math.floor(seconds / 60)} minute${seconds > 60*2 ? 's' : ''}`;
-  if (seconds <= 86400) return `${Math.floor(seconds / 3600)} hour${seconds > 3600*2 ? 's' : ''}`;
-  return `${Math.floor(seconds / 86400)} day${seconds > 86400*2 ? 's' : ''}`;
+    if (seconds <= 0) return "Due now";
+    if (seconds <= 60)
+        return `${Math.floor(seconds)} second${seconds > 1 ? "s" : ""}`;
+    if (seconds <= 3600)
+        return `${Math.floor(seconds / 60)} minute${seconds > 60 * 2 ? "s" : ""}`;
+    if (seconds <= 86400)
+        return `${Math.floor(seconds / 3600)} hour${seconds > 3600 * 2 ? "s" : ""}`;
+    return `${Math.floor(seconds / 86400)} day${seconds > 86400 * 2 ? "s" : ""}`;
 }
 
 function statusClass(sub) {
-  if (!sub.enabled) return "is-disabled";
-  const secs = sub.next;
-  if (secs <= 86400) return "is-urgent";        // < 24 hours
-  if (secs <= 259200) return "is-soon";         // < 72 hours
-  return "is-normal";
+    if (!sub.enabled) return "is-disabled";
+    const secs = sub.next;
+    if (secs <= 86400) return "is-urgent"; // < 24 hours
+    if (secs <= 259200) return "is-soon"; // < 72 hours
+    return "is-normal";
 }
 
 /* -------------------------
    Tabs Logic
 -------------------------- */
 function setupActiveTabs(selector) {
-  const tabs = document.querySelectorAll(selector);
-  
-  tabs.forEach(btn => {
-    btn.addEventListener("click", () => {
-      // 1. UI Toggle
-      tabs.forEach(b => b.classList.remove("is-active"));
-      btn.classList.add("is-active");
-      
-      // 2. Update State
-      // We trim just in case of whitespace in HTML
-      activeSubTab = btn.textContent.trim();
-      
-      // 3. Re-render list
-      renderSubscriptions();
+    const tabs = document.querySelectorAll(selector);
+
+    tabs.forEach((btn) => {
+        btn.addEventListener("click", () => {
+            // 1. UI Toggle
+            tabs.forEach((b) => b.classList.remove("is-active"));
+            btn.classList.add("is-active");
+
+            // 2. Update State
+            // We trim just in case of whitespace in HTML
+            activeSubTab = btn.textContent.trim();
+
+            // 3. Re-render list
+            renderSubscriptions();
+        });
     });
-  });
 }
 
 /* -------------------------
    Render subscriptions list
 -------------------------- */
 function renderSubscriptions() {
-  const listEl = document.getElementById("subsList");
-  const searchInput = document.getElementById("subsSearch");
-  const q = (searchInput.value || "").trim().toLowerCase();
+    const listEl = document.getElementById("subsList");
+    const searchInput = document.getElementById("subsSearch");
+    const q = (searchInput.value || "").trim().toLowerCase();
 
-  listEl.innerHTML = "";
+    listEl.innerHTML = "";
 
-  // 1. Start with Search Filter (applies to everything)
-  let items = subscriptions.filter(s => s.name.toLowerCase().includes(q));
+    // 1. Start with Search Filter (applies to everything)
+    let items = subscriptions.filter((s) => s.name.toLowerCase().includes(q));
 
-  // 2. Category & Sorting Logic
-  if (activeSubTab === "Upcoming") {
-    // RULE: Only enabled, ordered by next charge (ascending)
-    items = items.filter(s => s.enabled);
-    items.sort((a, b) => a.next - b.next);
-    
-  } else if (activeSubTab === "All") {
-    // RULE: All (enabled or disabled), ordered by date added (Newest first)
-    items.sort((a, b) => b.created - a.created);
-    
-  } else {
-    // RULE: Specific Category, ordered by date added (Newest first)
-    // We compare lowercase to lowercase to ensure "Work/Business" matches "work/business"
-    const targetCat = activeSubTab.toLowerCase();
-    
-    items = items.filter(s => s.category === targetCat);
-    items.sort((a, b) => b.created - a.created);
-  }
+    // 2. Category & Sorting Logic
+    if (activeSubTab === "Upcoming") {
+        // RULE: Only enabled, ordered by next charge (ascending)
+        items = items.filter((s) => s.enabled);
+        items.sort((a, b) => a.next - b.next);
+    } else if (activeSubTab === "All") {
+        // RULE: All (enabled or disabled), ordered by date added (Newest first)
+        items.sort((a, b) => b.created - a.created);
+    } else {
+        // RULE: Specific Category, ordered by date added (Newest first)
+        // We compare lowercase to lowercase to ensure "Work/Business" matches "work/business"
+        const targetCat = activeSubTab.toLowerCase();
 
-  // 3. Render
-  if (items.length === 0) {
-    listEl.innerHTML = `<div class="empty-state">No subscriptions found.</div>`;
-    return;
-  }
+        items = items.filter((s) => s.category === targetCat);
+        items.sort((a, b) => b.created - a.created);
+    }
 
-  for (const sub of items) {
-    const row = document.createElement("div");
-    row.className = `sub-row ${statusClass(sub)}`;
+    // 3. Render
+    if (items.length === 0) {
+        listEl.innerHTML = `<div class="empty-state">No subscriptions found.</div>`;
+        return;
+    }
 
-    // Generate HTML
-    row.innerHTML = `
+    for (const sub of items) {
+        const row = document.createElement("div");
+        row.className = `sub-row ${statusClass(sub)}`;
+
+        // Generate HTML
+        row.innerHTML = `
       <div class="sub-icon"><img src="${sub.icon}"></div>
       <div class="sub-name">${sub.name}</div>
       <div class="sub-rate">$${sub.rate.toFixed(2)}</div>
@@ -179,141 +180,154 @@ function renderSubscriptions() {
       </button>
     `;
 
-    // Create Switch manually to attach event listener
-    const switchLabel = document.createElement("label");
-    switchLabel.className = "switch";
+        // Create Switch manually to attach event listener
+        const switchLabel = document.createElement("label");
+        switchLabel.className = "switch";
 
-    const toggle = document.createElement("input");
-    toggle.type = "checkbox";
-    toggle.checked = sub.enabled;
+        const toggle = document.createElement("input");
+        toggle.type = "checkbox";
+        toggle.checked = sub.enabled;
 
-    const slider = document.createElement("span");
-    slider.className = "slider";
+        const slider = document.createElement("span");
+        slider.className = "slider";
 
-    // Inside renderSubscriptions() loop:
-    toggle.addEventListener("change", async () => {
-        // 1. Determine the new state (0 or 1 for the database)
-        const newStatus = toggle.checked ? 1 : 0;
-        
-        // 2. Send the request to your server
-        const result = await postData('/api/user/subscriptions/toggle', {
-            sub_id: sub.id,   // Using the ID we mapped in step 1
-            enabled: newStatus
+        // Inside renderSubscriptions() loop:
+        toggle.addEventListener("change", async () => {
+            // 1. Determine the new state (0 or 1 for the database)
+            const newStatus = toggle.checked ? 1 : 0;
+
+            // 2. Send the request to your server
+            const result = await postData("/api/user/subscriptions/toggle", {
+                sub_id: sub.id, // Using the ID we mapped in step 1
+                enabled: newStatus,
+            });
+
+            // 3. Handle the UI update based on result
+            if (result && !result.error) {
+                sub.enabled = toggle.checked;
+                row.className = `sub-row ${statusClass(sub)}`;
+
+                // Optional: If in Upcoming tab, remove the row if disabled
+                if (activeSubTab === "Upcoming" && !sub.enabled) {
+                    renderSubscriptions();
+                }
+            } else {
+                // 4. Revert the toggle if the server failed
+                toggle.checked = !toggle.checked;
+                alert(
+                    "Failed to update: " + (result?.error || "Unknown error"),
+                );
+            }
         });
 
-        // 3. Handle the UI update based on result
-        if (result && !result.error) {
-            sub.enabled = toggle.checked;
-            row.className = `sub-row ${statusClass(sub)}`;
-            
-            // Optional: If in Upcoming tab, remove the row if disabled
-            if (activeSubTab === "Upcoming" && !sub.enabled) {
-                renderSubscriptions();
-            }
-        } else {
-            // 4. Revert the toggle if the server failed
-            toggle.checked = !toggle.checked;
-            alert("Failed to update: " + (result?.error || "Unknown error"));
-        }
-    });
+        switchLabel.appendChild(toggle);
+        switchLabel.appendChild(slider);
+        row.appendChild(switchLabel);
 
-    switchLabel.appendChild(toggle);
-    switchLabel.appendChild(slider);
-    row.appendChild(switchLabel);
-
-    listEl.appendChild(row);
-  }
+        listEl.appendChild(row);
+    }
 }
 
 /* -------------------------
    Search
 -------------------------- */
 function setupSearch() {
-  const input = document.getElementById("subsSearch");
-  input.addEventListener("input", renderSubscriptions);
+    const input = document.getElementById("subsSearch");
+    input.addEventListener("input", renderSubscriptions);
 }
 
 /* -------------------------
    Chart.js graph
 -------------------------- */
 function buildChart() {
-  const el = document.getElementById("spendChart");
-  if (!el || typeof Chart === "undefined") return;
+    const el = document.getElementById("spendChart");
+    if (!el || typeof Chart === "undefined") return;
 
-  const valueLabelPlugin = {
-    id: "valueLabelPlugin",
-    afterDatasetsDraw(chart) {
-      const { ctx } = chart;
-      ctx.save();
-      ctx.font = '700 12px system-ui, -apple-system, Segoe UI, Roboto, Arial';
-      ctx.fillStyle = 'rgba(238, 242, 255, 0.92)';
+    const valueLabelPlugin = {
+        id: "valueLabelPlugin",
+        afterDatasetsDraw(chart) {
+            const { ctx } = chart;
+            ctx.save();
+            ctx.font =
+                "700 12px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+            ctx.fillStyle = "rgba(238, 242, 255, 0.92)";
 
-      const meta = chart.getDatasetMeta(0);
-      meta.data.forEach((bar, i) => {
-        const val = chart.data.datasets[0].data[i];
-        // simple guard to keep label inside/near bar
-        const x = bar.x + 10;
-        const y = bar.y + 4;
-        ctx.fillText(String(val), x, y);
-      });
-      ctx.restore();
-    }
-  };
-
-  new Chart(el, {
-    type: "bar",
-    data: {
-      labels: ["WEEK 1", "WEEK 2", "WEEK 3", "WEEK 4"],
-      datasets: [{
-        data: [34, 26, 58, 150],
-        borderRadius: 8,
-        barThickness: 18,
-        backgroundColor: "rgba(238, 242, 255, 0.92)"
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      indexAxis: "y",
-      plugins: {
-        legend: { display: false },
-        tooltip: { enabled: true }
-      },
-      scales: {
-        x: {
-          min: 0, max: 150,
-          grid: { color: "rgba(238, 242, 255, 0.10)" },
-          ticks: { color: "rgba(238, 242, 255, 0.55)", stepSize: 20, callback: v => v <= 100 ? v : "" },
-          border: { display: false }
+            const meta = chart.getDatasetMeta(0);
+            meta.data.forEach((bar, i) => {
+                const val = chart.data.datasets[0].data[i];
+                // simple guard to keep label inside/near bar
+                const x = bar.x + 10;
+                const y = bar.y + 4;
+                ctx.fillText(String(val), x, y);
+            });
+            ctx.restore();
         },
-        y: {
-          grid: { display: false },
-          ticks: { color: "rgba(238, 242, 255, 0.65)", font: { size: 11, weight: "800" } },
-          border: { display: false }
-        }
-      }
-    },
-    plugins: [valueLabelPlugin]
-  });
+    };
+
+    new Chart(el, {
+        type: "bar",
+        data: {
+            labels: ["WEEK 1", "WEEK 2", "WEEK 3", "WEEK 4"],
+            datasets: [
+                {
+                    data: [34, 26, 58, 150],
+                    borderRadius: 8,
+                    barThickness: 18,
+                    backgroundColor: "rgba(238, 242, 255, 0.92)",
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: "y",
+            plugins: {
+                legend: { display: false },
+                tooltip: { enabled: true },
+            },
+            scales: {
+                x: {
+                    min: 0,
+                    max: 150,
+                    grid: { color: "rgba(238, 242, 255, 0.10)" },
+                    ticks: {
+                        color: "rgba(238, 242, 255, 0.55)",
+                        stepSize: 20,
+                        callback: (v) => (v <= 100 ? v : ""),
+                    },
+                    border: { display: false },
+                },
+                y: {
+                    grid: { display: false },
+                    ticks: {
+                        color: "rgba(238, 242, 255, 0.65)",
+                        font: { size: 11, weight: "800" },
+                    },
+                    border: { display: false },
+                },
+            },
+        },
+        plugins: [valueLabelPlugin],
+    });
 }
 
 /* -------------------------
    Analytics-Only Tabs Logic
 -------------------------- */
 function setupAnalyticsOnlyTabs(selector) {
-  const tabs = document.querySelectorAll(selector);
-  
-  tabs.forEach(btn => {
-    btn.addEventListener("click", () => {
-      // Toggle the 'is-active' class for the UI/CSS animation only
-      tabs.forEach(b => b.classList.remove("is-active"));
-      btn.classList.add("is-active");
-      
-      // We do NOT call renderSubscriptions() here.
-      // You can add your own custom logic here later (like updating the chart)
-      console.log("Viewing financials for:", btn.textContent.trim());
+    const tabs = document.querySelectorAll(selector);
+
+    tabs.forEach((btn) => {
+        btn.addEventListener("click", () => {
+            // Toggle the 'is-active' class for the UI/CSS animation only
+            tabs.forEach((b) => b.classList.remove("is-active"));
+            btn.classList.add("is-active");
+
+            // We do NOT call renderSubscriptions() here.
+            // You can add your own custom logic here later (like updating the chart)
+            console.log("Viewing financials for:", btn.textContent.trim());
+        });
     });
-  });
 }
 
 /* -------------------------

@@ -1,21 +1,21 @@
 .error {
-  background: rgba(255, 80, 80, 0.12);
-  border: 1px solid rgba(255, 80, 80, 0.4);
-  color: #ff6b6b;
-  padding: 12px 14px;
-  border-radius: 12px;
-  font-size: 0.9rem;
-  margin-bottom: 18px;
-  text-align: center;
+    background: rgba(255, 80, 80, 0.12);
+    border: 1px solid rgba(255, 80, 80, 0.4);
+    color: #ff6b6b;
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    margin-bottom: 18px;
+    text-align: center;
 }
 
 .alert.info {
-  background: rgba(91, 140, 255, 0.15);
-  border: 1px solid rgba(91, 140, 255, 0.35);
-  color: #c7d7ff;
-  padding: 12px 14px;
-  border-radius: 12px;
-  font-size: 0.9rem;
-  margin-bottom: 18px;
-  text-align: center;
+    background: rgba(91, 140, 255, 0.15);
+    border: 1px solid rgba(91, 140, 255, 0.35);
+    color: #c7d7ff;
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    margin-bottom: 18px;
+    text-align: center;
 }

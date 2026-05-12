@@ -1,5 +1,4 @@
 function generateParticles() {
-
     const container = document.querySelector(".background");
     container.innerHTML = "";
 
@@ -9,7 +8,6 @@ function generateParticles() {
     const particleCount = Math.floor(pageHeight / 160);
 
     for (let i = 0; i < particleCount; i++) {
-
         const span = document.createElement("span");
 
         span.style.top = Math.random() * pageHeight + "px";

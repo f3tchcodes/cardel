@@ -11,7 +11,8 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family:
+        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 body {
@@ -111,8 +112,10 @@ nav .cta {
     background: linear-gradient(180deg, var(--card), #0f1320);
     padding: 26px;
     border-radius: 18px;
-    border: 1px solid rgba(255,255,255,0.04);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
 }
 
 .feature h3 {
@@ -152,8 +155,8 @@ footer {
 
 @keyframes fadeUp {
     to {
-    opacity: 1;
-    transform: translateY(0);
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
@@ -168,11 +171,11 @@ footer {
 
 .btn-login {
     color: #e6e8eb;
-    border: 1px solid rgba(255,255,255,0.12);
+    border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .btn-login:hover {
-    background: rgba(255,255,255,0.05);
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .hero-actions {
@@ -207,7 +210,7 @@ html {
     scroll-behavior: smooth;
 }
 
-.cardelHeading{
+.cardelHeading {
     font-family: "MuseoModerno", sans-serif;
     font-optical-sizing: auto;
     font-style: normal;
@@ -237,7 +240,7 @@ html {
     padding: 100px 0 80px;
     text-align: center;
     /* Ensure the section itself is visible */
-    opacity: 1 !important; 
+    opacity: 1 !important;
 }
 
 /* We'll use a very simple fade-in that doesn't mess with transforms */
@@ -245,39 +248,45 @@ html {
     opacity: 0;
     animation: simpleFade 1s ease-out forwards;
     /* This makes the mouse movement smooth */
-    transition: transform 0.2s ease-out; 
+    transition: transform 0.2s ease-out;
     will-change: transform;
 }
 
 @keyframes simpleFade {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 /* typography and layout */
-.hero h1 { 
-    font-size: clamp(2.2rem, 5vw, 3.4rem); 
-    line-height: 1.15; 
-    margin-bottom: 20px; 
+.hero h1 {
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    line-height: 1.15;
+    margin-bottom: 20px;
     color: var(--text);
 }
 
-.hero p { 
-    max-width: 620px; 
-    margin: 0 auto 36px; 
-    color: var(--muted); 
-    font-size: 1.1rem; 
+.hero p {
+    max-width: 620px;
+    margin: 0 auto 36px;
+    color: var(--muted);
+    font-size: 1.1rem;
 }
 
-.hero .buttons { 
-    display: flex; 
-    gap: 14px; 
-    justify-content: center; 
-    flex-wrap: wrap; 
+.hero .buttons {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 /* Ensure inner elements aren't hidden */
-.hero h1, .hero p, .hero .buttons {
+.hero h1,
+.hero p,
+.hero .buttons {
     opacity: 1 !important;
     visibility: visible !important;
 }

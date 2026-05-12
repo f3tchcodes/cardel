@@ -12,13 +12,13 @@ form.addEventListener("submit", async function (e) {
             method: "POST",
             body: formDataJson,
             headers: {
-                "Content-Type": "application/json"
-            }
+                "Content-Type": "application/json",
+            },
         });
 
         const data = await res.json();
 
-        if(data.redirect_url){
+        if (data.redirect_url) {
             window.location.href = data.redirect_url;
         }
 
@@ -36,7 +36,6 @@ form.addEventListener("submit", async function (e) {
 
         // Insert above form
         form.parentNode.insertBefore(box, form);
-
     } catch (err) {
         console.error(err);
         alert("Network error. Try again.");

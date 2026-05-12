@@ -10,10 +10,10 @@ document.addEventListener("mousemove", (e) => {
     // Find all layers
     const layers = document.querySelectorAll(".parallax-layer");
 
-    layers.forEach(layer => {
+    layers.forEach((layer) => {
         // Get the depth from the HTML attribute
         const depth = parseFloat(layer.getAttribute("data-depth")) || 0.04;
-        
+
         // Calculate the move (Negative depth = move away from mouse)
         const moveX = (centerX - x) * depth;
         const moveY = (centerY - y) * depth;

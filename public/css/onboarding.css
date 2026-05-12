@@ -11,7 +11,8 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family:
+        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 body {
@@ -43,8 +44,8 @@ body {
 }
 
 .logo {
-    width: 32px;      /* Fixed width */
-    height: 32px;     /* Fixed height */
+    width: 32px; /* Fixed width */
+    height: 32px; /* Fixed height */
     object-fit: contain;
 }
 .cardelHeading {
@@ -55,8 +56,20 @@ body {
     letter-spacing: 1px;
 }
 
-.progress-container { position: fixed; top: 0; width: 100%; height: 4px; background: rgba(255,255,255,0.05); z-index: 1100; }
-.progress-bar { height: 100%; width: 0%; background: var(--accent); transition: width 0.6s ease; }
+.progress-container {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    z-index: 1100;
+}
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: var(--accent);
+    transition: width 0.6s ease;
+}
 
 /* --- Main Layout Frame --- */
 .onboarding-viewframe {
@@ -66,14 +79,14 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center; /* Vertical Center */
-    align-items: center;     /* Horizontal Center */
+    align-items: center; /* Horizontal Center */
     overflow: hidden;
     background: transparent;
 }
 
 .step-wrapper {
     width: 100%;
-    max-width: 500px; 
+    max-width: 500px;
     height: 350px; /* Adjust this height based on your content size */
     position: relative;
     display: flex;
@@ -85,9 +98,9 @@ body {
     position: absolute;
     width: 100%;
     /* These three lines do the heavy lifting for vertical centering */
-    display: none; 
+    display: none;
     flex-direction: column;
-    justify-content: center; 
+    justify-content: center;
     align-items: center;
     text-align: center;
     margin-bottom: 20%;
@@ -99,15 +112,63 @@ body {
 }
 
 /* --- Slide Animations (0.6s) --- */
-.exit-left { animation: slideOutLeft 0.6s ease forwards; display: block !important; }
-.exit-right { animation: slideOutRight 0.6s ease forwards; display: block !important; }
-.enter-right { animation: slideInRight 0.6s ease forwards; display: block !important; }
-.enter-left { animation: slideInLeft 0.6s ease forwards; display: block !important; }
+.exit-left {
+    animation: slideOutLeft 0.6s ease forwards;
+    display: block !important;
+}
+.exit-right {
+    animation: slideOutRight 0.6s ease forwards;
+    display: block !important;
+}
+.enter-right {
+    animation: slideInRight 0.6s ease forwards;
+    display: block !important;
+}
+.enter-left {
+    animation: slideInLeft 0.6s ease forwards;
+    display: block !important;
+}
 
-@keyframes slideOutLeft { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-100%); opacity: 0; } }
-@keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-@keyframes slideOutRight { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
-@keyframes slideInLeft { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes slideOutLeft {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+}
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
 
 /* --- Navigation --- */
 .nav-controls {
@@ -134,7 +195,6 @@ body {
     transition: color 0.3s ease;
 }
 
-
 .circle-nav-img {
     position: relative;
     z-index: 2;
@@ -147,26 +207,25 @@ body {
     font-size: 1em;
     color: white;
     width: 240px;
-    border-radius: 100px; 
-    background: var(--accent); 
-    border-color: var(--accent); 
+    border-radius: 100px;
+    background: var(--accent);
+    border-color: var(--accent);
 }
 
 /* Other styles (tags, inputs, etc) remain same as previous */
 .tag-container {
-    display: flex; 
-    flex-wrap: wrap; 
-    gap: 8px; 
-    justify-content: center; 
-    margin-top: 15px; 
-
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 15px;
 }
-.tag { 
-    background: rgba(91, 140, 255, 0.2); 
-    color: var(--accent); 
-    padding: 5px 15px; 
-    border-radius: 20px; 
-    border: 1px solid var(--accent); 
+.tag {
+    background: rgba(91, 140, 255, 0.2);
+    color: var(--accent);
+    padding: 5px 15px;
+    border-radius: 20px;
+    border: 1px solid var(--accent);
 }
 
 h1.welcome-text {
@@ -201,8 +260,8 @@ h2 {
     text-align: left;
 }
 
-input[type="text"], 
-input[type="number"], 
+input[type="text"],
+input[type="number"],
 select {
     width: 100%;
     background: var(--card);
@@ -237,7 +296,9 @@ select {
     align-items: center;
     justify-content: center;
     z-index: 1;
-    transition: color 0.4s ease, border-color 0.4s ease;
+    transition:
+        color 0.4s ease,
+        border-color 0.4s ease;
 }
 
 /* The text span needs to stay above the ripple */
@@ -249,7 +310,7 @@ select {
 
 /* The Liquid Ripple Effect */
 .ripple-btn::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;
@@ -269,35 +330,39 @@ select {
 /* --- SPECIFIC BUTTON LOGIC --- */
 
 /* 1. Primary Buttons (Blue -> White/Transparent effect) */
-.btn-primary, .cta {
+.btn-primary,
+.cta {
     background: var(--accent) !important;
     border: 1px solid var(--accent);
     color: white;
     --ripple-color: #ffffff; /* The "liquid" that fills the button */
 }
 
-.btn-primary:hover, .cta:hover {
+.btn-primary:hover,
+.cta:hover {
     color: var(--accent); /* Text turns blue when white fills the bg */
     border-color: #fff;
 }
 
 /* 2. Secondary Buttons (Transparent -> Blue effect) */
-.btn-secondary, .btn-login {
+.btn-secondary,
+.btn-login {
     background: transparent !important;
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: var(--text);
     --ripple-color: var(--accent); /* Blue liquid */
 }
 
-.square-btn{
+.square-btn {
     transition: all 0.2s ease;
 }
 
-.square-btn:hover{
+.square-btn:hover {
     color: black;
 }
 
-.btn-secondary:hover, .btn-login:hover {
+.btn-secondary:hover,
+.btn-login:hover {
     color: white; /* Text turns white when blue fills the bg */
     border-color: #000;
 }
@@ -305,14 +370,14 @@ select {
 /* RIPPLE EFFECT END */
 
 .circle-nav {
-    width: 60px; 
-    height: 60px; 
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
-    background: transparent; 
-    display: flex; 
-    justify-content: center; 
+    background: transparent;
+    display: flex;
+    justify-content: center;
     align-items: center;
-    cursor: pointer; 
+    cursor: pointer;
     transition: all 0.4s ease;
 }
 
@@ -345,7 +410,6 @@ select {
     border: 1px solid var(--border);
 }
 
-
 /* FOR DROPDOWN */
 .input-group {
     width: 100%;
@@ -367,7 +431,7 @@ select {
 
     background: rgba(255, 255, 255, 0.04);
     border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.08);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     cursor: pointer;
 
     /* ✅ THIS is what enables unlimited tags */
@@ -385,9 +449,9 @@ select {
 
 /* Hover polish */
 .dropdown-input:hover {
-    border-color: rgba(255,255,255,0.25);
+    border-color: rgba(255, 255, 255, 0.25);
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(124,124,255,0.15);
+    box-shadow: 0 8px 20px rgba(124, 124, 255, 0.15);
 }
 
 /* Remove outlines */
@@ -400,14 +464,13 @@ select {
 .dropdown-input input {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 6px;
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     color: #e5edff;
     flex: 1 1 120px;
     min-width: 120px;
     width: auto;
     padding: 8px 10px;
 }
-
 
 /* INPUT FIELD */
 .dropdown-input input {
@@ -423,7 +486,7 @@ select {
 
 /* PLACEHOLDER */
 .dropdown-input input::placeholder {
-    color: rgba(200,220,255,0.4);
+    color: rgba(200, 220, 255, 0.4);
 }
 
 /* SCROLLBAR (horizontal) */
@@ -432,7 +495,7 @@ select {
 }
 
 .dropdown-input::-webkit-scrollbar-thumb {
-    background: rgba(255,255,255,0.25);
+    background: rgba(255, 255, 255, 0.25);
     border-radius: 10px;
 }
 
@@ -447,7 +510,7 @@ select {
     top: calc(100% + 10px);
     background: linear-gradient(180deg, #0b1224, #070b16);
     border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.12);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     max-height: 0;
     overflow: hidden;
     opacity: 0;
@@ -474,7 +537,7 @@ select {
 }
 
 .dropdown-item:hover {
-    background: rgba(255,255,255,0.06);
+    background: rgba(255, 255, 255, 0.06);
 }
 
 /* ITEM ICON */
@@ -497,8 +560,8 @@ select {
     display: flex;
     align-items: center;
     gap: 6px;
-    background: rgba(130,170,255,0.15);
-    border: 1px solid rgba(130,170,255,0.4);
+    background: rgba(130, 170, 255, 0.15);
+    border: 1px solid rgba(130, 170, 255, 0.4);
     color: #eaf1ff;
     padding: 6px 10px;
     border-radius: 20px;
@@ -530,7 +593,6 @@ select {
 .multi-select .tags:not(:empty) + input::placeholder {
     opacity: 0;
 }
-
 
 /* CONTACT METHODS WRAPPER */
 .contact-methods {
@@ -643,7 +705,7 @@ input {
 }
 
 /* ANIMATED BACKGROUND CSS */
-@import url('https://fonts.googleapis.com/css?family=Exo:400,700');
+@import url("https://fonts.googleapis.com/css?family=Exo:400,700");
 
 /* ===== Floating Background Squares ===== */
 
@@ -756,7 +818,6 @@ input {
 /* Animation */
 
 @keyframes floatSquares {
-
     0% {
         transform: translateY(0) rotate(0deg);
         opacity: 0;

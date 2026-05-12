@@ -5,21 +5,21 @@ $color-navy: #11162a;
 $color-muted: #232a35;
 
 .hero-bg {
-  position: fixed; // Fixes it to the viewport
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1; // Keeps it behind everything
-  background: $color-bg;
-  overflow: hidden;
+    position: fixed; // Fixes it to the viewport
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; // Keeps it behind everything
+    background: $color-bg;
+    overflow: hidden;
 }
 
 .background {
-  width: 100vw;
-  height: 100vh;
-  // Subtle radial gradient to give depth
-  background: radial-gradient(circle at top, $color-navy, $color-bg);
+    width: 100vw;
+    height: 100vh;
+    // Subtle radial gradient to give depth
+    background: radial-gradient(circle at top, $color-navy, $color-bg);
 }
 
 $particleSize: 15vmin;
@@ -27,42 +27,44 @@ $animationDuration: 12s; // Slower for a more professional feel
 $amount: 20;
 
 .background span {
-  width: $particleSize;
-  height: $particleSize;
-  border-radius: $particleSize;
-  backface-visibility: hidden;
-  position: absolute;
-  animation-name: move;
-  animation-duration: $animationDuration;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  
-  $colors: (
-    $color-accent,
-    $color-navy,
-    #1e2642 // A mid-tone blue
-  );
+    width: $particleSize;
+    height: $particleSize;
+    border-radius: $particleSize;
+    backface-visibility: hidden;
+    position: absolute;
+    animation-name: move;
+    animation-duration: $animationDuration;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
 
-  @for $i from 1 through $amount {
-    &:nth-child(#{$i}) {
-      color: nth($colors, random(length($colors)));
-      top: random(100) * 1%;
-      left: random(100) * 1%;
-      animation-duration: (random($animationDuration * 10) / 10) * 1s + 15s;
-      animation-delay: random(($animationDuration + 10s) * 10) / 10 * -1s;
-      transform-origin: (random(50) - 25) * 1vw (random(50) - 25) * 1vh;
-      
-      // Adjusted blur for a softer glow effect
-      $blurRadius: (random() + 0.5) * $particleSize * 0.6;
-      $x: if(random() > 0.5, -1, 1);
-      box-shadow: ($particleSize * 2 * $x) 0 $blurRadius currentColor;
+    $colors: (
+        $color-accent,
+        $color-navy,
+        #1e2642 // A mid-tone blue
+    );
+
+    @for $i from 1 through $amount {
+        &:nth-child(#{$i}) {
+            color: nth($colors, random(length($colors)));
+            top: random(100) * 1%;
+            left: random(100) * 1%;
+            animation-duration: (random($animationDuration * 10) / 10) *
+                1s +
+                15s;
+            animation-delay: random(($animationDuration + 10s) * 10) / 10 * -1s;
+            transform-origin: (random(50) - 25) * 1vw (random(50) - 25) * 1vh;
+
+            // Adjusted blur for a softer glow effect
+            $blurRadius: (random() + 0.5) * $particleSize * 0.6;
+            $x: if(random() > 0.5, -1, 1);
+            box-shadow: ($particleSize * 2 * $x) 0 $blurRadius currentColor;
+        }
     }
-  }
 }
 
 @keyframes move {
-  100% {
-    // translate3d(0, 0, 1px) helps with performance (hardware acceleration)
-    transform: translate3d(0, 0, 1px) rotate(360deg);
-  }
+    100% {
+        // translate3d(0, 0, 1px) helps with performance (hardware acceleration)
+        transform: translate3d(0, 0, 1px) rotate(360deg);
+    }
 }
