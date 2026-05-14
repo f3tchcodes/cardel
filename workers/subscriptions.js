@@ -25,10 +25,6 @@ const worker = new Worker(
 
 worker.on("completed", (job) => console.log(`job ${job.id} completed!`));
 
-worker.on("error", (err) => {
-    console.error("WORKER ERROR", err);
-});
+worker.on("error", (err) => console.error(`Worker failed, error: ${err}`));
 
-worker.on("failed", (job, err) => {
-    console.error("JOB FAILED", err);
-});
+worker.on("failed", (job, err) => console.error(`The job "${job}" has failed. Error: ${err}`));
