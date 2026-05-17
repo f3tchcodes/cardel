@@ -1,88 +1,88 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cardel - Dashboard</title>
-  <link rel="icon" type="image/png" href="media/logo.png">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cardel - Dashboard</title>
+<link rel="icon" type="image/png" href="media/logo.png">
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
     href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&family=MuseoModerno:wght@600;700&display=swap"
     rel="stylesheet"
-  />
-  
-  <!-- css -->
-  <link rel="stylesheet" href="css/dashboard.css" />
-  <link rel="stylesheet" href="css/addSubsOverlay.css" />
-  <link rel="stylesheet" href="css/error.css">
+/>
 
-  <!-- javascript -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
-  <script type="module" src="js/dashboard.js" defer></script>
-  <script type="module" src="js/addSubs.js" defer></script>
+<!-- css -->
+<link rel="stylesheet" href="css/dashboard.css" />
+<link rel="stylesheet" href="css/addSubsOverlay.css" />
+<link rel="stylesheet" href="css/error.css">
+
+<!-- javascript -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+<script type="module" src="js/dashboard.js" defer></script>
+<script type="module" src="js/addSubs.js" defer></script>
 </head>
 
 <body>
-  <div class="app">
+<div class="app">
 
     <!-- LAYER 1: NAV -->
     <header class="nav">
-      <div class="brand">
+    <div class="brand">
         <img class="brand__logo" src="media/logo.png" alt="Cardel logo" />
         <div class="brand__name">CARDEL</div>
-      </div>
+    </div>
 
-      <div class="nav__center">
+    <div class="nav__center">
         <img class="nav__pfp" src="media/pfp/1.png" alt="Profile" />
-      </div>
+    </div>
 
-      <div class="nav__right">
+    <div class="nav__right">
         <button class="btn-logout" type="button">LOGOUT</button>
-      </div>
+    </div>
     </header>
 
     <!-- LAYER 2: WELCOME + PRO -->
     <section class="hero">
-      <div class="welcome">
+    <div class="welcome">
         <div class="welcome__line2">
-          <span class="welcome__hi">Hi</span>
-          <span class="welcome__name">f3tch</span><span class="welcome__comma">,</span>
+        <span class="welcome__hi">Hi</span>
+        <span class="welcome__name">f3tch</span><span class="welcome__comma">,</span>
         </div>
         <div class="welcome__line2">Have a great day!</div>
-      </div>
+    </div>
 
-      <aside class="pro-card" id="pro-card" aria-label="Upgrade to Pro">
+    <aside class="pro-card" id="pro-card" aria-label="Upgrade to Pro">
         <div class="pro-card__title">
-          <span class="title__main">UPGRADE TO</span>
-          <span class="title__pro">ACTIVE</span>
+        <span class="title__main">UPGRADE TO</span>
+        <span class="title__pro">ACTIVE</span>
         </div>
 
         <div class="pro-card__content">
-          <ul class="pro-card__list">
+        <ul class="pro-card__list">
             <li>Automatic subscription detection through Gmail OAuth.</li>
             <li>Fully automated subscriptions tracking: you buy, we automatically detect and update you!</li>
             <li>Unlimited subscriptions tracking</li>
             <li>WhatsApp and SMS renewal alerts.</li>
             <li>Cancellation link on the alert.</li>
-          </ul>
+        </ul>
 
-          <div class="pro-card__price">$3.99 PER MONTH</div>
+        <div class="pro-card__price">$3.99 PER MONTH</div>
         </div>
-      </aside>
+    </aside>
     </section>
 
     <!-- LAYER 3: SUBS + ANALYTICS -->
     <section class="main">
 
-      <!-- LEFT: SUBSCRIPTIONS -->
-      <section class="subs" aria-label="Subscriptions">
+    <!-- LEFT: SUBSCRIPTIONS -->
+    <section class="subs" aria-label="Subscriptions">
         <div class="subs__filters">
-          <button id="cdl-openAddSub" class="btn-plus " type="button" aria-label="Add subscription"><img src="media/icons/plus.png" alt="plus sign"></button>
+        <button id="cdl-openAddSub" class="btn-plus " type="button" aria-label="Add subscription"><img src="media/icons/plus.png" alt="plus sign"></button>
 
-          <nav class="subs__tabs" aria-label="Subscription categories">
+        <nav class="subs__tabs" aria-label="Subscription categories">
             <button class="subtab is-active" type="button">Upcoming</button>
             <button class="subtab" type="button">All</button>
             <button class="subtab" type="button">Streaming</button>
@@ -91,130 +91,130 @@
             <button class="subtab" type="button">Health</button>
             <button class="subtab" type="button">Digital Tools</button>
             <button class="subtab" type="button">Others</button>
-          </nav>
+        </nav>
         </div>
 
         <div class="subs__header">
-          <div class="th th--name">NAME</div>
-          <div class="th th--rate">RATE</div>
-          <div class="th th--next">NEXT CHARGE IN</div>
-          <div class="th th--cycle">BILLING CYCLE</div>
+        <div class="th th--name">NAME</div>
+        <div class="th th--rate">RATE</div>
+        <div class="th th--next">NEXT CHARGE IN</div>
+        <div class="th th--cycle">BILLING CYCLE</div>
 
-          <div class="subs__search">
+        <div class="subs__search">
             <input id="subsSearch" class="subs__searchInput" type="text" autocomplete="off" />
             <img class="subs__searchIcon" src="media/icons/search.svg" alt="Search" />
-          </div>
+        </div>
         </div>
 
         <!-- Desktop: ONLY scrollable area -->
         <div id="subsList" class="subs__list" aria-label="Subscriptions list"></div>
-      </section>
+    </section>
 
-      <!-- RIGHT: ANALYTICS -->
-      <section class="analytics" aria-label="Analytics">
+    <!-- RIGHT: ANALYTICS -->
+    <section class="analytics" aria-label="Analytics">
         <div class="analytics__tabs">
-          <button class="atab is-active" type="button">Upcoming</button>
-          <button class="atab" type="button">Last <span class="u">month</span></button>
+        <button class="atab is-active" type="button">Upcoming</button>
+        <button class="atab" type="button">Last <span class="u">month</span></button>
         </div>
 
         <div class="analytics__content">
-          <div class="analytics__top">
+        <div class="analytics__top">
             <div class="summary">
-              <div class="summary__amount">$95.88</div>
+            <div class="summary__amount">$95.88</div>
 
-              <div class="summary__range">
+            <div class="summary__range">
                 In the next <span class="u">29</span> days
-              </div>
+            </div>
 
-              <div class="summary__notes">
+            <div class="summary__notes">
                 <div class="note">
-                  <span class="infoBadge">i</span>
-                  <span>Next payment in <span class="danger">2 hours</span>.</span>
+                <span class="infoBadge">i</span>
+                <span>Next payment in <span class="danger">2 hours</span>.</span>
                 </div>
 
                 <div class="note">
-                  <span class="infoBadge">i</span>
-                  <span>Biggest cost:</span>
+                <span class="infoBadge">i</span>
+                <span>Biggest cost:</span>
                 </div>
 
                 <div class="biggest">
-                  <span class="biggest__name">Adobe CC.</span>
-                  <span class="biggest__meta">- $22.99 - 1 MONTH</span>
+                <span class="biggest__name">Adobe CC.</span>
+                <span class="biggest__meta">- $22.99 - 1 MONTH</span>
                 </div>
-              </div>
+            </div>
             </div>
 
             <div class="by-category">
-              <div class="by-category__head">
+            <div class="by-category__head">
                 <div class="miniHead">CATEGORY</div>
                 <div class="miniHead miniHead--right">CHARGES</div>
-              </div>
+            </div>
 
-              <div class="by-category__rows">
+            <div class="by-category__rows">
                 <div class="row"><div>Streaming</div><div class="right">$40</div></div>
                 <div class="row"><div>Gaming</div><div class="right">$30</div></div>
                 <div class="row"><div>Work/Business</div><div class="right">$12</div></div>
                 <div class="row"><div>Health</div><div class="right">$5</div></div>
                 <div class="row"><div>Digital Tools</div><div class="right">$13</div></div>
                 <div class="row"><div>Others</div><div class="right">$8</div></div>
-              </div>
             </div>
-          </div>
-
-          <div class="analytics__bottom">
-            <div class="chartWrap">
-              <canvas id="spendChart"></canvas>
             </div>
-          </div>
         </div>
-      </section>
+
+        <div class="analytics__bottom">
+            <div class="chartWrap">
+            <canvas id="spendChart"></canvas>
+            </div>
+        </div>
+        </div>
+    </section>
 
     </section>
-  </div>
+</div>
 
 
 
-  <!-- MY OVERLAYS -->
+<!-- MY OVERLAYS -->
 
-  <!-- PLUS BUTTON OVERLAY -->
-  <div id="cdl-addSubOverlay" class="cdl-overlay">
-      <div id="cdl-custom-tooltip">This feature is only for ACTIVE members</div>
-      
-      <div class="cdl-modal">
-          <button id="cdl-closeAddSub" class="cdl-modal-close" type="button">&times;</button>
-          
-          <div class="cdl-modal-content">
-              <h2 class="cdl-title">Add Subscription</h2>
-              
-              <form id="cdl-addSubForm" action="/api/user/subscriptions/add" method="POST" enctype="multipart/form-data">
-                  
-                  <div class="cdl-icon-section">
-                      <div class="cdl-icon-preview-wrapper">
-                          <img id="cdl-iconPreview" src="media/userSubIcons/default.png" alt="preview">
-                      </div>
-                      <label class="ripple-btn btn-upload">
-                          <span>Upload Icon</span>
-                          <input type="file" name="sub_icon" id="cdl-iconInput" accept="image/*" style="display:none">
-                      </label>
-                  </div>
+<!-- PLUS BUTTON OVERLAY -->
+<div id="cdl-addSubOverlay" class="cdl-overlay">
+    <div id="cdl-custom-tooltip">This feature is only for ACTIVE members</div>
+    
+    <div class="cdl-modal">
+        <button id="cdl-closeAddSub" class="cdl-modal-close" type="button">&times;</button>
+        
+        <div class="cdl-modal-content">
+            <h2 class="cdl-title">Add Subscription</h2>
+            
+            <form id="cdl-addSubForm" action="/api/user/subscriptions/add" method="POST" enctype="multipart/form-data">
+                
+                <div class="cdl-icon-section">
+                    <div class="cdl-icon-preview-wrapper">
+                        <img id="cdl-iconPreview" src="media/userSubIcons/default.png" alt="preview">
+                    </div>
+                    <label class="ripple-btn btn-upload">
+                        <span>Upload Icon</span>
+                        <input type="file" name="sub_icon" id="cdl-iconInput" accept="image/*" style="display:none">
+                    </label>
+                </div>
 
-                  <div class="cdl-group">
-                      <label class="cdl-label">Subscription Name</label>
-                      <input type="text" name="sub_name" class="cdl-input" placeholder="e.g. Netflix, Adobe, Gym" required>
-                  </div>
+                <div class="cdl-group">
+                    <label class="cdl-label">Subscription Name</label>
+                    <input type="text" name="sub_name" class="cdl-input" placeholder="e.g. Netflix, Adobe, Gym" required>
+                </div>
 
-                  <div class="cdl-input-row">
-                      <div class="cdl-group">
-                          <label class="cdl-label">Date & Time</label>
-                          <input type="datetime-local" name="sub_start" class="cdl-input" required>
-                      </div>
-                      <div class="cdl-group">
-                          <label class="cdl-label">Amount ($)</label>
-                          <input type="text" name="sub_rate" class="cdl-input" placeholder="0.00" required>
-                      </div>
-                  </div>
+                <div class="cdl-input-row">
+                    <div class="cdl-group">
+                        <label class="cdl-label">Date & Time</label>
+                        <input type="datetime-local" name="sub_start" class="cdl-input" required>
+                    </div>
+                    <div class="cdl-group">
+                        <label class="cdl-label">Amount ($)</label>
+                        <input type="text" name="sub_rate" class="cdl-input" placeholder="0.00" required>
+                    </div>
+                </div>
 
-                  <div class="cdl-group">
+                <div class="cdl-group">
                     <label class="cdl-label">Billing Cycle</label>
                     <div class="cdl-billing-row">
                         <div class="dropdown" id="cdl-drop-val">
@@ -237,30 +237,30 @@
                             </div>
                         </div>
                     </div>
-                  </div>
+                </div>
                     
-                  <input type="hidden" name="sub_billing_type" id="subBillingType">
-                  <input type="hidden" name="sub_billing_interval" id="subBillingInterval">
+                <input type="hidden" name="sub_billing_type" id="subBillingType">
+                <input type="hidden" name="sub_billing_interval" id="subBillingInterval">
 
-                  <div class="cdl-advanced">
-                      <button type="button" class="cdl-adv-trigger" id="cdl-advToggle">
-                          <img src="media/icons/advanced_arrow.svg" style="filter: invert(1)" class="cdl-adv-arrow" id="cdl-advArrow">
-                          Advanced
-                      </button>
-                      <div class="cdl-adv-content" id="cdl-advPanel">
-                          <div class="cdl-group">
-                              <label class="cdl-label">Cancel URL</label>
-                              <input type="url" name="cancel_url" class="cdl-input free" id="cdl-cancelInput" placeholder="https://..." disabled>
-                          </div>
-                      </div>
-                  </div>
+                <div class="cdl-advanced">
+                    <button type="button" class="cdl-adv-trigger" id="cdl-advToggle">
+                        <img src="media/icons/advanced_arrow.svg" style="filter: invert(1)" class="cdl-adv-arrow" id="cdl-advArrow">
+                        Advanced
+                    </button>
+                    <div class="cdl-adv-content" id="cdl-advPanel">
+                        <div class="cdl-group">
+                            <label class="cdl-label">Cancel URL</label>
+                            <input type="url" name="cancel_url" class="cdl-input free" id="cdl-cancelInput" placeholder="https://..." disabled>
+                        </div>
+                    </div>
+                </div>
 
-                  <button type="submit" class="ripple-btn btn-submit">
-                      <span>Add Subscription</span>
-                  </button>
-              </form>
-          </div>
-      </div>
-  </div>
+                <button type="submit" class="ripple-btn btn-submit">
+                    <span>Add Subscription</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
 </body>
 </html>
