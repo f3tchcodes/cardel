@@ -292,3 +292,135 @@
     color: #fff;
     transform: scale(1.1);
 }
+
+
+/* --- Settings Modal Specifics --- */
+.cdl-action-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: clamp(20px, calc(var(--unit) * 2.5), 26px);
+}
+
+.cdl-action-buttons .ripple-btn {
+    flex: 1; /* Makes the buttons equal width */
+}
+
+/* Delete Button Styling */
+.btn-danger {
+    width: 100%;
+    padding: 15px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-top: 10px;
+    --ripple-color: #ffffff;
+
+    background: rgba(244, 76, 76);
+    color: #000000;
+}
+
+/* --- Tooltip Fix --- */
+#cdl-settings-tooltip {
+    position: fixed; /* Fixes it to the viewport so it can follow the mouse */
+    display: none;
+    background: rgba(0, 0, 0, 0.9);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    pointer-events: none; /* Prevents the tooltip itself from blocking your mouse */
+    z-index: 9999;
+    transform: translate(15px, 15px); /* Offsets it slightly from the cursor */
+    white-space: nowrap;
+}
+
+/* Ensure the parent dropdown has a position to anchor the menu */
+#cdl-settingsOverlay .dropdown {
+    position: relative;
+    cursor: pointer;
+}
+
+/* The actual list of numbers/units */
+#cdl-settingsOverlay .dropdown-menu {
+    display: none; 
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #1a1d26; /* Match your modal color */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    margin-top: 5px;
+    z-index: 999; /* Higher than other modal elements */
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+/* Show it when the 'open' class is present */
+#cdl-settingsOverlay .dropdown.open .dropdown-menu {
+    display: block;
+}
+
+/* Style the items so they look clickable */
+.dropdown-item {
+    padding: 10px;
+    color: #fff;
+    transition: background 0.2s;
+}
+
+.dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+
+/* Add these to your existing file */
+
+.cdl-modal-content {
+    padding: 35px;
+    overflow: visible; /* CRITICAL: Allows dropdowns to pop out */
+}
+
+.cdl-billing-row {
+    display: flex;
+    gap: 12px;
+    overflow: visible; /* Allows dropdowns to pop out */
+    position: relative;
+}
+
+/* Ensure settings dropdowns specifically sit on top */
+#cdl-settingsOverlay .dropdown-menu {
+    position: absolute;
+    width: 100%;
+    top: calc(100% + 5px);
+    left: 0;
+    background: #141821; 
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    z-index: 10001; /* Higher than modal (10000) */
+    max-height: 0;
+    opacity: 0;
+    transition: all 0.2s ease;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+#cdl-settingsOverlay .dropdown.open .dropdown-menu {
+    max-height: 200px;
+    opacity: 1;
+    overflow-y: auto;
+    display: block; /* Force override if hidden */
+}
+
+#cdl-settings-tooltip {
+    position: fixed;
+    z-index: 11000;
+    background: #5b8cff;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    pointer-events: none;
+    transform: translate(15px, 15px);
+    white-space: nowrap;
+    display: none;
+}

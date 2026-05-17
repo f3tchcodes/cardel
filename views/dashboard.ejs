@@ -16,13 +16,15 @@
 
 <!-- css -->
 <link rel="stylesheet" href="css/dashboard.css" />
-<link rel="stylesheet" href="css/addSubsOverlay.css" />
+<link rel="stylesheet" href="css/overlays.css" />
 <link rel="stylesheet" href="css/error.css">
 
 <!-- javascript -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
 <script type="module" src="js/dashboard.js" defer></script>
 <script type="module" src="js/addSubs.js" defer></script>
+<script type="module" src="js/subSettings.js" defer></script>
+
 </head>
 
 <body>
@@ -262,5 +264,102 @@
         </div>
     </div>
 </div>
+
+<!-- SETTINGS / EDIT OVERLAY -->
+<div id="cdl-settingsOverlay" class="cdl-overlay">
+    <div id="cdl-settings-tooltip">This feature is only for ACTIVE members</div>
+    
+    <div class="cdl-modal">
+        <button id="cdl-closeSettings" class="cdl-modal-close" type="button">&times;</button>
+        
+        <div class="cdl-modal-content">
+            <h2 class="cdl-title">Subscription Settings</h2>
+            
+            <form id="cdl-settingsForm" action="/api/user/subscriptions/update" method="POST" enctype="multipart/form-data">
+                
+                <!-- Hidden input to store which sub we are editing -->
+                <input type="hidden" name="sub_id" id="cdl-settingsSubId">
+
+                <div class="cdl-icon-section">
+                    <div class="cdl-icon-preview-wrapper">
+                        <img id="cdl-settingsIconPreview" src="media/userSubIcons/default.png" alt="preview">
+                    </div>
+                    <label class="ripple-btn btn-upload">
+                        <span>Change Icon</span>
+                        <input type="file" name="sub_icon" id="cdl-settingsIconInput" accept="image/*" style="display:none">
+                    </label>
+                </div>
+
+                <div class="cdl-group">
+                    <label class="cdl-label">Subscription Name</label>
+                    <input type="text" name="sub_name" id="cdl-settingsName" class="cdl-input" placeholder="e.g. Netflix, Adobe, Gym" required>
+                </div>
+
+                <div class="cdl-input-row">
+                    <div class="cdl-group">
+                        <label class="cdl-label">Date & Time</label>
+                        <input type="datetime-local" name="sub_start" id="cdl-settingsStart" class="cdl-input" required>
+                    </div>
+                    <div class="cdl-group">
+                        <label class="cdl-label">Amount ($)</label>
+                        <input type="text" name="sub_rate" id="cdl-settingsRate" class="cdl-input" placeholder="0.00" required>
+                    </div>
+                </div>
+
+                <div class="cdl-group">
+                    <label class="cdl-label">Billing Cycle</label>
+                    <div class="cdl-billing-row">
+                        <div class="dropdown" id="cdl-settings-drop-val">
+                            <div class="dropdown-input">
+                                <span class="selected">1</span>
+                            </div>
+                            <div class="dropdown-menu" id="cdl-settings-val-menu">
+                                </div>
+                        </div>
+
+                        <div class="dropdown" id="cdl-settings-drop-unit">
+                            <div class="dropdown-input">
+                                <span class="selected">Month(s)</span>
+                            </div>
+                            <div class="dropdown-menu">
+                                <div class="dropdown-item" data-value="day">Day(s)</div>
+                                <div class="dropdown-item" data-value="week">Week(s)</div>
+                                <div class="dropdown-item" data-value="month">Month(s)</div>
+                                <div class="dropdown-item" data-value="year">Year(s)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    
+                <input type="hidden" name="sub_billing_type" id="settingsBillingType">
+                <input type="hidden" name="sub_billing_interval" id="settingsBillingInterval">
+
+                <div class="cdl-advanced">
+                    <button type="button" class="cdl-adv-trigger" id="cdl-settingsAdvToggle">
+                        <img src="media/icons/advanced_arrow.svg" style="filter: invert(1)" class="cdl-adv-arrow" id="cdl-settingsAdvArrow">
+                        Advanced
+                    </button>
+                    <div class="cdl-adv-content" id="cdl-settingsAdvPanel">
+                        <div class="cdl-group">
+                            <label class="cdl-label">Cancel URL</label>
+                            <input type="url" name="cancel_url" class="cdl-input free" id="cdl-settingsCancelInput" placeholder="https://..." disabled>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NEW: Split buttons for Delete and Save -->
+                <div class="cdl-action-buttons">
+                    <button type="button" id="cdl-settingsDeleteBtn" class="ripple-btn btn-danger">
+                        <span>Delete</span>
+                    </button>
+                    <button type="submit" class="ripple-btn btn-submit">
+                        <span>Save Changes</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
