@@ -1,163 +1,178 @@
-// --- GLOBAL CONFIG & STATE ---
-let currentSettingsUnit = "month"; 
-const settingsRanges = { day: 7, week: 4, month: 12, year: 10 };
+import {
+    getSubList,
+    sortSubscriptionsList,
+    renderSubscriptions,
+} from "./dashboard.js";
 
-const subsList = document.getElementById("subsList");
-const settingsOverlay = document.getElementById("cdl-settingsOverlay");
+// get .gear-btn
+document.querySelectorAll(".gear-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+        document
+            .getElementById("cdl-addSubOverlaySettings")
+            .classList.add("cdl-open");
 
-// Helper to format Date for <input type="datetime-local">
-function formatToDateTimeLocal(dateStr) {
-    if (!dateStr) return "";
-    const date = new Date(dateStr);
-    if (isNaN(date.getTime())) return "";
-    return date.toISOString().slice(0, 16);
-}
-
-// --- 1. OPEN MODAL & AUTO-POPULATE DATA ---
-if (subsList) {
-    subsList.addEventListener("click", (e) => {
-        const gearBtn = e.target.closest(".gear-btn");
-        if (gearBtn) {
-            const row = gearBtn.closest(".sub-row");
-
-            // Extract data
-            const subId = row.dataset.id || "";
-            const subName = row.dataset.name || row.querySelector(".sub-name").textContent;
-            const subRate = row.dataset.rate || row.querySelector(".sub-rate").textContent.replace(/[^0-9.]/g, "");
-            const subStart = row.dataset.start || ""; 
-            const subInterval = row.dataset.interval || "1";
-            const subUnit = row.dataset.unit || "month";
-            const iconSrc = row.querySelector(".sub-icon img").src;
-
-            // Paste into fields
-            document.getElementById("cdl-settingsSubId").value = subId;
-            document.getElementById("cdl-settingsName").value = subName;
-            document.getElementById("cdl-settingsRate").value = subRate;
-            document.getElementById("cdl-settingsStart").value = formatToDateTimeLocal(subStart);
-            document.getElementById("cdl-settingsIconPreview").src = iconSrc;
-
-            // Set Dropdown State
-            currentSettingsUnit = subUnit;
-            const formattedUnit = subUnit.charAt(0).toUpperCase() + subUnit.slice(1) + "(s)";
-            document.querySelector("#cdl-settings-drop-unit .selected").textContent = formattedUnit;
-            
-            populateSettingsValues(subUnit); 
-            document.querySelector("#cdl-settings-drop-val .selected").textContent = subInterval;
-            updateSettingsBillingFields();
-
-            // Open Modal
-            settingsOverlay.classList.add("cdl-open");
-            document.body.style.overflow = "hidden";
-        }
+        document.body.style.overflow = "hidden";
     });
+});
+
+const overlay = document.getElementById("cdl-addSubOverlaySettings");
+const closeBtn = document.getElementById("cdl-closeAddSubSettings");
+const cancelInput = document.getElementById("cdl-cancelInputSettings");
+const tooltip = document.getElementById("cdl-custom-tooltipSettings");
+
+// --- DROPDOWN STATE & LOGIC ---
+let currentUnit = "month";
+const ranges = { day: 7, week: 4, month: 12, year: 10 };
+
+function updateBillingFields() {
+    const interval = parseInt(
+        document.querySelector("#cdl-drop-valSettings .selectedSettings").textContent,
+    );
+
+    document.getElementById("subBillingTypeSettings").value = currentUnit;
+    document.getElementById("subBillingIntervalSettings").value = interval;
 }
 
-// --- 2. DROPDOWN LOGIC ---
-function updateSettingsBillingFields() {
-    const valElement = document.querySelector("#cdl-settings-drop-val .selected");
-    const interval = valElement ? parseInt(valElement.textContent) : 1;
-    
-    // Hidden inputs for form submission if needed
-    const typeInput = document.getElementById("settingsBillingType");
-    const intervalInput = document.getElementById("settingsBillingInterval");
-    if (typeInput) typeInput.value = currentSettingsUnit;
-    if (intervalInput) intervalInput.value = interval;
-}
-
-function populateSettingsValues(unit) {
-    const valMenu = document.getElementById("cdl-settings-val-menu");
-    if (!valMenu) return;
-    const max = settingsRanges[unit] || 12;
+function populateValues(unit) {
+    const valMenu = document.getElementById("cdl-val-menuSettings");
+    const max = ranges[unit] || 12;
     valMenu.innerHTML = "";
 
     for (let i = 1; i <= max; i++) {
         const item = document.createElement("div");
-        item.className = "dropdown-item";
+        item.className = "dropdown-item dropdown-itemSettings";
         item.textContent = i;
-        item.addEventListener("click", (e) => {
-            e.stopPropagation();
-            document.querySelector("#cdl-settings-drop-val .selected").textContent = i;
-            document.getElementById("cdl-settings-drop-val").classList.remove("open");
-            updateSettingsBillingFields();
-        });
+        item.onclick = () => {
+            document.querySelector("#cdl-drop-valSettings .selectedSettings").textContent = i;
+            document.getElementById("cdl-drop-valSettings").classList.remove("open");
+            updateBillingFields();
+        };
         valMenu.appendChild(item);
     }
 }
 
 // Toggle Dropdowns
-document.querySelectorAll("#cdl-settingsOverlay .dropdown-input").forEach((input) => {
+document.querySelectorAll(".dropdown-inputSettings").forEach((input) => {
     input.addEventListener("click", (e) => {
-        e.stopPropagation(); 
         const parent = input.parentElement;
-        document.querySelectorAll("#cdl-settingsOverlay .dropdown").forEach((d) => {
+        document.querySelectorAll(".dropdownSettings").forEach((d) => {
             if (d !== parent) d.classList.remove("open");
         });
         parent.classList.toggle("open");
-    });
-});
-
-// Unit Change
-document.querySelectorAll("#cdl-settings-drop-unit .dropdown-item").forEach((item) => {
-    item.addEventListener("click", (e) => {
         e.stopPropagation();
-        currentSettingsUnit = item.dataset.value;
-        document.querySelector("#cdl-settings-drop-unit .selected").textContent = item.textContent;
-        document.querySelector("#cdl-settings-drop-val .selected").textContent = "1";
-        populateSettingsValues(currentSettingsUnit);
-        document.getElementById("cdl-settings-drop-unit").classList.remove("open");
-        updateSettingsBillingFields();
     });
 });
 
-// --- 3. UI EXTRAS (Tooltip & Advanced) ---
-const settingsCancelInput = document.getElementById("cdl-settingsCancelInput");
-const settingsTooltip = document.getElementById("cdl-settings-tooltip");
+// Unit Selection Logic
+document.querySelectorAll("#cdl-drop-unitSettings .dropdown-itemSettings").forEach((item) => {
+    item.addEventListener("click", () => {
+        currentUnit = item.dataset.value;
+        document.querySelector("#cdl-drop-unitSettings .selectedSettings").textContent =
+            item.textContent;
+        document.querySelector("#cdl-drop-valSettings .selectedSettings").textContent = "1";
+        populateValues(currentUnit);
+        document.getElementById("cdl-drop-unitSettings").classList.remove("open");
+        updateBillingFields();
+    });
+});
 
-if (settingsCancelInput && settingsTooltip) {
-    settingsCancelInput.parentElement.addEventListener("mousemove", (e) => {
-        if (settingsCancelInput.classList.contains("free")) {
-            settingsTooltip.style.display = "block";
-            settingsTooltip.style.left = e.clientX + "px";
-            settingsTooltip.style.top = e.clientY + "px";
+// --- TOOLTIP (FOLLOW MOUSE) ---
+cancelInput.parentElement.addEventListener("mousemove", (e) => {
+    if (cancelInput.classList.contains("free")) {
+        tooltip.style.display = "block";
+        tooltip.style.left = e.clientX + "px";
+        tooltip.style.top = e.clientY + "px";
+    }
+});
+cancelInput.parentElement.addEventListener("mouseleave", () => {
+    tooltip.style.display = "none";
+});
+
+// --- ADVANCED TOGGLE ---
+document.getElementById("cdl-advToggleSettings").addEventListener("click", () => {
+    document.getElementById("cdl-advPanelSettings").classList.toggle("open");
+    document.getElementById("cdl-advArrowSettings").classList.toggle("rotated");
+});
+
+// --- ICON PREVIEW ---
+document
+    .getElementById("cdl-iconInputSettings")
+    .addEventListener("change", function () {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = (e) =>
+                (document.getElementById("cdl-iconPreviewSettings").src =
+                    e.target.result);
+            reader.readAsDataURL(this.files[0]);
         }
     });
-    settingsCancelInput.parentElement.addEventListener("mouseleave", () => {
-        settingsTooltip.style.display = "none";
-    });
-}
 
-document.getElementById("cdl-settingsAdvToggle")?.addEventListener("click", () => {
-    document.getElementById("cdl-settingsAdvPanel").classList.toggle("open");
-    document.getElementById("cdl-settingsAdvArrow").classList.toggle("rotated");
-});
-
-// --- 4. CLOSE & DELETE ---
-const closeSettingsModal = () => {
-    settingsOverlay.classList.remove("cdl-open");
+// Close Modal Logic
+const closeModal = () => {
+    overlay.classList.remove("cdl-open");
     document.body.style.overflow = "";
-    // Reset dropdowns
-    document.querySelectorAll("#cdl-settingsOverlay .dropdown").forEach(d => d.classList.remove("open"));
 };
+closeBtn.onclick = closeModal;
+overlay.onclick = (e) => {
+    if (e.target === overlay) closeModal();
+};
+window.addEventListener("click", () =>
+    document
+        .querySelectorAll(".cdl-overlaySettings.dropdown")
+        .forEach((d) => d.classList.remove("open")),
+);
 
-document.getElementById("cdl-closeSettings")?.addEventListener("click", closeSettingsModal);
+// Initialize
+populateValues("month");
+updateBillingFields();
 
-window.addEventListener("click", () => {
-    document.querySelectorAll(".dropdown").forEach((d) => d.classList.remove("open"));
-});
+const form = document.getElementById("cdl-addSubFormSettings");
 
-document.getElementById("cdl-settingsDeleteBtn")?.addEventListener("click", async () => {
-    const subId = document.getElementById("cdl-settingsSubId").value;
-    if(!subId || !confirm("Are you sure?")) return;
-    
+form.addEventListener("submit", async function (e) {
+    e.preventDefault(); // stop normal redirect
+
+    const formData = new FormData(form);
+
     try {
-        const res = await fetch("/api/user/subscriptions/delete", {
+        const res = await fetch("/api/user/subscriptions/edit", {
             method: "POST",
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ sub_id: subId }),
+            body: formData,
         });
-        if (res.ok) {
-            closeSettingsModal();
-            location.reload();
+
+        const data = await res.json();
+
+        if (data.redirect_url) {
+            window.location.href = data.redirect_url;
         }
-    } catch (err) { alert("Delete failed."); }
+
+        // Remove old alerts if any
+        const oldError = document.getElementById("errorSettings");
+        const oldSuccess = document.getElementById("sentSettings");
+        if (oldError) oldError.remove();
+        if (oldSuccess) oldSuccess.remove();
+
+        // Create message box
+        const box = document.createElement("div");
+        box.id = data.error ? "error" : "";
+        box.className = data.error ? "error" : "";
+        if (data.error) {
+            box.innerText = `❌ ${data.message}`;
+        } else {
+            const overlay = document.getElementById("cdl-addSubOverlaySettings");
+            const rawData = await getSubList();
+
+            sortSubscriptionsList(rawData);
+            renderSubscriptions();
+            form.reset();
+
+            overlay.classList.remove("cdl-open");
+            document.body.style.overflow = "";
+        }
+
+        // Insert above form
+        form.parentNode.insertBefore(box, form);
+    } catch (err) {
+        console.error(err);
+        alert("Network error. Try again.");
+    }
 });
