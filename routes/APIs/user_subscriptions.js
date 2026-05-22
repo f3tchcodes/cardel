@@ -507,6 +507,7 @@ router.post("/add", userSubIconsUpload.single("sub_icon"), async (req, res) => {
             status: true,
             message: "Subscription added successfully!",
             data: {
+                sub_id: subData.sub_id,
                 name: trimmedName,
                 date: parsedDate,
                 rate: rateNumber,
