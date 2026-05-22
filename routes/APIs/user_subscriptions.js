@@ -548,23 +548,73 @@ router.post("/add", userSubIconsUpload.single("sub_icon"), async (req, res) => {
 });
 
 router.delete("/:sub_id", async (req, res) => {
-    const sub_id = req.params.sub_id;
 
-    const deleteQuery = await con.query(`
-        DELETE FROM
-        users_subscriptions WHERE 
-        sub_id = ?`,
-        [sub_id]);
-
-    if (deleteQuery.affectedRows === 0) {
-        return res.status(404).json({
+    try {
+        jwt_data = jwt.verify(req.cookies.token, process.env.JWT_SECRET);
+    } catch (err) {
+        console.log(err);
+        return res.json({
             error: true,
-            message: "Subscription not found",
+            message: "JWT can't be verified, login again or contact us to fix.",
         });
-    } else {
-        return res.status(200).json({
-            status: true,
-            message: `The subscription ${sub_id} has been deleted successfully!`,
+    }
+
+    try {
+        [rows1] = await con.query(
+            `
+            SELECT * 
+            FROM users
+            WHERE email = ?;`,
+            [jwt_data.email],
+        );
+
+        if (rows1.length === 1) {
+            if (rows1[0].first_time_login === 1) {
+                return res.redirect("/onboarding");
+            }
+        } else {
+            res.clearCookie("token");
+            console.log(err);
+            return res.json({
+                error: true,
+                message:
+                    "Either user does not exist or there are multiple users with this email, clear cookies and login again. If it does not work, contact us at our support email.",
+            });
+        }
+    } catch (err) {
+        console.log(err);
+        return res.json({
+            error: true,
+            message:
+                "Error occured, request did not go through. Contact support to get help.",
+        });
+    }
+
+    try {
+        const sub_id = req.params.sub_id;
+
+        const deleteQuery = await con.query(`
+            DELETE FROM
+            users_subscriptions WHERE 
+            sub_id = ?`,
+            [sub_id]);
+
+        if (deleteQuery.affectedRows === 0) {
+            return res.status(404).json({
+                error: true,
+                message: "Subscription not found",
+            });
+        } else {
+            return res.status(200).json({
+                status: true,
+                message: `The subscription ${sub_id} has been deleted successfully!`,
+            });
+        }
+    } catch (err) {
+        return res.json({
+            error: true,
+            message:
+                "Error occured, request did not go through. Contact support to get help.",
         });
     }
 });
