@@ -12,7 +12,7 @@ const multerErrorHandler = (err, req, res, next) => {
     if (err) {
         console.error("System Error:", err.message);
         return res.status(500).json({
-            error: "An unexpected error occurred during the upload process.",
+            error: "An unexpected error occurred.",
         });
     }
 

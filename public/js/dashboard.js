@@ -28,7 +28,7 @@ async function postData(url, data) {
 }
 
 let subscriptions = [];
-
+let items = [];
 let activeSubTab = "Upcoming";
 
 async function getSubList() {
@@ -117,6 +117,9 @@ function setupActiveTabs(selector) {
     });
 }
 
+// 
+
+
 /* -------------------------
    Render subscriptions list
 -------------------------- */
@@ -155,7 +158,7 @@ function renderSubscriptions() {
 
     for (const sub of items) {
         const row = document.createElement("div");
-        row.className = `sub-row ${statusClass(sub)}`;
+        row.className = `sub-row ${statusClass(sub)} sub_id_${sub.id}`;
 
         // Generate HTML
         row.innerHTML = `
@@ -339,4 +342,9 @@ setupSearch();
 renderSubscriptions();
 buildChart();
 
-export { getSubList, sortSubscriptionsList, renderSubscriptions };
+export { 
+    getSubList, 
+    sortSubscriptionsList, 
+    renderSubscriptions, 
+    subscriptions
+};

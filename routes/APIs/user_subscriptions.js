@@ -2,9 +2,10 @@
     ROUTE: /api/user/subscriptions/
 
     ENDPOINTS: 
-    GET  -- /list
-    POST -- /toggle  -- (sub_id, enabled)
-    POST -- /add     -- (sub_name, sub_start, sub_rate, sub_billing)
+    GET    -- /list
+    POST   -- /toggle  -- (sub_id, enabled)
+    POST   -- /add     -- (sub_name, sub_start, sub_rate, sub_billing)
+    DELETE -- /:sub_id -- (sub_id)
 */
 
 // importing libraries
@@ -263,8 +264,6 @@ router.post("/toggle", async (req, res) => {
             `,
             [enabled, jwt_data.user_id, sub_id],
         );
-
-        console.log(result);
 
         if (result[0].affectedRows === 0) {
             return res.status(404).json({
@@ -544,6 +543,28 @@ router.post("/add", userSubIconsUpload.single("sub_icon"), async (req, res) => {
             error: true,
             message:
                 "An internal server error occurred while processing the request.",
+        });
+    }
+});
+
+router.delete("/:sub_id", async (req, res) => {
+    const sub_id = req.params.sub_id;
+
+    const deleteQuery = await con.query(`
+        DELETE FROM
+        users_subscriptions WHERE 
+        sub_id = ?`,
+        [sub_id]);
+
+    if (deleteQuery.affectedRows === 0) {
+        return res.status(404).json({
+            error: true,
+            message: "Subscription not found",
+        });
+    } else {
+        return res.status(200).json({
+            status: true,
+            message: `The subscription ${sub_id} has been deleted successfully!`,
         });
     }
 });

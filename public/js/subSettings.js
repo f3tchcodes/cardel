@@ -2,6 +2,7 @@ import {
     getSubList,
     sortSubscriptionsList,
     renderSubscriptions,
+    subscriptions
 } from "./dashboard.js";
 
 // get .gear-btn
@@ -126,53 +127,70 @@ window.addEventListener("click", () =>
 populateValues("month");
 updateBillingFields();
 
-const form = document.getElementById("cdl-addSubFormSettings");
 
-form.addEventListener("submit", async function (e) {
-    e.preventDefault(); // stop normal redirect
+// DELETE FUNCTIONALITY
+let currentSubId = null;
 
-    const formData = new FormData(form);
+const deleteBtn = document.getElementById(
+    "cdl-settingsDeleteBtnSettings"
+);
 
-    try {
-        const res = await fetch("/api/user/subscriptions/edit", {
-            method: "POST",
-            body: formData,
-        });
+// Gear buttons
+document.querySelectorAll(".gear-btn")
+.forEach(btn => {
 
-        const data = await res.json();
+    btn.addEventListener("click", () => {
 
-        if (data.redirect_url) {
-            window.location.href = data.redirect_url;
-        }
+        const subElement =
+            btn.closest(".sub-row");
 
-        // Remove old alerts if any
-        const oldError = document.getElementById("errorSettings");
-        const oldSuccess = document.getElementById("sentSettings");
-        if (oldError) oldError.remove();
-        if (oldSuccess) oldSuccess.remove();
+        // extract id from class:
+        // sub_id_123
+        const subIdClass =
+            [...subElement.classList]
+            .find(c => c.startsWith("sub_id_"));
 
-        // Create message box
-        const box = document.createElement("div");
-        box.id = data.error ? "error" : "";
-        box.className = data.error ? "error" : "";
-        if (data.error) {
-            box.innerText = `❌ ${data.message}`;
-        } else {
-            const overlay = document.getElementById("cdl-addSubOverlaySettings");
-            const rawData = await getSubList();
+        currentSubId =
+            subIdClass.replace(
+                "sub_id_",
+                ""
+            );
 
-            sortSubscriptionsList(rawData);
-            renderSubscriptions();
-            form.reset();
+        console.log(
+            "opened settings for:",
+            currentSubId
+        );
 
-            overlay.classList.remove("cdl-open");
-            document.body.style.overflow = "";
-        }
+    });
 
-        // Insert above form
-        form.parentNode.insertBefore(box, form);
-    } catch (err) {
-        console.error(err);
-        alert("Network error. Try again.");
-    }
 });
+
+
+// Delete
+deleteBtn.addEventListener(
+    "click",
+    async () => {
+
+        if (!currentSubId)
+            return;
+
+        console.log(
+            "deleting:",
+            currentSubId
+        );
+
+        await fetch(
+            `/api/user/subscriptions/${currentSubId}`,
+            {
+                method: "DELETE"
+            }
+        );
+
+        const rawData = await getSubList();
+
+        sortSubscriptionsList(rawData);
+        renderSubscriptions();
+        overlay.classList.remove("cdl-open");
+        document.body.style.overflow = "";
+    }
+);
