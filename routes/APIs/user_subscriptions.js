@@ -298,12 +298,44 @@ router.post("/add", userSubIconsUpload.single("sub_icon"), async (req, res) => {
     }
 
     try {
+        [rows1] = await con.query(
+            `
+            SELECT * 
+            FROM users
+            WHERE email = ?;`,
+            [jwt_data.email],
+        );
+
+        if (rows1.length === 1) {
+            if (rows1[0].first_time_login === 1) {
+                return res.redirect("/onboarding");
+            }
+        } else {
+            res.clearCookie("token");
+            return res.json({
+                error: true,
+                message:
+                    "Either user does not exist or there are multiple users with this email, clear cookies and login again. If it does not work, contact us at our support email.",
+            });
+        }
+    } catch (err) {
+        console.log(err);
+        return res.json({
+            error: true,
+            message:
+                "Error occured, request did not go through. Contact support to get help.",
+        });
+    }
+
+    try {
         const {
             sub_name,
             sub_start,
             sub_rate,
             sub_billing_type,
             sub_billing_interval,
+            op,
+            sub_id
         } = req.body;
         console.log(sub_start);
 
@@ -396,126 +428,278 @@ router.post("/add", userSubIconsUpload.single("sub_icon"), async (req, res) => {
         const secureFilenameComplete = `/media/userSubIcons/${secureFilename}`;
         console.log(secureFilename);
 
-        try {
-            await con.query(
-                `
-                INSERT INTO users_subscriptions
-                (
-                    user_id,
-                    sub_icon,
-                    sub_name,
-                    sub_rate,
-                    subbed_at,
-                    sub_billing_type,
-                    sub_billing_interval,
-                    sub_next
-                ) VALUES
-                (?, ?, ?, ?, ?, ?, ?, ?);`,
-                [
-                    jwt_data.user_id,
-                    secureFilenameComplete,
-                    trimmedName,
-                    rateNumber,
-                    sub_start,
-                    sub_billing_type,
-                    billingInterval,
-                    nextBillingDate,
-                ],
-            );
+        if (op = "create"){
+            try {
+                await con.query(
+                    `
+                    INSERT INTO users_subscriptions
+                    (
+                        user_id,
+                        sub_icon,
+                        sub_name,
+                        sub_rate,
+                        subbed_at,
+                        sub_billing_type,
+                        sub_billing_interval,
+                        sub_next
+                    ) VALUES
+                    (?, ?, ?, ?, ?, ?, ?, ?);`,
+                    [
+                        jwt_data.user_id,
+                        secureFilenameComplete,
+                        trimmedName,
+                        rateNumber,
+                        sub_start,
+                        sub_billing_type,
+                        billingInterval,
+                        nextBillingDate,
+                    ],
+                );
 
-            [[subData]] = await con.query(
-                `
-                SELECT sub_id, sub_next
-                FROM users_subscriptions 
-                WHERE user_id = ?
-                ORDER BY sub_id DESC 
-                LIMIT 1`,
-                [jwt_data.user_id],
-            );
+                [[subData]] = await con.query(
+                    `
+                    SELECT sub_id, sub_next
+                    FROM users_subscriptions 
+                    WHERE user_id = ?
+                    ORDER BY sub_id DESC 
+                    LIMIT 1`,
+                    [jwt_data.user_id],
+                );
 
-            // scheduling emails
-            const date = new Date(subData.sub_next);
-            const targetTimeMs = date.getTime();
-            const nowMs = Date.now();
-            const delayMs = Number(targetTimeMs) - Number(nowMs);
+                // scheduling emails
+                const date = new Date(subData.sub_next);
+                const targetTimeMs = date.getTime();
+                const nowMs = Date.now();
+                const delayMs = Number(targetTimeMs) - Number(nowMs);
 
-            const oneDayMs = 86400000;
-            const delayMs1D = delayMs - oneDayMs;
-            const delayMs3D = delayMs - 3 * oneDayMs;
+                const oneDayMs = 86400000;
+                const delayMs1D = delayMs - oneDayMs;
+                const delayMs3D = delayMs - 3 * oneDayMs;
 
-            if (delayMs < 0)
-                return res.status(500).json({
+                if (delayMs < 0)
+                    return res.status(500).json({
+                        status: 500,
+                        error: true,
+                        message: "Wait a few minutes and try again!",
+                    });
+
+                // scheduling final renewal email
+                await emailQueue.add(
+                    "send-sub-renewal-email",
+                    { subscriptionId: subData.sub_id },
+                    {
+                        delay: delayMs,
+                        jobId: `sub_${subData.sub_id}`,
+                    },
+                );
+
+                // scheduling email 1 day before renewal
+                if (delayMs1D > 0) {
+                    await emailQueue.add(
+                        "send-sub-update-email",
+                        { subscriptionId: subData.sub_id },
+                        {
+                            delay: delayMs1D,
+                            jobId: `sub_${subData.sub_id}_1`,
+                        },
+                    );
+                    console.log(`delayMs: ${delayMs}`);
+                    console.log(`delayMs1D: ${delayMs1D}`);
+                    console.log(`delayMs+oneDayMs: ${delayMs + oneDayMs}`);
+                    console.log(`sub_${subData.sub_id}_1 added`);
+                    console.log("-------------");
+                }
+
+                // scheduling email 3 days before renewal
+                if (delayMs3D > 0) {
+                    await emailQueue.add(
+                        "send-sub-update-email",
+                        { subscriptionId: subData.sub_id },
+                        {
+                            delay: delayMs3D,
+                            jobId: `sub_${subData.sub_id}_3`,
+                        },
+                    );
+                    console.log(`delayMs: ${delayMs}`);
+                    console.log(`delayMs3D: ${delayMs3D}`);
+                    console.log(`delayMs+3*oneDayMs: ${delayMs + 3 * oneDayMs}`);
+                    console.log(`sub_${subData.sub_id}_3 added`);
+                    console.log("-------------");
+                }
+            } catch (err) {
+                res.status(500).json({
                     status: 500,
                     error: true,
-                    message: "Wait a few minutes and try again!",
+                    message: "Unknown error occured while running database query.",
                 });
+                return console.log(err);
+            }
 
-            // scheduling final renewal email
-            await emailQueue.add(
-                "send-sub-renewal-email",
-                { subscriptionId: subData.sub_id },
-                {
-                    delay: delayMs,
-                    jobId: `sub_${subData.sub_id}`,
+            return res.status(200).json({
+                status: true,
+                message: "Subscription added successfully!",
+                data: {
+                    sub_id: subData.sub_id,
+                    name: trimmedName,
+                    date: parsedDate,
+                    rate: rateNumber,
+                    sub_billing_type,
+                    sub_billing_interval: billingInterval,
+                    next_billing: nextBillingDate,
+                    iconPath: secureFilenameComplete,
                 },
-            );
-
-            // scheduling email 1 day before renewal
-            if (delayMs1D > 0) {
-                await emailQueue.add(
-                    "send-sub-update-email",
-                    { subscriptionId: subData.sub_id },
-                    {
-                        delay: delayMs1D,
-                        jobId: `sub_${subData.sub_id}_1`,
-                    },
-                );
-                console.log(`delayMs: ${delayMs}`);
-                console.log(`delayMs1D: ${delayMs1D}`);
-                console.log(`delayMs+oneDayMs: ${delayMs + oneDayMs}`);
-                console.log(`sub_${subData.sub_id}_1 added`);
-                console.log("-------------");
-            }
-
-            // scheduling email 3 days before renewal
-            if (delayMs3D > 0) {
-                await emailQueue.add(
-                    "send-sub-update-email",
-                    { subscriptionId: subData.sub_id },
-                    {
-                        delay: delayMs3D,
-                        jobId: `sub_${subData.sub_id}_3`,
-                    },
-                );
-                console.log(`delayMs: ${delayMs}`);
-                console.log(`delayMs3D: ${delayMs3D}`);
-                console.log(`delayMs+3*oneDayMs: ${delayMs + 3 * oneDayMs}`);
-                console.log(`sub_${subData.sub_id}_3 added`);
-                console.log("-------------");
-            }
-        } catch (err) {
-            res.status(500).json({
-                status: 500,
-                error: true,
-                message: "Unknown error occured while running database query.",
             });
-            return console.log(err);
-        }
+        } else if (op === "edit") {
+            try {
+                const check = await con.query(
+                `
+                    SELECT 1
+                    FROM users_subscriptions 
+                    WHERE sub_id = ?
+                `, [
+                    sub_id
+                ]);
 
-        return res.status(200).json({
-            status: true,
-            message: "Subscription added successfully!",
-            data: {
-                sub_id: subData.sub_id,
-                name: trimmedName,
-                date: parsedDate,
-                rate: rateNumber,
-                sub_billing_type,
-                sub_billing_interval: billingInterval,
-                next_billing: nextBillingDate,
-                iconPath: secureFilenameComplete,
-            },
-        });
+                // check whether or not the subscription exists
+                if (check !== 1) {
+                    return res.status(404).json({
+                        error: true,
+                        message: "Subscription not found"
+                    });
+                }
+
+                const change = await con.query(
+                    `
+                    UPDATE users_subscriptions SET
+                    
+                        user_id = ?,
+                        sub_icon = ?,
+                        sub_name = ?,
+                        sub_rate = ?,
+                        subbed_at = ?,
+                        sub_billing_type = ?,
+                        sub_billing_interval = ?,
+                        sub_next = ?
+                    WHERE sub_id = ?
+                    ;`,
+                    [
+                        jwt_data.user_id,
+                        secureFilenameComplete,
+                        trimmedName,
+                        rateNumber,
+                        sub_start,
+                        sub_billing_type,
+                        billingInterval,
+                        nextBillingDate,
+                        sub_id
+                    ],
+                );
+
+                if (change.affectedRows !== 1) return res.status(500).json({error: true, message: "Subscription information could not update due to some unknown issue."});
+
+                [[subData]] = await con.query(
+                    `
+                    SELECT sub_id, sub_next
+                    FROM users_subscriptions 
+                    WHERE user_id = ?
+                    ORDER BY sub_id DESC 
+                    LIMIT 1`,
+                    [jwt_data.user_id],
+                );
+
+                // removing old queue
+                await emailQueue.remove(`sub_${subData.sub_id}`)
+
+                // scheduling emails
+                const date = new Date(subData.sub_next);
+                const targetTimeMs = date.getTime();
+                const nowMs = Date.now();
+                const delayMs = Number(targetTimeMs) - Number(nowMs);
+
+                const oneDayMs = 86400000;
+                const delayMs1D = delayMs - oneDayMs;
+                const delayMs3D = delayMs - 3 * oneDayMs;
+
+                if (delayMs < 0)
+                    return res.status(500).json({
+                        status: 500,
+                        error: true,
+                        message: "Wait a few minutes and try again!",
+                    });
+
+                // scheduling final renewal email
+                await emailQueue.add(
+                    "send-sub-renewal-email",
+                    { subscriptionId: subData.sub_id },
+                    {
+                        delay: delayMs,
+                        jobId: `sub_${subData.sub_id}`,
+                    },
+                );
+
+                // scheduling email 1 day before renewal
+                if (delayMs1D > 0) {
+                    await emailQueue.add(
+                        "send-sub-update-email",
+                        { subscriptionId: subData.sub_id },
+                        {
+                            delay: delayMs1D,
+                            jobId: `sub_${subData.sub_id}_1`,
+                        },
+                    );
+                    console.log(`delayMs: ${delayMs}`);
+                    console.log(`delayMs1D: ${delayMs1D}`);
+                    console.log(`delayMs+oneDayMs: ${delayMs + oneDayMs}`);
+                    console.log(`sub_${subData.sub_id}_1 added`);
+                    console.log("-------------");
+                }
+
+                // scheduling email 3 days before renewal
+                if (delayMs3D > 0) {
+                    await emailQueue.add(
+                        "send-sub-update-email",
+                        { subscriptionId: subData.sub_id },
+                        {
+                            delay: delayMs3D,
+                            jobId: `sub_${subData.sub_id}_3`,
+                        },
+                    );
+                    console.log(`delayMs: ${delayMs}`);
+                    console.log(`delayMs3D: ${delayMs3D}`);
+                    console.log(`delayMs+3*oneDayMs: ${delayMs + 3 * oneDayMs}`);
+                    console.log(`sub_${subData.sub_id}_3 added`);
+                    console.log("-------------");
+                }
+            } catch (err) {
+                res.status(500).json({
+                    status: 500,
+                    error: true,
+                    message: "Unknown error occured while running database query.",
+                });
+                return console.log(err);
+            }
+
+            return res.status(200).json({
+                status: true,
+                message: "Subscription edited successfully!",
+                data: {
+                    sub_id: subData.sub_id,
+                    name: trimmedName,
+                    date: parsedDate,
+                    rate: rateNumber,
+                    sub_billing_type,
+                    sub_billing_interval: billingInterval,
+                    next_billing: nextBillingDate,
+                    iconPath: secureFilenameComplete,
+                },
+            });
+
+        } else {
+            return res.status(404).json({
+                error: true,
+                message: "Unknown option"
+            })
+        }
     } catch (error) {
         console.error("Subscription add error: ", error);
 
