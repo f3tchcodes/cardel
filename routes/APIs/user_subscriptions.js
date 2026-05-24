@@ -553,7 +553,7 @@ router.post("/add", userSubIconsUpload.single("sub_icon"), async (req, res) => {
             try {
                 const check = await con.query(
                 `
-                    SELECT 1
+                    SELECT *
                     FROM users_subscriptions 
                     WHERE sub_id = ?
                 `, [
@@ -561,7 +561,7 @@ router.post("/add", userSubIconsUpload.single("sub_icon"), async (req, res) => {
                 ]);
 
                 // check whether or not the subscription exists
-                if (check !== 1) {
+                if (check.length === 0) {
                     return res.status(404).json({
                         error: true,
                         message: "Subscription not found"
@@ -571,7 +571,6 @@ router.post("/add", userSubIconsUpload.single("sub_icon"), async (req, res) => {
                 const change = await con.query(
                     `
                     UPDATE users_subscriptions SET
-                    
                         user_id = ?,
                         sub_icon = ?,
                         sub_name = ?,
@@ -594,8 +593,6 @@ router.post("/add", userSubIconsUpload.single("sub_icon"), async (req, res) => {
                         sub_id
                     ],
                 );
-
-                if (change.affectedRows !== 1) return res.status(500).json({error: true, message: "Subscription information could not update due to some unknown issue."});
 
                 [[subData]] = await con.query(
                     `
