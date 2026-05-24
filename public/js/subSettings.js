@@ -359,6 +359,60 @@ deleteBtn.addEventListener(
     }
 );
 
+// ========================================
+// EDIT
+// ========================================
+const form = document.getElementById("cdl-addSubFormSettings");
+
+form.addEventListener("submit", async function (e) {
+    e.preventDefault(); // stop normal redirect
+
+    const formData = new FormData(form);
+    formData.append("sub_id", currentSubId);
+
+    try {
+        const res = await fetch("/api/user/subscriptions/add", {
+            method: "POST",
+            body: formData,
+        });
+
+        const data = await res.json();
+
+        if (data.redirect_url) {
+            window.location.href = data.redirect_url;
+        }
+
+        // Remove old alerts if any
+        const oldError = document.getElementById("error");
+        const oldSuccess = document.getElementById("sent");
+        if (oldError) oldError.remove();
+        if (oldSuccess) oldSuccess.remove();
+
+        // Create message box
+        const box = document.createElement("div");
+        box.id = data.error ? "error" : "";
+        box.className = data.error ? "error" : "";
+        if (data.error) {
+            box.innerText = `❌ ${data.message}`;
+        } else {
+            const overlay = document.getElementById("cdl-addSubOverlay");
+            const rawData = await getSubList();
+
+            sortSubscriptionsList(rawData);
+            renderSubscriptions();
+            form.reset();
+
+            closeModal();
+        }
+
+        // Insert above form
+        form.parentNode.insertBefore(box, form);
+    } catch (err) {
+        console.error(err);
+        alert("Network error. Try again.");
+    }
+});
+
 
 // ========================================
 // INITIALIZE
