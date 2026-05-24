@@ -9,9 +9,7 @@ const overlay = document.getElementById("cdl-addSubOverlaySettings");
 const closeBtn = document.getElementById("cdl-closeAddSubSettings");
 const cancelInput = document.getElementById("cdl-cancelInputSettings");
 const tooltip = document.getElementById("cdl-custom-tooltipSettings");
-const deleteBtn = document.getElementById(
-    "cdl-settingsDeleteBtnSettings"
-);
+const deleteBtn = document.getElementById("cdl-settingsDeleteBtnSettings");
 
 const subsList = document.getElementById("subsList");
 
@@ -23,7 +21,6 @@ const subsList = document.getElementById("subsList");
 let currentSubId = null;
 
 subsList.addEventListener("click", (e) => {
-
     const gearBtn = e.target.closest(".gear-btn");
 
     if (!gearBtn) return;
@@ -33,29 +30,25 @@ subsList.addEventListener("click", (e) => {
     document.body.style.overflow = "hidden";
 
     // Get clicked subscription row
-    const subElement =
-        gearBtn.closest(".sub-row");
+    const subElement = gearBtn.closest(".sub-row");
 
     if (!subElement) return;
 
     // Find class like: sub_id_123
-    const subIdClass =
-        [...subElement.classList]
+    const subIdClass = [...subElement.classList]
         .find(c => c.startsWith("sub_id_"));
 
     if (!subIdClass) return;
 
-    currentSubId =
-        subIdClass.replace(
-            "sub_id_",
-            ""
-        );
+    currentSubId = subIdClass.replace(
+        "sub_id_",
+        ""
+    );
 
     console.log(
         "opened settings for:",
         currentSubId
     );
-
 });
 
 
@@ -73,7 +66,6 @@ const ranges = {
 };
 
 function updateBillingFields() {
-
     const interval = parseInt(
         document.querySelector(
             "#cdl-drop-valSettings .selectedSettings"
@@ -90,27 +82,18 @@ function updateBillingFields() {
 }
 
 function populateValues(unit) {
+    const valMenu = document.getElementById(
+        "cdl-val-menuSettings"
+    );
 
-    const valMenu =
-        document.getElementById(
-            "cdl-val-menuSettings"
-        );
-
-    const max =
-        ranges[unit] || 12;
+    const max = ranges[unit] || 12;
 
     valMenu.innerHTML = "";
 
-    for (
-        let i = 1;
-        i <= max;
-        i++
-    ) {
-
-        const item =
-            document.createElement(
-                "div"
-            );
+    for (let i = 1; i <= max; i++) {
+        const item = document.createElement(
+            "div"
+        );
 
         item.className =
             "dropdown-item dropdown-itemSettings";
@@ -118,7 +101,6 @@ function populateValues(unit) {
         item.textContent = i;
 
         item.onclick = () => {
-
             document.querySelector(
                 "#cdl-drop-valSettings .selectedSettings"
             ).textContent = i;
@@ -132,11 +114,8 @@ function populateValues(unit) {
             updateBillingFields();
         };
 
-        valMenu.appendChild(
-            item
-        );
+        valMenu.appendChild(item);
     }
-
 }
 
 
@@ -148,27 +127,20 @@ document.querySelectorAll(
     ".dropdown-inputSettings"
 )
 .forEach(input => {
-
     input.addEventListener(
         "click",
         (e) => {
-
-            const parent =
-                input.parentElement;
+            const parent = input.parentElement;
 
             document.querySelectorAll(
                 ".dropdownSettings"
             )
             .forEach(d => {
-
-                if (
-                    d !== parent
-                ) {
+                if (d !== parent) {
                     d.classList.remove(
                         "open"
                     );
                 }
-
             });
 
             parent.classList.toggle(
@@ -176,10 +148,8 @@ document.querySelectorAll(
             );
 
             e.stopPropagation();
-
         }
     );
-
 });
 
 
@@ -188,14 +158,12 @@ document.querySelectorAll(
 // ========================================
 
 document.querySelectorAll(
-"#cdl-drop-unitSettings .dropdown-itemSettings"
+    "#cdl-drop-unitSettings .dropdown-itemSettings"
 )
 .forEach(item => {
-
     item.addEventListener(
         "click",
         () => {
-
             currentUnit =
                 item.dataset.value;
 
@@ -220,10 +188,8 @@ document.querySelectorAll(
             );
 
             updateBillingFields();
-
         }
     );
-
 });
 
 
@@ -234,13 +200,11 @@ document.querySelectorAll(
 cancelInput.parentElement.addEventListener(
     "mousemove",
     (e) => {
-
         if (
             cancelInput.classList.contains(
                 "free"
             )
         ) {
-
             tooltip.style.display =
                 "block";
 
@@ -250,17 +214,14 @@ cancelInput.parentElement.addEventListener(
             tooltip.style.top =
                 e.clientY + "px";
         }
-
     }
 );
 
 cancelInput.parentElement.addEventListener(
     "mouseleave",
     () => {
-
         tooltip.style.display =
             "none";
-
     }
 );
 
@@ -275,7 +236,6 @@ document.getElementById(
 .addEventListener(
     "click",
     () => {
-
         document.getElementById(
             "cdl-advPanelSettings"
         )
@@ -289,7 +249,6 @@ document.getElementById(
         .classList.toggle(
             "rotated"
         );
-
     }
 );
 
@@ -305,31 +264,25 @@ document
 .addEventListener(
     "change",
     function () {
-
         if (
             this.files &&
             this.files[0]
         ) {
-
             const reader =
                 new FileReader();
 
             reader.onload =
                 (e) => {
-
-                document.getElementById(
-                    "cdl-iconPreviewSettings"
-                ).src =
-                    e.target.result;
-
-            };
+                    document.getElementById(
+                        "cdl-iconPreviewSettings"
+                    ).src =
+                        e.target.result;
+                };
 
             reader.readAsDataURL(
                 this.files[0]
             );
-
         }
-
     }
 );
 
@@ -339,34 +292,27 @@ document
 // ========================================
 
 const closeModal = () => {
-
     overlay.classList.remove(
         "cdl-open"
     );
 
     document.body.style.overflow =
         "";
-
 };
 
-closeBtn.onclick =
-    closeModal;
+closeBtn.onclick = closeModal;
 
-overlay.onclick =
-(e) => {
-
+overlay.onclick = (e) => {
     if (
         e.target === overlay
     ) {
         closeModal();
     }
-
 };
 
 window.addEventListener(
     "click",
     () => {
-
         document.querySelectorAll(
             ".dropdownSettings"
         )
@@ -375,7 +321,6 @@ window.addEventListener(
                 "open"
             )
         );
-
     }
 );
 
@@ -387,10 +332,7 @@ window.addEventListener(
 deleteBtn.addEventListener(
     "click",
     async () => {
-
-        if (
-            !currentSubId
-        ) return;
+        if (!currentSubId) return;
 
         console.log(
             "deleting:",
@@ -414,7 +356,6 @@ deleteBtn.addEventListener(
         renderSubscriptions();
 
         closeModal();
-
     }
 );
 
@@ -423,8 +364,6 @@ deleteBtn.addEventListener(
 // INITIALIZE
 // ========================================
 
-populateValues(
-    "month"
-);
+populateValues("month");
 
 updateBillingFields();
