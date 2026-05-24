@@ -428,7 +428,7 @@ router.post("/add", userSubIconsUpload.single("sub_icon"), async (req, res) => {
         const secureFilenameComplete = `/media/userSubIcons/${secureFilename}`;
         console.log(secureFilename);
 
-        if (op = "create"){
+        if (op === "create"){
             try {
                 await con.query(
                     `
