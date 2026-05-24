@@ -551,7 +551,7 @@ router.post("/add", userSubIconsUpload.single("sub_icon"), async (req, res) => {
             });
         } else if (op === "edit") {
             try {
-                const check = await con.query(
+                const [subData] = await con.query(
                 `
                     SELECT *
                     FROM users_subscriptions 
@@ -561,11 +561,18 @@ router.post("/add", userSubIconsUpload.single("sub_icon"), async (req, res) => {
                 ]);
 
                 // check whether or not the subscription exists
-                if (check.length === 0) {
+                if (subData.length === 0) {
                     return res.status(404).json({
                         error: true,
                         message: "Subscription not found"
                     });
+                }
+
+                if (subData[0].user_id !== jwt_data.user_id) {
+                    return res.status(401).json({
+                        error: true,
+                        message: "Unauthenticated user!"
+                    })
                 }
 
                 const change = await con.query(
@@ -730,6 +737,8 @@ router.post("/add", userSubIconsUpload.single("sub_icon"), async (req, res) => {
 
 router.delete("/:sub_id", async (req, res) => {
 
+    let jwt_data;
+
     try {
         jwt_data = jwt.verify(req.cookies.token, process.env.JWT_SECRET);
     } catch (err) {
@@ -773,6 +782,14 @@ router.delete("/:sub_id", async (req, res) => {
 
     try {
         const sub_id = req.params.sub_id;
+        
+        const [[subData]] = await con.query(`SELECT * FROM users_subscriptions WHERE sub_id = ?`, [sub_id])
+        if (subData.user_id !== jwt_data.user_id) {
+            return res.status(401).json({
+                error: true,
+                message: "Unauthenticated user!"
+            })
+        }
 
         const deleteQuery = await con.query(`
             DELETE FROM
