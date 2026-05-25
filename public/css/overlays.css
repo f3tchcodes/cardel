@@ -429,3 +429,184 @@
     white-space: nowrap;
     display: none;
 }
+
+/* USER SETTINGS */
+
+.user-settings-modal{
+    max-width:900px;
+    width:100%;
+}
+
+.user-settings-wrap{
+    display:flex;
+    min-height:550px;
+}
+
+
+/* LEFT SIDEBAR */
+
+.user-settings-sidebar{
+
+    width:250px;
+
+    background:
+    rgba(255,255,255,.03);
+
+    border-right:
+    1px solid
+    rgba(
+        255,
+        255,
+        255,
+        .07
+    );
+
+    padding:25px;
+
+    display:flex;
+    flex-direction:column;
+}
+
+
+.user-settings-profile-top{
+
+    display:flex;
+    flex-direction:column;
+
+    align-items:center;
+
+    margin-bottom:35px;
+}
+
+
+.user-settings-avatar{
+
+    width:80px;
+    height:80px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    margin-bottom:15px;
+
+    border:2px solid
+    rgba(
+        255,
+        255,
+        255,
+        .15
+    );
+}
+
+
+.user-settings-username{
+
+    color:white;
+
+    font-weight:700;
+}
+
+
+.settings-tab{
+
+    border:none;
+
+    background:none;
+
+    color:#9aa3b2;
+
+    text-align:left;
+
+    padding:14px;
+
+    margin-bottom:8px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    transition:.3s;
+}
+
+
+.settings-tab:hover{
+
+    background:
+    rgba(
+        255,
+        255,
+        255,
+        .05
+    );
+
+    color:white;
+}
+
+
+.settings-tab.settings-tab-active{
+
+    background:
+    rgba(
+        91,
+        140,
+        255,
+        .15
+    );
+
+    color:#5b8cff;
+}
+
+
+/* RIGHT CONTENT */
+
+.user-settings-content{
+
+    flex:1;
+
+    padding:35px;
+
+    overflow-y:auto;
+}
+
+
+/* PANELS */
+
+.settings-panel{
+
+    display:none;
+}
+
+.settings-panel.settings-panel-active{
+
+    display:block;
+}
+
+
+/* MOBILE */
+
+@media(max-width:800px){
+
+.user-settings-wrap{
+
+    flex-direction:column;
+
+}
+
+.user-settings-sidebar{
+
+    width:100%;
+
+    border-right:none;
+
+    border-bottom:
+    1px solid
+    rgba(
+        255,
+        255,
+        255,
+        .07
+    );
+}
+
+}

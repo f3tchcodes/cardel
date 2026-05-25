@@ -24,6 +24,7 @@
 <script type="module" src="js/dashboard.js" defer></script>
 <script type="module" src="js/addSubs.js" defer></script>
 <script type="module" src="js/subSettings.js" defer></script>
+<script type="module" src="js/userSettings.js" defer></script>
 
 </head>
 
@@ -38,7 +39,7 @@
     </div>
 
     <div class="nav__center">
-        <img class="nav__pfp" src="media/pfp/1.png" alt="Profile" />
+        <img class="nav__pfp userSettings" src="media/pfp/1.png" alt="Profile" />
     </div>
 
     <div class="nav__right">
@@ -355,6 +356,149 @@
                     <span>Delete</span>
                 </button>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- USER SETTINGS OVERLAY -->
+<div id="cdl-userSettingsOverlay" class="cdl-overlay">
+    <div class="cdl-modal user-settings-modal">
+        <button id="cdl-closeUserSettings" class="cdl-modal-close" type="button">
+            &times;
+        </button>
+
+        <div class="user-settings-wrap">
+
+            <aside class="user-settings-sidebar">
+
+                <div class="user-settings-profile-top">
+                    <img src="media/pfp/1.png" class="user-settings-avatar" alt="Profile">
+                    <div class="user-settings-username">f3tch</div>
+                </div>
+
+                <button class="settings-tab settings-tab-active" data-tab="profile" type="button">
+                    Profile
+                </button>
+
+                <button class="settings-tab" data-tab="account" type="button">
+                    Account Settings
+                </button>
+
+                <button class="settings-tab" data-tab="mfa" type="button">
+                    Multi Factor Authentication
+                </button>
+
+            </aside>
+
+            <div class="user-settings-content">
+
+                <!-- PROFILE -->
+                <div class="settings-panel settings-panel-active" id="profile-panel">
+
+                    <h2 class="cdl-title">Profile</h2>
+
+                    <div class="cdl-icon-section">
+                        <div class="cdl-icon-preview-wrapper">
+                            <img id="profilePreview"
+                                 src="media/pfp/1.png"
+                                 alt="preview">
+                        </div>
+
+                        <label class="ripple-btn btn-upload">
+                            <span>Change Picture</span>
+                            <input
+                                type="file"
+                                id="profilePictureInput"
+                                autocomplete="off"
+                                hidden>
+                        </label>
+                    </div>
+
+                    <div class="cdl-group">
+                        <label class="cdl-label">Username</label>
+
+                        <input
+                            class="cdl-input"
+                            type="text"
+                            name="profile_username"
+                            autocomplete="off"
+                            spellcheck="false"
+                            value="f3tch">
+                    </div>
+
+                    <button class="ripple-btn btn-submit" type="button">
+                        <span>Save Profile</span>
+                    </button>
+
+                </div>
+
+
+                <!-- ACCOUNT -->
+                <div class="settings-panel" id="account-panel">
+
+                    <h2 class="cdl-title">Account Settings</h2>
+
+                    <div class="cdl-group">
+                        <label class="cdl-label">Change Email</label>
+
+                        <input
+                            class="cdl-input"
+                            type="email"
+                            name="account_email"
+                            autocomplete="new-email"
+                            placeholder="example@email.com">
+                    </div>
+
+                    <div class="cdl-group">
+                        <label class="cdl-label">Current Password</label>
+
+                        <input
+                            type="password"
+                            class="cdl-input"
+                            name="current_password"
+                            autocomplete="new-password">
+                    </div>
+
+                    <div class="cdl-group">
+                        <label class="cdl-label">New Password</label>
+
+                        <input
+                            type="password"
+                            class="cdl-input"
+                            name="new_password"
+                            autocomplete="new-password">
+                    </div>
+
+                    <button class="ripple-btn btn-submit" type="button">
+                        <span>Save Changes</span>
+                    </button>
+
+                </div>
+
+
+                <!-- MFA -->
+                <div class="settings-panel" id="mfa-panel">
+
+                    <h2 class="cdl-title">
+                        Multi Factor Authentication
+                    </h2>
+
+                    <div class="cdl-group">
+                        <label class="cdl-label">
+                            Two Factor Authentication
+                        </label>
+
+                        <input
+                            disabled
+                            class="cdl-input free"
+                            value="Coming soon"
+                            autocomplete="off">
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
     </div>
 </div>
