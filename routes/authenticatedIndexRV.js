@@ -3,7 +3,6 @@
 // No: Continue to /dashboard
 // Rest of the stuff is dashboard.
 
-require("dotenv").config();
 const express = require("express");
 const router = express.Router();
 const con = require("@utils/database");
