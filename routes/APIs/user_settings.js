@@ -121,7 +121,7 @@ router.post("/profile", userSubIconsUpload.single("sub_icon"), async (req, res) 
         const results = await con.query(
             `
             UPDATE users SET
-            username = ?
+            username = ?,
             pfp_path = ?
             WHERE user_id = ?
             `,
