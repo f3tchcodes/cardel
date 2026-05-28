@@ -388,31 +388,35 @@
 
             <div class="user-settings-content">
 
-                <form id="profileForm" action="/api/user/settings/profile" method="POST" enctype="multipart/form-data" class="settings-panel settings-panel-active" id="profile-panel">
+                <div class="settings-panel settings-panel-active" id="profile-panel">
+        
+                    <form id="profileForm" action="/api/user/settings/profile" method="POST" enctype="multipart/form-data">
 
-                    <h2 class="cdl-title">Profile</h2>
+                        <h2 class="cdl-title">Profile</h2>
 
-                    <div class="cdl-icon-section">
-                        <div class="cdl-icon-preview-wrapper">
-                            <img id="profilePreview" src="<%= pfp_path %>" alt="preview">
+                        <div class="cdl-icon-section">
+                            <div class="cdl-icon-preview-wrapper">
+                                <img id="profilePreview" src="<%= pfp_path %>" alt="preview">
+                            </div>
+
+                            <label class="ripple-btn btn-upload">
+                                <span>Change Picture</span>
+                                <input type="file" name="sub_icon" id="profilePictureInput" autocomplete="off" hidden>
+                            </label>
                         </div>
 
-                        <label class="ripple-btn btn-upload">
-                            <span>Change Picture</span>
-                            <input type="file" name="sub_icon" id="profilePictureInput" autocomplete="off" hidden>
-                        </label>
-                    </div>
+                        <div class="cdl-group">
+                            <label class="cdl-label">Username</label>
+                            <input class="cdl-input" type="text" name="username" autocomplete="off" spellcheck="false" value="<%= username %>">
+                        </div>
 
-                    <div class="cdl-group">
-                        <label class="cdl-label">Username</label>
-                        <input class="cdl-input" type="text" name="username" autocomplete="off" spellcheck="false" value="<%= username %>">
-                    </div>
+                        <button class="ripple-btn btn-submit" type="submit">
+                            <span>Save Profile</span>
+                        </button>
 
-                    <button class="ripple-btn btn-submit" type="submit">
-                        <span>Save Profile</span>
-                    </button>
-
-                </form>
+                    </form>
+                    
+                </div>
 
                 <div class="settings-panel" id="account-panel">
                     <h2 class="cdl-title">Account Settings</h2>
