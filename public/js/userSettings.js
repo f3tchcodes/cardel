@@ -9,10 +9,16 @@ userSettingsBtn.addEventListener("click", () => {
     document.body.style.overflow = "hidden";
 });
 
-// CLOSE MODAL
+// CLOSE MODAL (WITH ALERT CLEANUP)
 function closeModal() {
     overlay.classList.remove("cdl-open");
     document.body.style.overflow = "";
+
+    // Find and remove any existing alert notification boxes
+    const oldError = document.getElementById("error");
+    const oldSuccess = document.getElementById("sent");
+    if (oldError) oldError.remove();
+    if (oldSuccess) oldSuccess.remove();
 }
 
 closeBtn.addEventListener("click", closeModal);
@@ -36,9 +42,12 @@ document.querySelectorAll(".settings-tab").forEach(tab => {
 
         tab.classList.add("settings-tab-active");
 
-        document.getElementById(`${tab.dataset.tab}-panel`).classList.add(
-            "settings-panel-active"
-        );
+        // Note: ensure you applied the HTML structural fix from earlier 
+        // so that this ID matches your panel element perfectly!
+        const targetPanel = document.getElementById(`${tab.dataset.tab}-panel`);
+        if (targetPanel) {
+            targetPanel.classList.add("settings-panel-active");
+        }
     });
 });
 
@@ -59,13 +68,12 @@ document.getElementById("profilePictureInput").addEventListener("change", functi
 profileForm.addEventListener("submit", async function (e) {
     e.preventDefault(); 
 
-    // Extracting fields using native Multi-part implementation safely
     const formData = new FormData(profileForm);
 
     try {
         const res = await fetch("/api/user/settings/profile", {
             method: "POST",
-            body: formData, // Do NOT set content-type header manually here; let browser assign boundaries
+            body: formData,
         });
 
         const data = await res.json();
@@ -75,7 +83,7 @@ profileForm.addEventListener("submit", async function (e) {
             return;
         }
 
-        // Handle and clean up historical UI alert nodes inside the content area
+        // Clean up older alerts inside the form context before appending a new one
         const oldError = document.getElementById("error");
         const oldSuccess = document.getElementById("sent");
         if (oldError) oldError.remove();
@@ -92,10 +100,8 @@ profileForm.addEventListener("submit", async function (e) {
             box.className = "alert info";
             box.innerText = `📩 ${data.message}`;
 
-            // --- RUN LIVE DOM UPDATES ON ACCOUNT DETAILS ---
             const newUsername = formData.get("username");
             
-            // 1. Update text fields across screen
             if (document.querySelector(".welcome__name")) {
                 document.querySelector(".welcome__name").innerText = newUsername;
             }
@@ -103,12 +109,10 @@ profileForm.addEventListener("submit", async function (e) {
                 document.querySelector(".user-settings-username").innerText = newUsername;
             }
 
-            // 2. Scan and extract uploaded file to update persistent state without a reload
             const fileInput = document.getElementById("profilePictureInput");
             if (fileInput.files && fileInput.files[0]) {
                 const livePreviewUrl = document.getElementById("profilePreview").src;
                 
-                // Propagate temporary image binary path safely to the rest of dashboard viewports
                 if (document.querySelector(".nav__pfp")) {
                     document.querySelector(".nav__pfp").src = livePreviewUrl;
                 }
@@ -117,14 +121,9 @@ profileForm.addEventListener("submit", async function (e) {
                 }
             }
             
-            // Clean out local input field selections
             fileInput.value = "";
-            
-            // Optional closing rule
-            // setTimeout(() => { box.remove(); closeModal(); }, 1500);
         }
 
-        // Append feedback notification box cleanly right above profile actions frame
         profileForm.parentNode.insertBefore(box, profileForm);
 
     } catch (err) {
