@@ -41,7 +41,12 @@ router.get("/dashboard", async (req, res) => {
     }
 
     // continue with dashboard
-    return res.render("dashboard");
+    const user = rows1[0];
+
+    return res.render("dashboard", {
+        username: user.username,
+        pfp_path: user.pfp_path
+    });
 });
 
 // DASHBOARD API IS IN api.js

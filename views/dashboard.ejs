@@ -34,12 +34,12 @@
     <!-- LAYER 1: NAV -->
     <header class="nav">
     <div class="brand">
-        <img class="brand__logo" src="media/logo.png" alt="Cardel logo" />
+        <img class="brand__logo" src="media/icons/logo.png" alt="Cardel logo" />
         <div class="brand__name">CARDEL</div>
     </div>
 
     <div class="nav__center">
-        <img class="nav__pfp userSettings" src="media/pfp/1.png" alt="Profile" />
+        <img class="nav__pfp userSettings" src="<%= pfp_path %>" alt="Profile" />
     </div>
 
     <div class="nav__right">
@@ -52,7 +52,7 @@
     <div class="welcome">
         <div class="welcome__line2">
         <span class="welcome__hi">Hi</span>
-        <span class="welcome__name">f3tch</span><span class="welcome__comma">,</span>
+        <span class="welcome__name"><%= username %></span><span class="welcome__comma">,</span>
         </div>
         <div class="welcome__line2">Have a great day!</div>
     </div>
@@ -372,7 +372,7 @@
             <aside class="user-settings-sidebar">
 
                 <div class="user-settings-profile-top">
-                    <img src="media/pfp/1.png" class="user-settings-avatar" alt="Profile">
+                    <img src="<%= pfp_path %>" class="user-settings-avatar" alt="Profile">
                     <div class="user-settings-username">f3tch</div>
                 </div>
 
@@ -400,7 +400,7 @@
                     <div class="cdl-icon-section">
                         <div class="cdl-icon-preview-wrapper">
                             <img id="profilePreview"
-                                 src="media/pfp/1.png"
+                                 src="<%= pfp_path %>"
                                  alt="preview">
                         </div>
 
