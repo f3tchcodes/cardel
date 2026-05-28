@@ -103,7 +103,7 @@ app.use("/api/auth/", apiLimiter, authAPIRoutes);
 app.use("/api/", apiLimiter, jwtAuth, userAPIRoutes);
 app.use("/api/onboarding/", apiLimiter, jwtAuth, onboardingAPIRoutes);
 app.use("/api/user/subscriptions/", apiLimiter, jwtAuth, subscriptionsAPIRoutes);
-app.use("/api/user/settings/profile/", apiLimiter, jwtAuth, userSettingsAPIRoutes);
+app.use("/api/user/settings/", apiLimiter, jwtAuth, userSettingsAPIRoutes);
 
 // error handlers
 app.use(multerErrorHandler);
