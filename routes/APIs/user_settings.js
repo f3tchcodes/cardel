@@ -118,7 +118,7 @@ router.post("/profile", userSubIconsUpload.single("sub_icon"), async (req, res) 
     const secureFilenameComplete = `/media/pfp/${secureFilename}`; 
 
     try {
-        const results = await con.query(
+        const [results] = await con.query(
             `
             UPDATE users SET
             username = ?,
