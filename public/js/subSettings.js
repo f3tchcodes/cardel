@@ -1,134 +1,284 @@
-const userSettingsBtn = document.querySelector(".userSettings");
-const overlay = document.getElementById("cdl-userSettingsOverlay");
-const closeBtn = document.getElementById("cdl-closeUserSettings");
-const profileForm = document.getElementById("profileForm");
+import {
+    getSubList,
+    sortSubscriptionsList,
+    renderSubscriptions,
+    subscriptions
+} from "./dashboard.js";
 
-// OPEN MODAL
-userSettingsBtn.addEventListener("click", () => {
+const overlay = document.getElementById("cdl-addSubOverlaySettings");
+const closeBtn = document.getElementById("cdl-closeAddSubSettings");
+const cancelInput = document.getElementById("cdl-cancelInputSettings");
+const tooltip = document.getElementById("cdl-custom-tooltipSettings");
+const deleteBtn = document.getElementById("cdl-settingsDeleteBtnSettings");
+
+const subsList = document.getElementById("subsList");
+
+
+// ========================================
+// SUBSCRIPTION SELECTION + OPEN SETTINGS
+// ========================================
+
+let currentSubId = null;
+
+subsList.addEventListener("click", (e) => {
+    const gearBtn = e.target.closest(".gear-btn");
+
+    if (!gearBtn) return;
+
+    // Open modal
     overlay.classList.add("cdl-open");
     document.body.style.overflow = "hidden";
+
+    // Get clicked subscription row
+    const subElement = gearBtn.closest(".sub-row");
+
+    if (!subElement) return;
+
+    // Find class like: sub_id_123
+    const subIdClass = [...subElement.classList]
+        .find(c => c.startsWith("sub_id_"));
+
+    if (!subIdClass) return;
+
+    currentSubId = subIdClass.replace("sub_id_", "");
+
+    console.log("opened settings for:", currentSubId);
 });
 
-// CLOSE MODAL
-function closeModal() {
-    overlay.classList.remove("cdl-open");
-    document.body.style.overflow = "";
+
+// ========================================
+// BILLING DROPDOWN LOGIC
+// ========================================
+
+let currentUnit = "month";
+
+const ranges = {
+    day: 7,
+    week: 4,
+    month: 12,
+    year: 10
+};
+
+function updateBillingFields() {
+    const interval = parseInt(
+        document.querySelector("#cdl-drop-valSettings .selectedSettings").textContent
+    );
+
+    document.getElementById("subBillingTypeSettings").value = currentUnit;
+    document.getElementById("subBillingIntervalSettings").value = interval;
 }
 
-closeBtn.addEventListener("click", closeModal);
+function populateValues(unit) {
+    const valMenu = document.getElementById("cdl-val-menuSettings");
+    const max = ranges[unit] || 12;
 
-overlay.addEventListener("click", e => {
-    if (e.target === overlay) {
-        closeModal();
+    valMenu.innerHTML = "";
+
+    for (let i = 1; i <= max; i++) {
+        const item = document.createElement("div");
+
+        item.className = "dropdown-item dropdown-itemSettings";
+        item.textContent = i;
+
+        item.onclick = () => {
+            document.querySelector("#cdl-drop-valSettings .selectedSettings").textContent = i;
+            document.getElementById("cdl-drop-valSettings").classList.remove("open");
+            updateBillingFields();
+        };
+
+        valMenu.appendChild(item);
     }
-});
+}
 
-// TAB SWITCHING
-document.querySelectorAll(".settings-tab").forEach(tab => {
-    tab.addEventListener("click", () => {
-        document.querySelectorAll(".settings-tab").forEach(
-            t => t.classList.remove("settings-tab-active")
-        );
 
-        document.querySelectorAll(".settings-panel").forEach(
-            p => p.classList.remove("settings-panel-active")
-        );
+// ========================================
+// DROPDOWN TOGGLES
+// ========================================
 
-        tab.classList.add("settings-tab-active");
+document.querySelectorAll(".dropdown-inputSettings").forEach(input => {
+    input.addEventListener("click", (e) => {
+        const parent = input.parentElement;
 
-        document.getElementById(`${tab.dataset.tab}-panel`).classList.add(
-            "settings-panel-active"
-        );
+        document.querySelectorAll(".dropdownSettings").forEach(d => {
+            if (d !== parent) {
+                d.classList.remove("open");
+            }
+        });
+
+        parent.classList.toggle("open");
+        e.stopPropagation();
     });
 });
 
-// PROFILE IMAGE PREVIEW (LOCAL PREVIEW)
-document.getElementById("profilePictureInput").addEventListener("change", function() {
+
+// ========================================
+// UNIT SELECTION
+// ========================================
+
+document.querySelectorAll("#cdl-drop-unitSettings .dropdown-itemSettings").forEach(item => {
+    item.addEventListener("click", () => {
+        currentUnit = item.dataset.value;
+
+        document.querySelector("#cdl-drop-unitSettings .selectedSettings").textContent = item.textContent;
+        document.querySelector("#cdl-drop-valSettings .selectedSettings").textContent = "1";
+
+        populateValues(currentUnit);
+
+        document.getElementById("cdl-drop-unitSettings").classList.remove("open");
+
+        updateBillingFields();
+    });
+});
+
+
+// ========================================
+// TOOLTIP
+// ========================================
+
+cancelInput.parentElement.addEventListener("mousemove", (e) => {
+    if (cancelInput.classList.contains("free")) {
+        tooltip.style.display = "block";
+        tooltip.style.left = e.clientX + "px";
+        tooltip.style.top = e.clientY + "px";
+    }
+});
+
+cancelInput.parentElement.addEventListener("mouseleave", () => {
+    tooltip.style.display = "none";
+});
+
+
+// ========================================
+// ADVANCED TOGGLE
+// ========================================
+
+document.getElementById("cdl-advToggleSettings").addEventListener("click", () => {
+    document.getElementById("cdl-advPanelSettings").classList.toggle("open");
+    document.getElementById("cdl-advArrowSettings").classList.toggle("rotated");
+});
+
+
+// ========================================
+// ICON PREVIEW
+// ========================================
+
+document.getElementById("cdl-iconInputSettings").addEventListener("change", function () {
     if (this.files && this.files[0]) {
         const reader = new FileReader();
-        reader.onload = e => {
-            document.getElementById("profilePreview").src = e.target.result;
+
+        reader.onload = (e) => {
+            document.getElementById("cdl-iconPreviewSettings").src = e.target.result;
         };
+
         reader.readAsDataURL(this.files[0]);
     }
 });
 
-// ========================================
-// PROFILE UPDATE SUBMISSION (MULTIPART)
-// ========================================
-profileForm.addEventListener("submit", async function (e) {
-    e.preventDefault(); 
 
-    // Extracting fields using native Multi-part implementation safely
-    const formData = new FormData(profileForm);
+// ========================================
+// CLOSE MODAL
+// ========================================
+
+const closeModal = () => {
+    overlay.classList.remove("cdl-open");
+    document.body.style.overflow = "";
+};
+
+closeBtn.onclick = closeModal;
+
+overlay.onclick = (e) => {
+    if (e.target === overlay) {
+        closeModal();
+    }
+};
+
+window.addEventListener("click", () => {
+    document.querySelectorAll(".dropdownSettings").forEach(d => 
+        d.classList.remove("open")
+    );
+});
+
+
+// ========================================
+// DELETE
+// ========================================
+
+deleteBtn.addEventListener("click", async () => {
+    if (!currentSubId) return;
+
+    console.log("deleting:", currentSubId);
+
+    await fetch(`/api/user/subscriptions/${currentSubId}`, {
+        method: "DELETE"
+    });
+
+    const rawData = await getSubList();
+
+    sortSubscriptionsList(rawData);
+    renderSubscriptions();
+    closeModal();
+});
+
+
+// ========================================
+// EDIT
+// ========================================
+const form = document.getElementById("cdl-addSubFormSettings");
+
+form.addEventListener("submit", async function (e) {
+    e.preventDefault(); // stop normal redirect
+
+    const formData = new FormData(form);
+    formData.append("sub_id", currentSubId);
 
     try {
-        const res = await fetch("/api/user/settings/profile", {
+        const res = await fetch("/api/user/subscriptions/add", {
             method: "POST",
-            body: formData, // Do NOT set content-type header manually here; let browser assign boundaries
+            body: formData,
         });
 
         const data = await res.json();
 
         if (data.redirect_url) {
             window.location.href = data.redirect_url;
-            return;
         }
 
-        // Handle and clean up historical UI alert nodes inside the content area
+        // Remove old alerts if any
         const oldError = document.getElementById("error");
         const oldSuccess = document.getElementById("sent");
         if (oldError) oldError.remove();
         if (oldSuccess) oldSuccess.remove();
 
+        // Create message box
         const box = document.createElement("div");
-        
+        box.id = data.error ? "error" : "";
+        box.className = data.error ? "error" : "";
         if (data.error) {
-            box.id = "error";
-            box.className = "error";
             box.innerText = `❌ ${data.message}`;
         } else {
-            box.id = "sent";
-            box.className = "alert info";
-            box.innerText = `📩 ${data.message}`;
+            const overlay = document.getElementById("cdl-addSubOverlay");
+            const rawData = await getSubList();
 
-            // --- RUN LIVE DOM UPDATES ON ACCOUNT DETAILS ---
-            const newUsername = formData.get("username");
-            
-            // 1. Update text fields across screen
-            if (document.querySelector(".welcome__name")) {
-                document.querySelector(".welcome__name").innerText = newUsername;
-            }
-            if (document.querySelector(".user-settings-username")) {
-                document.querySelector(".user-settings-username").innerText = newUsername;
-            }
+            sortSubscriptionsList(rawData);
+            renderSubscriptions();
+            form.reset();
 
-            // 2. Scan and extract uploaded file to update persistent state without a reload
-            const fileInput = document.getElementById("profilePictureInput");
-            if (fileInput.files && fileInput.files[0]) {
-                const livePreviewUrl = document.getElementById("profilePreview").src;
-                
-                // Propagate temporary image binary path safely to the rest of dashboard viewports
-                if (document.querySelector(".nav__pfp")) {
-                    document.querySelector(".nav__pfp").src = livePreviewUrl;
-                }
-                if (document.querySelector(".user-settings-avatar")) {
-                    document.querySelector(".user-settings-avatar").src = livePreviewUrl;
-                }
-            }
-            
-            // Clean out local input field selections
-            fileInput.value = "";
-            
-            // Optional closing rule
-            setTimeout(() => { box.remove(); closeModal(); }, 1500);
+            closeModal();
         }
 
-        // Append feedback notification box cleanly right above profile actions frame
-        profileForm.parentNode.insertBefore(box, profileForm);
-
+        // Insert above form
+        form.parentNode.insertBefore(box, form);
     } catch (err) {
         console.error(err);
-        alert("Network error processing your profile updates. Try again.");
+        alert("Network error. Try again.");
     }
 });
+
+
+// ========================================
+// INITIALIZE
+// ========================================
+
+populateValues("month");
+
+updateBillingFields();
