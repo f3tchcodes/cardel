@@ -32,6 +32,7 @@ const authAPIRoutes = require("@routes/APIs/auth");
 const userAPIRoutes = require("@routes/APIs/user");
 const onboardingAPIRoutes = require("@routes/APIs/onboarding");
 const subscriptionsAPIRoutes = require("@routes/APIs/user_subscriptions");
+const userSettingsAPIRoutes = require("@routes/APIs/user_settings.js");
 
 // custom middlewares
 const multerErrorHandler = require("@middlewares/multerErrorHandler");
@@ -101,12 +102,8 @@ app.use("/", authenticatedIndexRVRoutes);
 app.use("/api/auth/", apiLimiter, authAPIRoutes);
 app.use("/api/", apiLimiter, jwtAuth, userAPIRoutes);
 app.use("/api/onboarding/", apiLimiter, jwtAuth, onboardingAPIRoutes);
-app.use(
-    "/api/user/subscriptions/",
-    apiLimiter,
-    jwtAuth,
-    subscriptionsAPIRoutes,
-);
+app.use("/api/user/subscriptions/", apiLimiter, jwtAuth, subscriptionsAPIRoutes);
+app.use("/api/user/settings/profile/", apiLimiter, jwtAuth, userSettingsAPIRoutes);
 
 // error handlers
 app.use(multerErrorHandler);
