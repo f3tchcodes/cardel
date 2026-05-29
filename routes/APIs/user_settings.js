@@ -196,10 +196,10 @@ router.post("/account", async (req, res) => {
 
     const user = rows1[0];
 
-    const { email, current_password, new_password } = req.body; 
+    const { account_email, current_password, new_password } = req.body; 
     
     // email validation
-    const normalizedEmail = email.toLowerCase().trim();
+    const normalizedEmail = account_email.toLowerCase().trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (normalizedEmail !== user.email) {
