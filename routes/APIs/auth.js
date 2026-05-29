@@ -66,10 +66,10 @@ router.post("/signup", async (req, res) => {
         }
 
         if (normalizedEmail.length > 100 || password.length > 100 || username.length > 50) {
-        return res.json({
-            success: false,
-            error: true,
-            message: "Input data is too large.",
+            return res.json({
+                success: false,
+                error: true,
+                message: "Input data is too large.",
         });
     }
 
