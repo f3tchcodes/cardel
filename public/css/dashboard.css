@@ -949,3 +949,12 @@ body {
         grid-row: 1;
     }
 }
+
+.userSettings {
+    transition: opacity 0.2s ease-in;
+}
+
+.userSettings:hover {
+    opacity: 80%;
+    cursor: pointer;
+}
