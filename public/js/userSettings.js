@@ -131,3 +131,74 @@ profileForm.addEventListener("submit", async function (e) {
         alert("Network error processing your profile updates. Try again.");
     }
 });
+
+// ========================================
+// ACCOUNT SETTINGS UPDATE SUBMISSION (JSON)
+// ========================================
+const accountPanel = document.getElementById("account-panel");
+
+if (accountPanel) {
+    const saveAccountBtn = accountPanel.querySelector(".btn-submit");
+
+    saveAccountBtn.addEventListener("click", async function (e) {
+        e.preventDefault();
+
+        // Target individual data inputs inside the panel container context
+        const emailInput = accountPanel.querySelector("input[name='account_email']");
+        const currentPasswordInput = accountPanel.querySelector("input[name='current_password']");
+        const newPasswordInput = accountPanel.querySelector("input[name='new_password']");
+
+        // Prepare the plain JSON payload matching backend specifications
+        const payload = {
+            email: emailInput.value,
+            current_password: currentPasswordInput.value,
+            new_password: newPasswordInput.value
+        };
+
+        // Clean up older alerts inside the parent context before appending a new one
+        const oldError = document.getElementById("error");
+        const oldSuccess = document.getElementById("sent");
+        if (oldError) oldError.remove();
+        if (oldSuccess) oldSuccess.remove();
+
+        try {
+            const res = await fetch("/api/user/settings/account", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await res.json();
+
+            if (data.redirect_url) {
+                window.location.href = data.redirect_url;
+                return;
+            }
+
+            const box = document.createElement("div");
+
+            if (data.error) {
+                box.id = "error";
+                box.className = "error";
+                box.innerText = `❌ ${data.message}`;
+            } else {
+                box.id = "sent";
+                box.className = "alert info";
+                box.innerText = `📩 ${data.message}`;
+
+                // Flush out the sensitive text inputs on execution validation success
+                currentPasswordInput.value = "";
+                newPasswordInput.value = "";
+            }
+
+            // Insert the box right inside the account panel, above the content structure
+            accountPanel.insertBefore(box, accountPanel.firstChild);
+
+        } catch (err) {
+            console.error(err);
+            alert("Network error processing your account updates. Try again.");
+        }
+    });
+}
