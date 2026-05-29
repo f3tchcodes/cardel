@@ -19,3 +19,70 @@
     margin-bottom: 18px;
     text-align: center;
 }
+
+
+/* Toast Container - Houses multiple alerts if clicked rapidly */
+.cdl-toast-container {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    pointer-events: none; /* Let clicks pass through empty spaces */
+}
+
+/* Individual Toast Styling */
+.cdl-toast {
+    pointer-events: auto; /* Re-enable clicks for the element itself */
+    min-width: 300px;
+    max-width: 450px;
+    background: #1a1a24; /* Seamless with Cardel dark palette */
+    border-left: 4px solid #ff4a4a; /* Error color indicator */
+    color: #eef2ff;
+    padding: 16px;
+    border-radius: 6px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-family: 'League Spartan', system-ui, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    
+    /* Animation base state */
+    transform: translateX(120%);
+    opacity: 0;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+}
+
+/* Slide in state */
+.cdl-toast.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+/* Slide out state */
+.cdl-toast.fade-out {
+    transform: translateX(40px);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Toast Close Button */
+.cdl-toast-close {
+    background: none;
+    border: none;
+    color: rgba(238, 242, 255, 0.4);
+    font-size: 20px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 4px;
+    transition: color 0.2s ease;
+}
+
+.cdl-toast-close:hover {
+    color: #ff4a4a;
+}

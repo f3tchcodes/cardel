@@ -4,7 +4,53 @@ proCard.addEventListener("click", () => {
     window.open("/pricing", "_blank");
 });
 
-// code function for sending post request
+/* -------------------------
+   Global Toast Engine
+-------------------------- */
+function showToast(message, duration = 4000) {
+    // 1. Ensure global container element exists
+    let container = document.querySelector(".cdl-toast-container");
+    if (!container) {
+        container = document.createElement("div");
+        container.className = "cdl-toast-container";
+        document.body.appendChild(container);
+    }
+
+    // 2. Build individual toast instance
+    const toast = document.createElement("div");
+    toast.className = "cdl-toast";
+    
+    toast.innerHTML = `
+        <span class="cdl-toast-msg">❌ ${message}</span>
+        <button class="cdl-toast-close" type="button" aria-label="Dismiss">&times;</button>
+    `;
+
+    container.appendChild(toast);
+
+    // Trigger macro-task queue for entry transition execution
+    setTimeout(() => toast.classList.add("show"), 10);
+
+    // Setup teardown routing function
+    const dismissToast = () => {
+        if (toast.classList.contains("fade-out")) return;
+        toast.classList.add("fade-out");
+        toast.addEventListener("transitionend", () => {
+            toast.remove();
+            // Prune container shell if empty
+            if (container.children.length === 0) {
+                container.remove();
+            }
+        });
+    };
+
+    // 3. Attach standard close listener bindings
+    toast.querySelector(".cdl-toast-close").addEventListener("click", dismissToast);
+
+    // 4. Fallback auto-destruct timer sequence
+    setTimeout(dismissToast, duration);
+}
+
+// Global dynamic wrapper for structural fallback
 async function postData(url, data) {
     try {
         const response = await fetch(url, {
@@ -15,33 +61,48 @@ async function postData(url, data) {
             body: JSON.stringify(data),
         });
 
+        // Parse JSON regardless of status code to read custom error payloads
+        const responseData = await response.json(); 
+        
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            // Throw an error containing the server's custom message if available
+            throw new Error(responseData.message || `HTTP error! status: ${response.status}`);
         }
 
-        const responseData = await response.json(); // Parse the response body as JSON
         console.log("Success:", responseData);
         return responseData;
     } catch (error) {
         console.error("Error:", error);
+        // Extracts the custom string passed into our Error constructor above
+        showToast(error.message || "Network operation failed. Action could not be synced.");
     }
 }
 
 let subscriptions = [];
-let items = [];
 let activeSubTab = "Upcoming";
 
 async function getSubList() {
-    const res = await fetch("/api/user/subscriptions/list");
-    if (!res.ok) throw new Error(`Status: ${res.status}`);
+    try {
+        const res = await fetch("/api/user/subscriptions/list");
+        const json = await res.json();
 
-    const json = await res.json();
-    return Array.isArray(json) ? json : [json];
+        if (!res.ok) {
+            throw new Error(json.message || `Status: ${res.status}`);
+        }
+
+        return Array.isArray(json) ? json : [json];
+    } catch (err) {
+        console.error(err);
+        showToast(err.message || "Failed to retrieve subscriptions list from server.");
+        return []; // Return empty array gracefully to avoid breaking page rendering
+    }
 }
 
+// Core execution orchestration
 const rawData = await getSubList();
 
 function sortSubscriptionsList(rawData) {
+    if (!rawData || rawData.length === 0) return;
     subscriptions = rawData.map((item) => {
         const nextBillingTime =
             (new Date(item.sub_next).getTime() - Date.now()) / 1000;
@@ -51,13 +112,9 @@ function sortSubscriptionsList(rawData) {
             name: item.sub_name,
             icon: item.sub_icon,
             rate: parseFloat(item.sub_rate),
-
-            // Here is your perfectly calculated next billing timestamp!
             next: nextBillingTime,
-
             billing_type: item.sub_billing_type,
             billing_interval: item.sub_billing_interval,
-
             billing: `${item.sub_billing_interval} ${item.sub_billing_type}${
                 item.sub_billing_interval > 1 ? "s" : ""
             }`,
@@ -73,9 +130,8 @@ function sortSubscriptionsList(rawData) {
 sortSubscriptionsList(rawData);
 
 /* -------------------------
-   Helpers
+    Helpers
 -------------------------- */
-
 function formatNext(seconds) {
     if (seconds <= 0) return "Due now";
     if (seconds <= 60)
@@ -90,38 +146,29 @@ function formatNext(seconds) {
 function statusClass(sub) {
     if (!sub.enabled) return "is-disabled";
     const secs = sub.next;
-    if (secs <= 86400) return "is-urgent"; // < 24 hours
-    if (secs <= 259200) return "is-soon"; // < 72 hours
+    if (secs <= 86400) return "is-urgent"; 
+    if (secs <= 259200) return "is-soon"; 
     return "is-normal";
 }
 
 /* -------------------------
-   Tabs Logic
+    Tabs Logic
 -------------------------- */
 function setupActiveTabs(selector) {
     const tabs = document.querySelectorAll(selector);
 
     tabs.forEach((btn) => {
         btn.addEventListener("click", () => {
-            // 1. UI Toggle
             tabs.forEach((b) => b.classList.remove("is-active"));
             btn.classList.add("is-active");
-
-            // 2. Update State
-            // We trim just in case of whitespace in HTML
             activeSubTab = btn.textContent.trim();
-
-            // 3. Re-render list
             renderSubscriptions();
         });
     });
 }
 
-// 
-
-
 /* -------------------------
-   Render subscriptions list
+    Render subscriptions list
 -------------------------- */
 function renderSubscriptions() {
     const listEl = document.getElementById("subsList");
@@ -130,27 +177,19 @@ function renderSubscriptions() {
 
     listEl.innerHTML = "";
 
-    // 1. Start with Search Filter (applies to everything)
     let items = subscriptions.filter((s) => s.name.toLowerCase().includes(q));
 
-    // 2. Category & Sorting Logic
     if (activeSubTab === "Upcoming") {
-        // RULE: Only enabled, ordered by next charge (ascending)
         items = items.filter((s) => s.enabled);
         items.sort((a, b) => a.next - b.next);
     } else if (activeSubTab === "All") {
-        // RULE: All (enabled or disabled), ordered by date added (Newest first)
         items.sort((a, b) => b.created - a.created);
     } else {
-        // RULE: Specific Category, ordered by date added (Newest first)
-        // We compare lowercase to lowercase to ensure "Work/Business" matches "work/business"
         const targetCat = activeSubTab.toLowerCase();
-
         items = items.filter((s) => s.category === targetCat);
         items.sort((a, b) => b.created - a.created);
     }
 
-    // 3. Render
     if (items.length === 0) {
         listEl.innerHTML = `<div class="empty-state">No subscriptions found.</div>`;
         return;
@@ -160,30 +199,28 @@ function renderSubscriptions() {
         const row = document.createElement("div");
         row.className = `sub-row ${statusClass(sub)} sub_id_${sub.id}`;
 
-        // Generate HTML
         row.innerHTML = `
-      <div class="sub-icon"><img src="${sub.icon}"></div>
-      <div class="sub-name">${sub.name}</div>
-      <div class="sub-rate">$${sub.rate.toFixed(2)}</div>
-      <div class="sub-next">${formatNext(sub.next)}</div>
-      <div class="sub-cycle">${sub.billing}</div>
-      
-      <div class="sub-meta">
-        <span class="m-rate">$${sub.rate.toFixed(2)}</span>
-        <span class="sep">•</span>
-        <span class="m-next">${formatNext(sub.next)}</span>
-        <span class="sep">•</span>
-        <span class="m-cycle">${sub.billing}</span>
-      </div>
+          <div class="sub-icon"><img src="${sub.icon}"></div>
+          <div class="sub-name">${sub.name}</div>
+          <div class="sub-rate">$${sub.rate.toFixed(2)}</div>
+          <div class="sub-next">${formatNext(sub.next)}</div>
+          <div class="sub-cycle">${sub.billing}</div>
+          
+          <div class="sub-meta">
+            <span class="m-rate">$${sub.rate.toFixed(2)}</span>
+            <span class="sep">•</span>
+            <span class="m-next">${formatNext(sub.next)}</span>
+            <span class="sep">•</span>
+            <span class="m-cycle">${sub.billing}</span>
+          </div>
 
-      <button class="gear-btn" type="button" aria-label="Settings">
-         <svg viewBox="0 0 24 24" aria-hidden="true">
-           <path d="M19.14,12.94a7.43,7.43,0,0,0,.05-.94,7.43,7.43,0,0,0-.05-.94l2.11-1.65a.5.5,0,0,0,.12-.65l-2-3.46a.5.5,0,0,0-.6-.22l-2.49,1a7.28,7.28,0,0,0-1.63-.94l-.38-2.65A.5.5,0,0,0,13.8,1H10.2a.5.5,0,0,0-.49.42L9.33,4.07a7.28,7.28,0,0,0-1.63.94l-2.49-1a.5.5,0,0,0-.6.22l-2,3.46a.5.5,0,0,0,.12.65L4.86,11.06a7.43,7.43,0,0,0-.05.94,7.43,7.43,0,0,0,.05.94L2.75,14.59a.5.5,0,0,0-.12.65l2,3.46a.5.5,0,0,0,.6.22l2.49-1a7.28,7.28,0,0,0,1.63.94l.38,2.65a.5.5,0,0,0,.49.42h3.6a.5.5,0,0,0,.49-.42l.38-2.65a7.28,7.28,0,0,0,1.63-.94l2.49,1a.5.5,0,0,0,.6-.22l2-3.46a.5.5,0,0,0-.12-.65ZM12,15.5A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z"/>
-         </svg>
-      </button>
-    `;
+          <button class="gear-btn" type="button" aria-label="Settings">
+             <svg viewBox="0 0 24 24" aria-hidden="true">
+               <path d="M19.14,12.94a7.43,7.43,0,0,0,.05-.94,7.43,7.43,0,0,0-.05-.94l2.11-1.65a.5.5,0,0,0,.12-.65l-2-3.46a.5.5,0,0,0-.6-.22l-2.49,1a7.28,7.28,0,0,0-1.63-.94l-.38-2.65A.5.5,0,0,0,13.8,1H10.2a.5.5,0,0,0-.49.42L9.33,4.07a7.28,7.28,0,0,0-1.63.94l-2.49-1a.5.5,0,0,0-.6.22l-2,3.46a.5.5,0,0,0,.12.65L4.86,11.06a7.43,7.43,0,0,0-.05.94,7.43,7.43,0,0,0,.05.94L2.75,14.59a.5.5,0,0,0-.12.65l2,3.46a.5.5,0,0,0,.6.22l2.49-1a7.28,7.28,0,0,0,1.63.94l.38,2.65a.5.5,0,0,0,.49.42h3.6a.5.5,0,0,0,.49-.42l.38-2.65a7.28,7.28,0,0,0,1.63-.94l2.49,1a.5.5,0,0,0,.6-.22l2-3.46a.5.5,0,0,0-.12-.65ZM12,15.5A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z"/>
+             </svg>
+          </button>
+        `;
 
-        // Create Switch manually to attach event listener
         const switchLabel = document.createElement("label");
         switchLabel.className = "switch";
 
@@ -194,32 +231,25 @@ function renderSubscriptions() {
         const slider = document.createElement("span");
         slider.className = "slider";
 
-        // Inside renderSubscriptions() loop:
         toggle.addEventListener("change", async () => {
-            // 1. Determine the new state (0 or 1 for the database)
             const newStatus = toggle.checked ? 1 : 0;
 
-            // 2. Send the request to your server
             const result = await postData("/api/user/subscriptions/toggle", {
-                sub_id: sub.id, // Using the ID we mapped in step 1
+                sub_id: sub.id,
                 enabled: newStatus,
             });
 
-            // 3. Handle the UI update based on result
             if (result && !result.error) {
                 sub.enabled = toggle.checked;
                 row.className = `sub-row ${statusClass(sub)}`;
 
-                // Optional: If in Upcoming tab, remove the row if disabled
                 if (activeSubTab === "Upcoming" && !sub.enabled) {
                     renderSubscriptions();
                 }
             } else {
-                // 4. Revert the toggle if the server failed
                 toggle.checked = !toggle.checked;
-                alert(
-                    "Failed to update: " + (result?.error || "Unknown error"),
-                );
+                // Grabs the custom .message from your Express endpoint
+                showToast(result?.message || "Failed to update database tracking state.");
             }
         });
 
@@ -232,7 +262,7 @@ function renderSubscriptions() {
 }
 
 /* -------------------------
-   Search
+    Search
 -------------------------- */
 function setupSearch() {
     const input = document.getElementById("subsSearch");
@@ -240,7 +270,7 @@ function setupSearch() {
 }
 
 /* -------------------------
-   Chart.js graph
+    Chart.js graph
 -------------------------- */
 function buildChart() {
     const el = document.getElementById("spendChart");
@@ -251,14 +281,12 @@ function buildChart() {
         afterDatasetsDraw(chart) {
             const { ctx } = chart;
             ctx.save();
-            ctx.font =
-                "700 12px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+            ctx.font = "700 12px system-ui, -apple-system, Segoe UI, Roboto, Arial";
             ctx.fillStyle = "rgba(238, 242, 255, 0.92)";
 
             const meta = chart.getDatasetMeta(0);
             meta.data.forEach((bar, i) => {
                 const val = chart.data.datasets[0].data[i];
-                // simple guard to keep label inside/near bar
                 const x = bar.x + 10;
                 const y = bar.y + 4;
                 ctx.fillText(String(val), x, y);
@@ -315,26 +343,22 @@ function buildChart() {
 }
 
 /* -------------------------
-   Analytics-Only Tabs Logic
+    Analytics-Only Tabs Logic
 -------------------------- */
 function setupAnalyticsOnlyTabs(selector) {
     const tabs = document.querySelectorAll(selector);
 
     tabs.forEach((btn) => {
         btn.addEventListener("click", () => {
-            // Toggle the 'is-active' class for the UI/CSS animation only
             tabs.forEach((b) => b.classList.remove("is-active"));
             btn.classList.add("is-active");
-
-            // We do NOT call renderSubscriptions() here.
-            // You can add your own custom logic here later (like updating the chart)
             console.log("Viewing financials for:", btn.textContent.trim());
         });
     });
 }
 
 /* -------------------------
-   Boot
+    Boot
 -------------------------- */
 setupActiveTabs(".subtab");
 setupAnalyticsOnlyTabs(".atab");
@@ -346,5 +370,6 @@ export {
     getSubList, 
     sortSubscriptionsList, 
     renderSubscriptions, 
-    subscriptions
+    subscriptions,
+    showToast
 };
