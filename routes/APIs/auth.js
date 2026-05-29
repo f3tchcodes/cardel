@@ -70,8 +70,8 @@ router.post("/signup", async (req, res) => {
                 success: false,
                 error: true,
                 message: "Input data is too large.",
-        });
-    }
+            });
+        }
 
         if (password.length < 8) {
             return res.json({
