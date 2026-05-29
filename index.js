@@ -43,7 +43,10 @@ const errorCodes = require("@middlewares/errorCodes");
 const apiLimiter = rateLimit({
     windowMs: 10 * 60 * 1000, // 10 minutes
     max: 100, // limit each IP to 100 requests per 10 minutes window on the API endpoints
-    message: "Too many requests, please try again later.",
+    message: {
+        error: true, 
+        message: "Too many requests, try again later."
+    },
     standardHeaders: true,
     legacyHeaders: false,
 });
