@@ -204,7 +204,7 @@ router.post("/account", async (req, res) => {
     console.log(normalizedEmail)
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (normalizedEmail !== user.email) {
+    if (normalizedEmail.length > 0 && normalizedEmail !== user.email) {
         // basic checks of email
 
         if (normalizedEmail.length > 100) {
