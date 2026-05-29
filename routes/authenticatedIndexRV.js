@@ -36,7 +36,7 @@ router.get("/dashboard", async (req, res) => {
     } else {
         res.clearCookie("token");
         return res.json({
-            error: "Either user does not exist or there are multiple users with this email, clear cookies and login again. If it does not work, contact us at our support email.",
+            error: "Refresh page!",
         });
     }
 
@@ -155,7 +155,7 @@ router.get("/onboarding", async (req, res) => {
         }
     } else {
         return res.json({
-            error: "Either user does not exist or there are multiple users with this email, clear cookies and login again. If it does not work, contact us at our support email.",
+            error: "Refresh page!",
         });
     }
 

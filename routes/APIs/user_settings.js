@@ -83,7 +83,7 @@ router.post("/profile", userPfpUpload.single("sub_icon"), async (req, res) => {
             return res.json({
                 error: true,
                 message:
-                    "Either user does not exist or there are multiple users with this email, clear cookies and login again. If it does not work, contact us at our support email.",
+                    "Refresh page!",
             });
         }
     } catch (err) {
@@ -182,7 +182,7 @@ router.post("/account", async (req, res) => {
             return res.json({
                 error: true,
                 message:
-                    "Either user does not exist or there are multiple users with this email, clear cookies and login again. If it does not work, contact us at our support email.",
+                    "Refresh page!",
             });
         }
     } catch (err) {
