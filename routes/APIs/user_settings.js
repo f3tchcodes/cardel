@@ -196,7 +196,8 @@ router.post("/account", async (req, res) => {
 
     const user = rows1[0];
 
-    const {current_password, new_password } = req.body;
+    const current_password = req.body.current_password ?? "";
+    const new_password = req.body.new_password ?? "";
     
     // email validation
     const normalizedEmail = req.body.account_email?.toLowerCase().trim() ?? "";
