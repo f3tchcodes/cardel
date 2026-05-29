@@ -221,6 +221,37 @@ router.post("/account", async (req, res) => {
             });
         }
 
+        // duplicate email check
+
+        try {
+            const [existingUser] = await con.query(
+                `
+                SELECT user_id
+                FROM users 
+                WHERE email = ? 
+                LIMIT 1;
+                `,
+                [normalizedEmail]
+            );
+
+            if (existingUser.length > 0) {
+                return res.json({
+                    success: false,
+                    error: true,
+                    message: "This email address is already in use by another account.",
+                });
+            }
+        } catch (dbErr) {
+            console.log(dbErr);
+            return res.json({
+                success: false,
+                error: true,
+                message: "Database error verifying email availability.",
+            });
+        }
+
+        // update email
+
         const [emailResults] = await con.query(
             `
             UPDATE users
@@ -306,7 +337,6 @@ router.post("/account", async (req, res) => {
         success: true,
         message: "Account settings updated successfully!"
     })
-
 });
 
 
