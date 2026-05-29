@@ -66,7 +66,7 @@ router.post("/signup", async (req, res) => {
             });
         }
 
-        if (normalizedEmail.length > 100 || password.length > 100 || username.length > 50) {
+        if (normalizedEmail.length > 100 || password.trim().length > 100 || username.length > 50) {
             return res.json({
                 success: false,
                 error: true,
@@ -235,7 +235,7 @@ router.post("/login", async (req, res) => {
 
     // basic checks
 
-    if (normalizedEmail.length === 0 || password.length === 0) {
+    if (normalizedEmail.length === 0 || password.trim().length === 0) {
         return res.json({
             success: false,
             error: true,
@@ -243,7 +243,7 @@ router.post("/login", async (req, res) => {
         });
     }
 
-    if (normalizedEmail.length > 100 || password.length > 100) {
+    if (normalizedEmail.length > 100 || password.trim().length > 100) {
         return res.json({
             success: false,
             error: true,
