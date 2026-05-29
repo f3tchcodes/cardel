@@ -240,7 +240,7 @@ router.post("/account", async (req, res) => {
     }
 
     // password verification and validation
-    if (current_password > 0 || new_password > 0) {
+    if (current_password.length > 0 || new_password.length > 0) {
         let isPasswordCorrect;
 
         // password verification
@@ -265,11 +265,19 @@ router.post("/account", async (req, res) => {
         } else {
             // password has been verified, continue from here
             // password validation
-            if (new_password.length < 8) {
+            if (new_password.trim().length < 8) {
                 return res.json({
                     success: false,
                     error: true,
                     message: "Password must be 8 or more characters.",
+                });
+            }
+
+            if (new_password.trim().length > 50) {
+                return res.json({
+                    success: false,
+                    error: true,
+                    message: "Password must be lower than 50 characters.",
                 });
             }
 
@@ -281,7 +289,7 @@ router.post("/account", async (req, res) => {
                 SET password = ?
                 WHERE user_id = ?
                 `,
-                [current_password, jwt_data.user_id]
+                [hashed_password, jwt_data.user_id]
             );
 
             if (passwordResults.affectedRows === 0){
