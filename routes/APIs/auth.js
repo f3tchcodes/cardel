@@ -33,6 +33,7 @@ router.post("/signup", async (req, res) => {
     try {
         const { username, email, password, confirm_password } = req.body;
         const normalizedEmail = email.toLowerCase().trim();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         // marketing consent value
         if (!req.body.marketing_consent) {
@@ -70,6 +71,14 @@ router.post("/signup", async (req, res) => {
                 success: false,
                 error: true,
                 message: "Input data is too large.",
+            });
+        }
+
+        if (!emailRegex.test(normalizedEmail)) {
+            return res.json({
+                success: false,
+                error: true,
+                message: "Please enter a valid email address.",
             });
         }
 
