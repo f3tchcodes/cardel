@@ -24,13 +24,13 @@ const con = require("@utils/database");
 const { emailQueue } = require("@utils/queue");
 
 // multer configuration
-const iconUploadDir = path.join(__dirname, "../../public/media/pfp/");
+const pfpUploadDir = path.join(__dirname, "../../public/media/pfp/");
 
-if (!fs.existsSync(iconUploadDir)) {
-    fs.mkdirSync(iconUploadDir);
+if (!fs.existsSync(pfpUploadDir)) {
+    fs.mkdirSync(pfpUploadDir);
 }
 
-const userSubIconsUpload = multer({
+const userPfpUpload = multer({
     storage: multer.memoryStorage(),
     limits: {
         fileSize: 5 * 1024 * 1024,
@@ -52,7 +52,7 @@ const userSubIconsUpload = multer({
 });
 
 // POST request to /profile
-router.post("/profile", userSubIconsUpload.single("sub_icon"), async (req, res) => {
+router.post("/profile", userPfpUpload.single("sub_icon"), async (req, res) => {
 
     try {
         jwt_data = jwt.verify(req.cookies.token, process.env.JWT_SECRET);
@@ -107,7 +107,7 @@ router.post("/profile", userSubIconsUpload.single("sub_icon"), async (req, res) 
     
     if (req.file) {
         secureFilename = `${crypto.randomBytes(16).toString("hex")}.webp`;
-        const outputPath = path.join(iconUploadDir, secureFilename);
+        const outputPath = path.join(pfpUploadDir, secureFilename);
 
         await sharp(req.file.buffer)
             .resize({ width: 256, height: 256, fit: "cover" })
