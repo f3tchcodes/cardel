@@ -90,7 +90,7 @@ router.post("/signup", async (req, res) => {
             });
         }
 
-        if (password != confirm_password) {
+        if (password !== confirm_password) {
             return res.json({
                 success: false,
                 error: true,
