@@ -25,6 +25,13 @@ router.get("/current_month", async (req, res) => {
         category_health,
         category_digitaltools,
         category_others;
+
+    const now = new Date();
+    const firstDayCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const firstDayNextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1); // <-- This one
+
+    console.log(firstDayNextMonth);
+    console.log(firstDayCurrentMonth); 
 });
 
 module.exports = router;
