@@ -9,9 +9,8 @@
 const express = require("express");
 const router = express.Router();
 
-router.post("/current_month", async (req, res) => {
+router.get("/current_month", async (req, res) => {
     // initializing variables
-
     let
         current_month_cost,
         next_payment,
