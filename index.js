@@ -9,6 +9,7 @@ require("module-alias/register");
 require("dotenv").config();
 require("@workers/subscriptions.js");
 
+
 // importing libraries
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
@@ -17,27 +18,32 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const path = require("path");
 
+
 // variables
 const express = require("express");
 const app = express();
 const jwtAuth = require("@middlewares/jwtAuth");
+
 
 // ROUTES
 // render view routes
 const indexRVRoutes = require("@routes/indexRV");
 const authenticatedIndexRVRoutes = require("@routes/authenticatedIndexRV");
 
+
 // api routes
 const authAPIRoutes = require("@routes/APIs/auth");
 const userAPIRoutes = require("@routes/APIs/user");
 const onboardingAPIRoutes = require("@routes/APIs/onboarding");
 const subscriptionsAPIRoutes = require("@routes/APIs/user_subscriptions");
-const userSettingsAPIRoutes = require("@routes/APIs/user_settings.js");
+const userSettingsAPIRoutes = require("@routes/APIs/user_settings");
+
 
 // custom middlewares
 const multerErrorHandler = require("@middlewares/multerErrorHandler");
 const invalidJSONFormat = require("@middlewares/invalidJSONFormat");
 const errorCodes = require("@middlewares/errorCodes");
+
 
 // middleware configurations
 const apiLimiter = rateLimit({
@@ -77,6 +83,7 @@ const corsConf = cors({
     allowedHeaders: ["Content-Type", "Authorization"],
 });
 
+
 // USE MIDDLEWARES
 app.use(helmetConf);
 app.use(corsConf);
@@ -89,9 +96,11 @@ app.use(invalidJSONFormat);
 
 app.use(express.static("public"));
 
+
 // VIEW ENGINES
 app.set("view engine", "ejs");
 app.set("views", path.resolve("views"));
+
 
 // USE ROUTES
 // use render view routes
@@ -101,6 +110,7 @@ app.use("/onboarding", jwtAuth);
 
 app.use("/", authenticatedIndexRVRoutes);
 
+
 // use api routes
 app.use("/api/auth/", apiLimiter, authAPIRoutes);
 app.use("/api/", apiLimiter, jwtAuth, userAPIRoutes);
@@ -108,9 +118,11 @@ app.use("/api/onboarding/", apiLimiter, jwtAuth, onboardingAPIRoutes);
 app.use("/api/user/subscriptions/", apiLimiter, jwtAuth, subscriptionsAPIRoutes);
 app.use("/api/user/settings/", apiLimiter, jwtAuth, userSettingsAPIRoutes);
 
+
 // error handlers
 app.use(multerErrorHandler);
 app.use(errorCodes);
+
 
 // RUNNING THE SERVER
 app.listen(process.env.PORT, () => {
