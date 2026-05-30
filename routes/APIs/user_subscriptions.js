@@ -474,13 +474,14 @@ router.post("/add", userSubIconsUpload.single("sub_icon"), async (req, res) => {
                 const delayMs1D = delayMs - oneDayMs;
                 const delayMs3D = delayMs - 3 * oneDayMs;
 
-                if (delayMs < 0)
+                if (delayMs < 0) {
                     return res.status(500).json({
                         status: 500,
                         error: true,
                         message: "Wait a few minutes and try again!",
                     });
-
+                }
+                
                 // scheduling final renewal email
                 await emailQueue.add(
                     "send-sub-renewal-email",
