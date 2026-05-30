@@ -737,12 +737,6 @@ body {
     line-height: 0.95;
 }
 
-.summary__range {
-    margin-top: 6px;
-    font-size: clamp(16px, calc(var(--unit) * 2.6), 28px);
-    color: rgba(238, 242, 255, 0.62);
-}
-
 .summary__notes {
     margin-top: clamp(10px, calc(var(--unit) * 1.6), 16px);
     display: grid;

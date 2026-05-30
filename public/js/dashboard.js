@@ -301,7 +301,7 @@ function buildChart() {
             labels: ["WEEK 1", "WEEK 2", "WEEK 3", "WEEK 4"],
             datasets: [
                 {
-                    data: [34, 26, 58, 150],
+                    data: [0, 0, 0, 0],
                     borderRadius: 8,
                     barThickness: 18,
                     backgroundColor: "rgba(238, 242, 255, 0.92)",
