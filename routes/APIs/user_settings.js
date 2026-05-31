@@ -20,7 +20,6 @@ const path = require("path");
 const fs = require("fs");
 
 // utils and middlewares
-const jwtAuth = require("@middlewares/jwtAuth");
 const con = require("@utils/database");
 const { emailQueue } = require("@utils/queue");
 
