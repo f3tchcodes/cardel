@@ -72,7 +72,7 @@ router.get("/current_month", async (req, res) => {
         cat_workbusiness,
         cat_health,
         cat_digitaltools,
-        cat_others] = Array(15).fill(0);
+        cat_others] = Array(16).fill(0);
 
     // getting current time, first day of the current month, first day of the next month
     const now = new Date();
