@@ -57,19 +57,21 @@ router.get("/current_month", async (req, res) => {
 
     // initializing variables
     let
-        current_month_cost = 0,
-        next_payment,
-        biggest_cost,
+        [current_month_cost,
+        next_payment_in,
+        biggest_cost_name,
+        biggest_cost_cost,
         week_1,
         week_2,
         week_3,
-        week4,
+        week_4,
+        week_5,
         category_streaming,
         category_gaming,
         category_workbusiness,
         category_health,
         category_digitaltools,
-        category_others;
+        category_others] = Array(15).fill(0);
 
     const now = new Date();
     const firstDayCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -84,15 +86,81 @@ router.get("/current_month", async (req, res) => {
 
     for (const sub of subscriptions) {
         const subbed_at = sub.subbed_at;
+        const cost = parseFloat(sub.sub_rate);
+        const next_sub = sub.sub_next;
         const billing_type = sub.sub_billing_type;
         const billing_interval = sub.sub_billing_interval;
 
+        const current_month_daysMs = firstDayNextMonth-firstDayCurrentMonth;
+        const current_month_days = current_month_daysMs / (1000 * 60 * 60 * 24);
+        
+        let chargeDate = new Date(subbed_at);
         let occurences = 0;
 
-        if (subbed_at > firstDayCurrentMonth && subbed_at < firstDayNextMonth) {
-            occurences++;
+        while (chargeDate < firstDayNextMonth) {
+            if (chargeDate >= firstDayCurrentMonth) {
+                occurences++;
+
+                const dayOfMonth = chargeDate.getDate();
+
+                if (dayOfMonth <= 7) {
+                    week_1 += cost;
+                } else if (dayOfMonth <= 14) {
+                    week_2 += cost;
+                } else if (dayOfMonth <= 21) {
+                    week_3 += cost;
+                } else if (dayOfMonth <= 28) {
+                    week_4 += cost;
+                } else {
+                    week_5 += cost;
+                }
+            }
+
+            switch (billing_type) {
+                case "day":
+                    chargeDate.setDate(
+                        chargeDate.getDate() + billing_interval
+                    );
+                    break;
+                case "week":
+                    chargeDate.setDate(
+                        chargeDate.getDate() + (billing_interval * 7)
+                    );
+                    break;
+                case "month":
+                    chargeDate.setMonth(
+                        chargeDate.getMonth() + billing_interval);
+                    break;
+                case "year":
+                    chargeDate.setFullYear(
+                        chargeDate.getFullYear() + billing_interval
+                    );
+                    break;
+            }
         }
+
+        const current_sub_cost = occurences * cost;
+        current_month_cost = current_month_cost + current_sub_cost;
+        console.log(`cost: ${cost},`);
+        console.log(`subbed_at: ${subbed_at},`);
+        console.log(`next_sub: ${next_sub},`);
+        console.log(`billing_type: ${billing_type},`);
+        console.log(`billing_interval: ${billing_interval},`);
+        console.log(`occurences: ${occurences},`);
+        console.log(`current_sub_cost: ${current_sub_cost},`);
+        console.log(`current_month_cost: ${current_month_cost}\n`);
     }
+
+    return res.status(200).json({
+        current_month_cost,
+        weeks: {
+            week_1,
+            week_2,
+            week_3,
+            week_4,
+            week_5
+        }
+    })
 });
 
 module.exports = router;
