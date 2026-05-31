@@ -189,6 +189,14 @@ router.get("/current_month", async (req, res) => {
             week_3,
             week_4,
             week_5
+        },
+        category: {
+            cat_streaming,
+            cat_gaming,
+            cat_workbusiness,
+            cat_health,
+            cat_digitaltools,
+            cat_others
         }
     })
 });
