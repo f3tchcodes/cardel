@@ -298,10 +298,10 @@ function buildChart() {
     new Chart(el, {
         type: "bar",
         data: {
-            labels: ["WEEK 1", "WEEK 2", "WEEK 3", "WEEK 4"],
+            labels: ["WEEK 1", "WEEK 2", "WEEK 3", "WEEK 4", "WEEK 5"],
             datasets: [
                 {
-                    data: [0, 0, 0, 0],
+                    data: [0, 0, 0, 0, 0],
                     borderRadius: 8,
                     barThickness: 18,
                     backgroundColor: "rgba(238, 242, 255, 0.92)",
@@ -319,12 +319,12 @@ function buildChart() {
             scales: {
                 x: {
                     min: 0,
-                    max: 150,
+                    max: 200,
                     grid: { color: "rgba(238, 242, 255, 0.10)" },
                     ticks: {
                         color: "rgba(238, 242, 255, 0.55)",
                         stepSize: 20,
-                        callback: (v) => (v <= 100 ? v : ""),
+                        callback: (v) => (v <= 200 ? v : ""),
                     },
                     border: { display: false },
                 },
@@ -332,7 +332,7 @@ function buildChart() {
                     grid: { display: false },
                     ticks: {
                         color: "rgba(238, 242, 255, 0.65)",
-                        font: { size: 11, weight: "800" },
+                        font: { size: 11, weight: "600" },
                     },
                     border: { display: false },
                 },
