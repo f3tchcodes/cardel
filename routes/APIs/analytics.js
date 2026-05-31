@@ -74,10 +74,12 @@ router.get("/current_month", async (req, res) => {
         cat_digitaltools,
         cat_others] = Array(15).fill(0);
 
+    // getting current time, first day of the current month, first day of the next month
     const now = new Date();
     const firstDayCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const firstDayNextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
 
+    // getting all enabled subscriptions data of the user
     const [subscriptions] = await con.query(
         `SELECT * 
         FROM users_subscriptions
@@ -85,107 +87,125 @@ router.get("/current_month", async (req, res) => {
         [jwt_data.user_id, 1]
     );
 
-    for (const sub of subscriptions) {
-        const subbed_at = sub.subbed_at;
-        const cost = parseFloat(sub.sub_rate);
-        const next_sub = sub.sub_next;
-        const billing_type = sub.sub_billing_type;
-        const billing_interval = sub.sub_billing_interval;
-        const sub_category = sub.sub_category.toLowerCase();
+    // check whether or not subscriptions exist
+    // if they exist then continue otherwise print all values as zero
+    // and handle the zeroes at frontend
+    if (subscriptions.length !== 0) {
+        // looping through all the enabled subscriptions to build analytics data
+        for (const sub of subscriptions) {
+            const subbed_at = sub.subbed_at;
+            const cost = parseFloat(sub.sub_rate);
+            const next_sub = sub.sub_next;
+            const billing_type = sub.sub_billing_type;
+            const billing_interval = sub.sub_billing_interval;
+            const sub_category = sub.sub_category.toLowerCase();
 
-        const current_month_daysMs = firstDayNextMonth-firstDayCurrentMonth;
-        const current_month_days = current_month_daysMs / (1000 * 60 * 60 * 24);
-        const next = new Date(next_sub); 
-        
-        let chargeDate = new Date(subbed_at);
-        let occurences = 0;
+            const current_month_daysMs = firstDayNextMonth-firstDayCurrentMonth;
+            const current_month_days = current_month_daysMs / (1000 * 60 * 60 * 24);
+            const next = new Date(next_sub); 
+            
+            let chargeDate = new Date(subbed_at);
+            let occurences = 0;
 
-        if (next < next_payment_inTemp || next_payment_inTemp === 0) { 
-            next_payment_inTemp = next; 
-        }
-        next_payment_inMs = next_payment_inTemp-now;
+            // get next closest enabled subscription within the final time (current month by default)
+            if (next < next_payment_inTemp || next_payment_inTemp === 0) { 
+                next_payment_inTemp = next; 
+            }
+            next_payment_inMs = next_payment_inTemp-now;
 
-        if (cost > biggest_cost) {
-            biggest_cost = sub.sub_rate;
-            biggest_cost_name = String(sub.sub_name);
-        }
+            // get biggest cost of all the enabled subscriptions in the time provided (current month by default)
+            if (cost > biggest_cost) {
+                biggest_cost = sub.sub_rate;
+                biggest_cost_name = String(sub.sub_name);
+            }
 
-        while (chargeDate < firstDayNextMonth) {
-            if (chargeDate >= firstDayCurrentMonth) {
-                occurences++;
+            // as long as charge date is smaller than the final date (next month's first by default)
+            // we continue to loop all the subscriptions 
+            // solely to manage multiple subscriptions paid in the provided time (current month by default)
+            // depending on the billing cycle
+            while (chargeDate < firstDayNextMonth) {
+                if (chargeDate >= firstDayCurrentMonth) {
+                    occurences++;
 
-                const dayOfMonth = chargeDate.getDate();
+                    const dayOfMonth = chargeDate.getDate();
 
-                if (dayOfMonth <= 7) {
-                    week_1 += cost;
-                } else if (dayOfMonth <= 14) {
-                    week_2 += cost;
-                } else if (dayOfMonth <= 21) {
-                    week_3 += cost;
-                } else if (dayOfMonth <= 28) {
-                    week_4 += cost;
-                } else {
-                    week_5 += cost;
+                    // weekly costs
+                    if (dayOfMonth <= 7) {
+                        week_1 += cost;
+                    } else if (dayOfMonth <= 14) {
+                        week_2 += cost;
+                    } else if (dayOfMonth <= 21) {
+                        week_3 += cost;
+                    } else if (dayOfMonth <= 28) {
+                        week_4 += cost;
+                    } else {
+                        week_5 += cost;
+                    }
+
+                    // category based costs
+                    switch (sub_category) {
+                        case "streaming":
+                            cat_streaming += cost;
+                            break;
+                        case "gaming":
+                            cat_gaming += cost;
+                            break;
+                        case "digitaltools":
+                            cat_digitaltools += cost;
+                            break;
+                        case "health":
+                            cat_health += cost;
+                            break;
+                        case "workbusiness":
+                            cat_workbusiness += cost;
+                            break;
+                        default:
+                            cat_others += cost;
+                    }
                 }
 
-                switch (sub_category) {
-                    case "streaming":
-                        cat_streaming += cost;
+                // managing different billing cycle types and intervals in the time provided (current month by default)
+                switch (billing_type) {
+                    case "day":
+                        chargeDate.setDate(
+                            chargeDate.getDate() + billing_interval
+                        );
                         break;
-                    case "gaming":
-                        cat_gaming += cost;
+                    case "week":
+                        chargeDate.setDate(
+                            chargeDate.getDate() + (billing_interval * 7)
+                        );
                         break;
-                    case "digitaltools":
-                        cat_digitaltools += cost;
+                    case "month":
+                        chargeDate.setMonth(
+                            chargeDate.getMonth() + billing_interval);
                         break;
-                    case "health":
-                        cat_health += cost;
+                    case "year":
+                        chargeDate.setFullYear(
+                            chargeDate.getFullYear() + billing_interval
+                        );
                         break;
-                    case "workbusiness":
-                        cat_workbusiness += cost;
-                        break;
-                    default:
-                        cat_others += cost;
                 }
             }
 
-            switch (billing_type) {
-                case "day":
-                    chargeDate.setDate(
-                        chargeDate.getDate() + billing_interval
-                    );
-                    break;
-                case "week":
-                    chargeDate.setDate(
-                        chargeDate.getDate() + (billing_interval * 7)
-                    );
-                    break;
-                case "month":
-                    chargeDate.setMonth(
-                        chargeDate.getMonth() + billing_interval);
-                    break;
-                case "year":
-                    chargeDate.setFullYear(
-                        chargeDate.getFullYear() + billing_interval
-                    );
-                    break;
-            }
+            // getting the final current subscriptions costs after the loop
+            // depending on the occurences of each subscription in the time provided (current month by default)
+            const current_sub_cost = occurences * cost;
+            current_month_cost = current_month_cost + current_sub_cost;
+
+            // LOGS
+            // console.log(`cost: ${cost},`);
+            // console.log(`subbed_at: ${subbed_at},`);
+            // console.log(`next_sub: ${next_sub},`);
+            // console.log(`billing_type: ${billing_type},`);
+            // console.log(`billing_interval: ${billing_interval},`);
+            // console.log(`occurences: ${occurences},`);
+            // console.log(`current_sub_cost: ${current_sub_cost},`);
+            // console.log(`current_month_cost: ${current_month_cost}\n`);
         }
-
-        const current_sub_cost = occurences * cost;
-        current_month_cost = current_month_cost + current_sub_cost;
-
-        // LOGS
-        // console.log(`cost: ${cost},`);
-        // console.log(`subbed_at: ${subbed_at},`);
-        // console.log(`next_sub: ${next_sub},`);
-        // console.log(`billing_type: ${billing_type},`);
-        // console.log(`billing_interval: ${billing_interval},`);
-        // console.log(`occurences: ${occurences},`);
-        // console.log(`current_sub_cost: ${current_sub_cost},`);
-        // console.log(`current_month_cost: ${current_month_cost}\n`);
     }
 
+    // returning the response in json with all the analytical data we calculated above
     return res.status(200).json({
         current_month_cost,
         next_payment_inMs,
