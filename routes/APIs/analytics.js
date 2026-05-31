@@ -167,14 +167,16 @@ router.get("/current_month", async (req, res) => {
 
         const current_sub_cost = occurences * cost;
         current_month_cost = current_month_cost + current_sub_cost;
-        console.log(`cost: ${cost},`);
-        console.log(`subbed_at: ${subbed_at},`);
-        console.log(`next_sub: ${next_sub},`);
-        console.log(`billing_type: ${billing_type},`);
-        console.log(`billing_interval: ${billing_interval},`);
-        console.log(`occurences: ${occurences},`);
-        console.log(`current_sub_cost: ${current_sub_cost},`);
-        console.log(`current_month_cost: ${current_month_cost}\n`);
+
+        // LOGS
+        // console.log(`cost: ${cost},`);
+        // console.log(`subbed_at: ${subbed_at},`);
+        // console.log(`next_sub: ${next_sub},`);
+        // console.log(`billing_type: ${billing_type},`);
+        // console.log(`billing_interval: ${billing_interval},`);
+        // console.log(`occurences: ${occurences},`);
+        // console.log(`current_sub_cost: ${current_sub_cost},`);
+        // console.log(`current_month_cost: ${current_month_cost}\n`);
     }
 
     return res.status(200).json({
