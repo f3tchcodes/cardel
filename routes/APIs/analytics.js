@@ -70,6 +70,29 @@ router.get("/current_month", async (req, res) => {
         category_health,
         category_digitaltools,
         category_others;
+
+    const now = new Date();
+    const firstDayCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const firstDayNextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
+    const [subscriptions] = await con.query(
+        `SELECT * 
+        FROM users_subscriptions
+        WHERE user_id = ? AND enabled = ?`,
+        [jwt_data.user_id, 1]
+    );
+
+    for (const sub of subscriptions) {
+        const subbed_at = sub.subbed_at;
+        const billing_type = sub.sub_billing_type;
+        const billing_interval = sub.sub_billing_interval;
+
+        let occurences = 0;
+
+        if (subbed_at > firstDayCurrentMonth && subbed_at < firstDayNextMonth) {
+            occurences++;
+        }
+    }
 });
 
 module.exports = router;
