@@ -58,7 +58,8 @@ router.get("/current_month", async (req, res) => {
     // initializing variables
     let
         [current_month_cost,
-        next_payment_in,
+        next_payment_inMs,
+        next_payment_inTemp,
         biggest_cost,
         biggest_cost_name,
         week_1,
@@ -94,9 +95,15 @@ router.get("/current_month", async (req, res) => {
 
         const current_month_daysMs = firstDayNextMonth-firstDayCurrentMonth;
         const current_month_days = current_month_daysMs / (1000 * 60 * 60 * 24);
+        const next = new Date(next_sub); 
         
         let chargeDate = new Date(subbed_at);
         let occurences = 0;
+
+        if (next < next_payment_inTemp || next_payment_inTemp === 0) { 
+            next_payment_inTemp = next; 
+        }
+        next_payment_inMs = next_payment_inTemp-now;
 
         if (cost > biggest_cost) {
             biggest_cost = sub.sub_rate;
@@ -181,6 +188,7 @@ router.get("/current_month", async (req, res) => {
 
     return res.status(200).json({
         current_month_cost,
+        next_payment_inMs,
         biggest_cost: {
             biggest_cost,
             biggest_cost_name
