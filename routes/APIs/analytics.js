@@ -59,19 +59,19 @@ router.get("/current_month", async (req, res) => {
     let
         [current_month_cost,
         next_payment_in,
+        biggest_cost,
         biggest_cost_name,
-        biggest_cost_cost,
         week_1,
         week_2,
         week_3,
         week_4,
         week_5,
-        category_streaming,
-        category_gaming,
-        category_workbusiness,
-        category_health,
-        category_digitaltools,
-        category_others] = Array(15).fill(0);
+        cat_streaming,
+        cat_gaming,
+        cat_workbusiness,
+        cat_health,
+        cat_digitaltools,
+        cat_others] = Array(15).fill(0);
 
     const now = new Date();
     const firstDayCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -90,12 +90,18 @@ router.get("/current_month", async (req, res) => {
         const next_sub = sub.sub_next;
         const billing_type = sub.sub_billing_type;
         const billing_interval = sub.sub_billing_interval;
+        const sub_category = sub.sub_category.toLowerCase();
 
         const current_month_daysMs = firstDayNextMonth-firstDayCurrentMonth;
         const current_month_days = current_month_daysMs / (1000 * 60 * 60 * 24);
         
         let chargeDate = new Date(subbed_at);
         let occurences = 0;
+
+        if (cost > biggest_cost) {
+            biggest_cost = sub.sub_rate;
+            biggest_cost_name = String(sub.sub_name);
+        }
 
         while (chargeDate < firstDayNextMonth) {
             if (chargeDate >= firstDayCurrentMonth) {
@@ -113,6 +119,26 @@ router.get("/current_month", async (req, res) => {
                     week_4 += cost;
                 } else {
                     week_5 += cost;
+                }
+
+                switch (sub_category) {
+                    case "streaming":
+                        cat_streaming += cost;
+                        break;
+                    case "gaming":
+                        cat_gaming += cost;
+                        break;
+                    case "digitaltools":
+                        cat_digitaltools += cost;
+                        break;
+                    case "health":
+                        cat_health += cost;
+                        break;
+                    case "workbusiness":
+                        cat_workbusiness += cost;
+                        break;
+                    default:
+                        cat_others += cost;
                 }
             }
 
@@ -153,6 +179,10 @@ router.get("/current_month", async (req, res) => {
 
     return res.status(200).json({
         current_month_cost,
+        biggest_cost: {
+            biggest_cost,
+            biggest_cost_name
+        },
         weeks: {
             week_1,
             week_2,
