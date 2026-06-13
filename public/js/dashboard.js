@@ -1,3 +1,98 @@
+let analyticsData = null;
+let spendChart = null;
+
+async function getAnalyticsCurrentMonth() {
+    const now = new Date();
+
+    const firstDay = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        1
+    );
+
+    const lastDay = new Date(
+        now.getFullYear(),
+        now.getMonth() + 1,
+        0,
+        23,
+        59,
+        59,
+        999
+    );
+
+    const from = firstDay.toISOString();
+    const to = lastDay.toISOString();
+
+    try {
+        const res = await fetch(
+            `/api/user/analytics/date?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`
+        );
+
+        const json = await res.json();
+
+        if (!res.ok) {
+            throw new Error(json.message || `Status: ${res.status}`);
+        }
+
+        return json;
+    } catch (err) {
+        console.error(err);
+        showToast(err.message || "Failed to retrieve analytics.");
+        return null;
+    }
+}
+
+function formatDuration(ms) {
+    const seconds = Math.floor(ms / 1000);
+
+    if (seconds < 60)
+        return `${seconds}s`;
+
+    if (seconds < 3600)
+        return `${Math.floor(seconds / 60)}m`;
+
+    if (seconds < 86400)
+        return `${Math.floor(seconds / 3600)}h`;
+
+    return `${Math.floor(seconds / 86400)}d`;
+}
+
+function renderAnalytics(data) {
+    if (!data) return;
+
+    document.getElementById("currentMonthCost").textContent =
+        `$${Number(data.current_month_cost).toFixed(2)}`;
+
+    document.getElementById("nextPayment").textContent =
+        formatDuration(data.next_payment_inMs);
+
+    document.getElementById("biggestCostName").textContent =
+        data.biggest_cost.biggest_cost_name || "None";
+
+    document.getElementById("biggestCostValue").textContent =
+        `$${Number(data.biggest_cost.biggest_cost || 0).toFixed(2)}`;
+
+    document.getElementById("catStreaming").textContent =
+        `$${data.category.cat_streaming.toFixed(2)}`;
+
+    document.getElementById("catGaming").textContent =
+        `$${data.category.cat_gaming.toFixed(2)}`;
+
+    document.getElementById("catWorkBusiness").textContent =
+        `$${data.category.cat_workbusiness.toFixed(2)}`;
+
+    document.getElementById("catHealth").textContent =
+        `$${data.category.cat_health.toFixed(2)}`;
+
+    document.getElementById("catDigitalTools").textContent =
+        `$${data.category.cat_digitaltools.toFixed(2)}`;
+
+    document.getElementById("catOthers").textContent =
+        `$${data.category.cat_others.toFixed(2)}`;
+
+    updateChart(data);
+}
+
 const proCard = document.getElementById("pro-card");
 
 proCard.addEventListener("click", () => {
@@ -243,6 +338,12 @@ function renderSubscriptions() {
                 sub.enabled = toggle.checked;
                 row.className = `sub-row ${statusClass(sub)}`;
 
+                const analytics = await getAnalyticsCurrentMonth();
+
+                if (analytics) {
+                    renderAnalytics(analytics);
+                }
+
                 if (activeSubTab === "Upcoming" && !sub.enabled) {
                     renderSubscriptions();
                 }
@@ -295,7 +396,7 @@ function buildChart() {
         },
     };
 
-    new Chart(el, {
+    spendChart = new Chart(el, {
         type: "bar",
         data: {
             labels: ["WEEK 1", "WEEK 2", "WEEK 3", "WEEK 4", "WEEK 5"],
@@ -342,6 +443,32 @@ function buildChart() {
     });
 }
 
+function updateChart(data) {
+    if (!spendChart) return;
+
+    spendChart.data.datasets[0].data = [
+        data.weeks.week_1,
+        data.weeks.week_2,
+        data.weeks.week_3,
+        data.weeks.week_4,
+        data.weeks.week_5,
+    ];
+
+    const max = Math.max(
+        data.weeks.week_1,
+        data.weeks.week_2,
+        data.weeks.week_3,
+        data.weeks.week_4,
+        data.weeks.week_5,
+        10
+    );
+
+    spendChart.options.scales.x.max =
+        Math.ceil(max * 1.2);
+
+    spendChart.update();
+}
+
 /* -------------------------
     Analytics-Only Tabs Logic
 -------------------------- */
@@ -366,10 +493,18 @@ setupSearch();
 renderSubscriptions();
 buildChart();
 
+analyticsData = await getAnalyticsCurrentMonth();
+
+if (analyticsData) {
+    renderAnalytics(analyticsData);
+}
+
 export { 
     getSubList, 
     sortSubscriptionsList, 
     renderSubscriptions, 
     subscriptions,
-    showToast
+    showToast,
+    getAnalyticsCurrentMonth,
+    renderAnalytics
 };

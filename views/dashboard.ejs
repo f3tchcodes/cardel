@@ -123,13 +123,13 @@
         <div class="analytics__content">
         <div class="analytics__top">
             <div class="summary">
-            <div class="summary__amount">$0.00</div>
+            <div class="summary__amount" id="currentMonthCost">$0.00</div>
 
             <div class="summary__notes">
                 <div class="note">
                 <span class="infoBadge">i</span>
                 <!-- <span>Next payment in <span class="danger">2 hours</span>.</span> -->
-                <span>Next payment in <span class="danger">...</span>.</span>
+                <span>Next payment in <span class="danger" id="nextPayment">...</span>.</span>
                 </div>
 
                 <div class="note">
@@ -142,8 +142,8 @@
                     <span class="biggest__meta">- $22.99 - 1 MONTH</span>
                 </div> -->
                 <div class="biggest">
-                    <span class="biggest__name">...</span>
-                    <span class="biggest__meta">...</span>
+                    <span class="biggest__name" id="biggestCostName">...</span>
+                    <span class="biggest__meta" id="biggestCostValue">...</span>
                 </div>
             </div>
             </div>
@@ -155,12 +155,12 @@
             </div>
 
             <div class="by-category__rows">
-                <div class="row"><div>Streaming</div><div class="right">$0.00</div></div>
-                <div class="row"><div>Gaming</div><div class="right">$0.00</div></div>
-                <div class="row"><div>Work/Business</div><div class="right">$0.00</div></div>
-                <div class="row"><div>Health</div><div class="right">$0.00</div></div>
-                <div class="row"><div>Digital Tools</div><div class="right">$0.00</div></div>
-                <div class="row"><div>Others</div><div class="right">$0.00</div></div>
+                <div class="row"><div>Streaming</div><div class="right" id="catStreaming">$0.00</div></div>
+                <div class="row"><div>Gaming</div><div class="right" id="catGaming">$0.00</div></div>
+                <div class="row"><div>Work/Business</div><div class="right" id="catWorkBusiness">$0.00</div></div>
+                <div class="row"><div>Health</div><div class="right" id="catHealth">$0.00</div></div>
+                <div class="row"><div>Digital Tools</div><div class="right" id="catDigitalTools">$0.00</div></div>
+                <div class="row"><div>Others</div><div class="right" id="catOthers">$0.00</div></div>
             </div>
             </div>
         </div>

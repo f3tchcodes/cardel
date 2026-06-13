@@ -2,7 +2,9 @@ import {
     getSubList,
     sortSubscriptionsList,
     renderSubscriptions,
-    subscriptions
+    subscriptions,
+    getAnalyticsCurrentMonth,
+    renderAnalytics
 } from "./dashboard.js";
 
 const overlay = document.getElementById("cdl-addSubOverlaySettings");
@@ -216,6 +218,11 @@ deleteBtn.addEventListener("click", async () => {
 
     sortSubscriptionsList(rawData);
     renderSubscriptions();
+    const analytics = await getAnalyticsCurrentMonth();
+
+    if (analytics) {
+        renderAnalytics(analytics);
+    }
     closeModal();
 });
 
@@ -261,6 +268,11 @@ form.addEventListener("submit", async function (e) {
 
             sortSubscriptionsList(rawData);
             renderSubscriptions();
+            const analytics = await getAnalyticsCurrentMonth();
+
+            if (analytics) {
+                renderAnalytics(analytics);
+            }
             form.reset();
 
             closeModal();

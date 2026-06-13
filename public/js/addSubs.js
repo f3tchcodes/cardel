@@ -2,6 +2,8 @@ import {
     getSubList,
     sortSubscriptionsList,
     renderSubscriptions,
+    getAnalyticsCurrentMonth,
+    renderAnalytics
 } from "./dashboard.js";
 
 // Add this at the very beginning of your DOMContentLoaded block
@@ -168,6 +170,11 @@ form.addEventListener("submit", async function (e) {
 
             sortSubscriptionsList(rawData);
             renderSubscriptions();
+            const analytics = await getAnalyticsCurrentMonth();
+
+            if (analytics) {
+                renderAnalytics(analytics);
+            }
             form.reset();
 
             overlay.classList.remove("cdl-open");
