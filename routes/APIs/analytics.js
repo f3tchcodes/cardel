@@ -2,8 +2,7 @@
     ROUTE: /api/user/analytics
 
     ENDPOINTS:
-    GET  -- /current_month
-    POST -- /date  -- (from, to)
+    GET -- /date  -- (from, to)
 */
 
 const express = require("express");
@@ -11,7 +10,7 @@ const router = express.Router();
 const con = require("@utils/database");
 const jwt = require("jsonwebtoken");
 
-router.get("/current_month", async (req, res) => {
+router.get("/date", async (req, res) => {
     let jwt_data;
     
     try {
@@ -76,8 +75,16 @@ router.get("/current_month", async (req, res) => {
 
     // getting current time, first day of the current month, first day of the next month
     const now = new Date();
-    const firstDayCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const firstDayNextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
+    const from = new Date(req.query.from);
+    const to = new Date(req.query.to);
+
+    if (isNaN(from) || isNaN(to)) {
+        return res.status(400).json({
+            error: true,
+            message: "Invalid date range."
+        });
+    }
 
     // getting all enabled subscriptions data of the user
     const [subscriptions] = await con.query(
@@ -100,7 +107,7 @@ router.get("/current_month", async (req, res) => {
             const billing_interval = sub.sub_billing_interval;
             const sub_category = sub.sub_category.toLowerCase();
 
-            const current_month_daysMs = firstDayNextMonth-firstDayCurrentMonth;
+            const current_month_daysMs = to-from;
             const current_month_days = current_month_daysMs / (1000 * 60 * 60 * 24);
             const next = new Date(next_sub); 
             
@@ -123,20 +130,27 @@ router.get("/current_month", async (req, res) => {
             // we continue to loop all the subscriptions 
             // solely to manage multiple subscriptions paid in the provided time (current month by default)
             // depending on the billing cycle
-            while (chargeDate < firstDayNextMonth) {
-                if (chargeDate >= firstDayCurrentMonth) {
+            while (chargeDate < to) {
+                if (chargeDate >= from) {
                     occurences++;
 
-                    const dayOfMonth = chargeDate.getDate();
+                    const daysFromStart = Math.floor(
+                        (chargeDate - from) / (1000 * 60 * 60 * 24)
+                    );
 
-                    // weekly costs
-                    if (dayOfMonth <= 7) {
+                    const rangeDays = Math.ceil(
+                        (to - from) / (1000 * 60 * 60 * 24)
+                    );
+
+                    const bucketSize = rangeDays / 5;
+
+                    if (daysFromStart < bucketSize) {
                         week_1 += cost;
-                    } else if (dayOfMonth <= 14) {
+                    } else if (daysFromStart < bucketSize * 2) {
                         week_2 += cost;
-                    } else if (dayOfMonth <= 21) {
+                    } else if (daysFromStart < bucketSize * 3) {
                         week_3 += cost;
-                    } else if (dayOfMonth <= 28) {
+                    } else if (daysFromStart < bucketSize * 4) {
                         week_4 += cost;
                     } else {
                         week_5 += cost;
